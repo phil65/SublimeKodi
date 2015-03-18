@@ -9,7 +9,7 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
     def on_activate(self, view):
         sublime.set_timeout(lambda: self.run(view, 'activated'), 0)
 
-    def on_selection_modified(self, view):
+    def on_selection_modified_async(self, view):
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 0)
 
     def run(self, view, where):
