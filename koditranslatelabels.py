@@ -59,10 +59,11 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
         return open(lang_file_path, "r").read()
 
     def update_labels(self, view):
-        path, filename = os.path.split(view.file_name())
-        lang_file = self.get_addon_lang_file(path)
-        self.id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-        self.string_list = re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+        if view.file_name():
+            path, filename = os.path.split(view.file_name())
+            lang_file = self.get_addon_lang_file(path)
+            self.id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+            self.string_list = re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
 
 
 class SetKodiFolderCommand(sublime_plugin.TextCommand):
