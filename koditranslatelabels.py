@@ -21,10 +21,11 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
             return
         else:
             view.hide_popup()
-        scope_name = view.scope_name(view.sel()[0].b)
-        selection = view.substr(view.word(view.sel()[0]))
-        if "source.python" in scope_name or "text.xml" in scope_name:
-            view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+        if view.sel():
+            scope_name = view.scope_name(view.sel()[0].b)
+            selection = view.substr(view.word(view.sel()[0]))
+            if "source.python" in scope_name or "text.xml" in scope_name:
+                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def return_label(self, view, selection):
         if selection.isdigit():
