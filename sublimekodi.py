@@ -2,17 +2,21 @@ import sublime_plugin
 import sublime
 import re
 import os
+SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
 
-class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
+class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
         self.string_list = None
         self.labels_loaded = False
+        self.settings_loaded = False
 
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
             self.update_labels(window.active_view())
+        elif command_name == "set_kodi_folder":
+            sublime.active_window().show_input_panel("Set Kodi folder", "path_to_kodi", self.set_kodi_folder, None, None)
 
     def on_text_command(self, view, command_name, args):
         # print(command_name)
@@ -23,6 +27,8 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 0)
 
     def run(self, view, where):
+        if not self.settings_loaded:
+            self.get_settings()
         if not self.labels_loaded:
             self.update_labels(view)
         if len(view.sel()) > 1:
@@ -43,10 +49,15 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
                 return self.string_list[index + 1]
         return ""
 
+    def set_kodi_folder(self, path):
+        sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
+        sublime.save_settings(SETTINGS_FILE)
+
     def get_settings(self):
-        history_filename = 'KodiTranslateLabels.sublime-settings'
-        history = sublime.load_settings(history_filename)
+        history = sublime.load_settings(SETTINGS_FILE)
         self.kodi_path = history.get("kodi_path")
+        print("kodi path: " + self.kodi_path)
+        self.settings_loaded = True
         # sublime.save_settings(history_filename)
 
     def get_addon_lang_file(self, path):
@@ -58,7 +69,7 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
             return ""
         return open(lang_file_path, "r").read()
 
-    def get_kodi_lang_file(self, path):
+    def get_kodi_lang_file(self):
         if os.path.exists(os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")):
             lang_file_path = os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")
         elif os.path.exists(os.path.join(self.kodi_path, "language", "English", "strings.po")):
@@ -73,6 +84,9 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
             lang_file = self.get_addon_lang_file(path)
             self.id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
             self.string_list = re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+            kodi_lang_file = self.get_kodi_lang_file()
+            if kodi_lang_file:
+                pass
             self.labels_loaded = True
             print("Addon labels updated. Amount: %i" % len(self.string_list))
 
@@ -80,19 +94,19 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.message_dialog("test")
+        pass
 
 
 class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.message_dialog("test")
+        pass
 
 
 class OpenKodiLog(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.message_dialog("test")
+        sublime.message_dialog("todo")
 
 
 def jump_to_label_declaration(view, label_id):

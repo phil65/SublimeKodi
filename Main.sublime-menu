@@ -12,21 +12,21 @@
                 "children":
                 [
                     {
-                        "caption": "Kodi - Translate labels",
+                        "caption": "SublimeKodi",
                         "children":
                         [
                             {
                                 "caption": "Settings – Default",
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/KodiTranslateLabels/KodiTranslateLabels.sublime-settings"
+                                    "file": "${packages}/SublimeKodi/sublimekodi.sublime-settings"
                                 }
                             },
                             {
                                 "caption": "Settings – User",
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/User/KodiTranslateLabels.sublime-settings"
+                                    "file": "${packages}/User/sublimekodi.sublime-settings"
                                 }
                             },
                             // {
@@ -36,7 +36,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/KodiTranslateLabels/Default (OSX).sublime-keymap",
+                            //         "file": "${packages}/SublimeKodi/Default (OSX).sublime-keymap",
                             //         "platform": "OSX"
                             //     }
                             // },
@@ -52,7 +52,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/KodiTranslateLabels/Default (Linux).sublime-keymap",
+                            //         "file": "${packages}/SublimeKodi/Default (Linux).sublime-keymap",
                             //         "platform": "Linux"
                             //     }
                             // },
@@ -68,7 +68,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/KodiTranslateLabels/Default (Windows).sublime-keymap",
+                            //         "file": "${packages}/SublimeKodi/Default (Windows).sublime-keymap",
                             //         "platform": "Windows"
                             //     }
                             // },
