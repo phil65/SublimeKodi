@@ -11,7 +11,6 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
         self.labels_loaded = False
 
     def on_window_command(self, window, command_name, args):
-        print(command_name)
         if command_name == "reload_kodi_language_files":
             self.update_labels(window.active_view())
 
