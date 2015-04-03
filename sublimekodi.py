@@ -6,17 +6,26 @@ import os
 
 class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
 
-    def on_activated(self, view):
-        # print("on_activated")
-        self.get_settings()
-        self.update_labels(view)
-        sublime.set_timeout(lambda: self.run(view, 'activated'), 0)
+    def __init__(self, **kwargs):
+        self.string_list = None
+        self.labels_loaded = False
+
+    def on_window_command(self, window, command_name, args):
+        print(command_name)
+        if command_name == "reload_kodi_language_files":
+            self.update_labels(window.active_view())
+
+    def on_text_command(self, view, command_name, args):
+        # print(command_name)
+        pass
 
     def on_selection_modified_async(self, view):
         # print("on_selection_modified_async")
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 0)
 
     def run(self, view, where):
+        if not self.labels_loaded:
+            self.update_labels(view)
         if len(view.sel()) > 1:
             return
         else:
@@ -65,13 +74,26 @@ class KodiTranslatedLabelToolTip(sublime_plugin.EventListener):
             lang_file = self.get_addon_lang_file(path)
             self.id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
             self.string_list = re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+            self.labels_loaded = True
+            print("Addon labels updated. Amount: %i" % len(self.string_list))
 
 
-class SetKodiFolderCommand(sublime_plugin.TextCommand):
+class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
-    def run(self, view):
+    def run(self):
         sublime.message_dialog("test")
 
+
+class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
+
+    def run(self):
+        sublime.message_dialog("test")
+
+
+class OpenKodiLog(sublime_plugin.WindowCommand):
+
+    def run(self):
+        sublime.message_dialog("test")
 
 
 def jump_to_label_declaration(view, label_id):

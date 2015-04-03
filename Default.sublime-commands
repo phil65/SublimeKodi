@@ -1,0 +1,15 @@
+[
+    {
+        "caption": "SublimeKodi: Set Kodi Folder",
+        "command": "set_kodi_folder"
+    },
+    {
+        "caption": "SublimeKodi: Open Log",
+        "command": "open_kodi_log"
+    },
+    {
+        "caption": "SublimeKodi: Reload language files",
+        "command": "reload_kodi_language_files"
+    },
+
+]
