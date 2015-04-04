@@ -24,7 +24,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_selection_modified_async(self, view):
         # print("on_selection_modified_async")
-        sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 0)
+        sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 500)
 
     def run(self, view, where):
         if not self.settings_loaded:
