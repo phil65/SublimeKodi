@@ -3,4 +3,23 @@
 */
 {
     "kodi_path": "",
+
+    /*
+     * Use native language
+     *
+     * If set to true, this plugin will show the tooltips 
+     * with both English and your native language.
+     *
+     */
+    "use_native_language": false,
+
+    /*
+     * Native language
+     *
+     * Put your native language folder name here like:
+     * Chinese (Simple)
+     * Chinese (Traditional)
+     * 
+     */
+    "native_language": "Chinese (Simple)",
 }
