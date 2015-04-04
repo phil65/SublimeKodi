@@ -7,6 +7,8 @@ if platform.system() == "Linux":
     KODI_PATH = "/usr/share/kodi/"
 elif platform.system() == "Windows":
     KODI_PATH = "C:/Kodi/"
+else:
+    KODI_PATH = ""
 
 
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
