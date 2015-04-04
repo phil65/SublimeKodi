@@ -9,7 +9,7 @@ if platform.system() == "Linux":
     LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
 elif platform.system() == "Windows":
     KODI_PATH = "C:/Kodi/"
-    LOG_FILE = ""
+    LOG_FILE = os.path.join(os.getenv('APPDATA'),"KODI","kodi.log")
 else:
     KODI_PATH = ""
 
