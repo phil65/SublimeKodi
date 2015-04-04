@@ -92,14 +92,19 @@ class SublimeKodi(sublime_plugin.EventListener):
         return open(lang_file_path, "r").read()
 
     def update_labels(self, view):
+        self.id_list = []
+        self.string_list = []
         if view.file_name():
             path, filename = os.path.split(view.file_name())
             lang_file = self.get_addon_lang_file(path)
-            self.id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-            self.string_list = re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-            kodi_lang_file = self.get_kodi_lang_file()
-            if kodi_lang_file:
-                pass
+            self.id_list += re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+            self.string_list += re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+        kodi_lang_file = self.get_kodi_lang_file()
+        if kodi_lang_file:
+            kodi_id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)
+            kodi_string_list = re.findall('^msgid \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
+            self.id_list += kodi_id_list
+            self.string_list += kodi_string_list
             self.labels_loaded = True
             log("Addon labels updated. Amount: %i" % len(self.string_list))
 
