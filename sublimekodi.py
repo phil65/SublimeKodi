@@ -2,6 +2,13 @@ import sublime_plugin
 import sublime
 import re
 import os
+import platform
+if platform.system() == "Linux":
+    KODI_PATH = "/usr/share/kodi/"
+elif platform.system() == "Windows":
+    KODI_PATH = "C:/Kodi/"
+
+
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
 
@@ -16,14 +23,14 @@ class SublimeKodi(sublime_plugin.EventListener):
         if command_name == "reload_kodi_language_files":
             self.update_labels(window.active_view())
         elif command_name == "set_kodi_folder":
-            sublime.active_window().show_input_panel("Set Kodi folder", "path_to_kodi", self.set_kodi_folder, None, None)
+            sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PATH, self.set_kodi_folder, None, None)
 
     def on_text_command(self, view, command_name, args):
-        # print(command_name)
+        # log(command_name)
         pass
 
     def on_selection_modified_async(self, view):
-        # print("on_selection_modified_async")
+        # log("on_selection_modified_async")
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 500)
 
     def run(self, view, where):
@@ -56,25 +63,31 @@ class SublimeKodi(sublime_plugin.EventListener):
     def get_settings(self):
         history = sublime.load_settings(SETTINGS_FILE)
         self.kodi_path = history.get("kodi_path")
-        print("kodi path: " + self.kodi_path)
+        log("kodi path: " + self.kodi_path)
         self.settings_loaded = True
         # sublime.save_settings(history_filename)
 
     def get_addon_lang_file(self, path):
         if os.path.exists(os.path.join(path, "resources", "language", "English", "strings.po")):
             lang_file_path = os.path.join(path, "resources", "language", "English", "strings.po")
+            log("found addon language file in %s" % lang_file_path)
         elif os.path.exists(os.path.join(path, "..", "language", "English", "strings.po")):
             lang_file_path = os.path.join(path, "..", "language", "English", "strings.po")
+            log("found addon language file in %s" % lang_file_path)
         else:
+            log("could not find addon language file")
             return ""
         return open(lang_file_path, "r").read()
 
     def get_kodi_lang_file(self):
         if os.path.exists(os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")):
             lang_file_path = os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")
+            log("found Kodi language file in %s" % lang_file_path)
         elif os.path.exists(os.path.join(self.kodi_path, "language", "English", "strings.po")):
             lang_file_path = os.path.join(self.kodi_path, "language", "English", "strings.po")
+            log("found Kodi language file in %s" % lang_file_path)
         else:
+            log("could not find Kodi language file")
             return ""
         return open(lang_file_path, "r").read()
 
@@ -88,7 +101,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             if kodi_lang_file:
                 pass
             self.labels_loaded = True
-            print("Addon labels updated. Amount: %i" % len(self.string_list))
+            log("Addon labels updated. Amount: %i" % len(self.string_list))
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
@@ -112,3 +125,6 @@ class OpenKodiLog(sublime_plugin.WindowCommand):
 def jump_to_label_declaration(view, label_id):
     view.run_command("insert", {"characters": label_id})
     view.hide_popup()
+
+def log(string):
+    print("SublimeKodi: " + string)
