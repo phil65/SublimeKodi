@@ -5,8 +5,10 @@ import os
 import platform
 if platform.system() == "Linux":
     KODI_PATH = "/usr/share/kodi/"
+    LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
 elif platform.system() == "Windows":
     KODI_PATH = "C:/Kodi/"
+    LOG_FILE = ""
 else:
     KODI_PATH = ""
 
@@ -126,7 +128,7 @@ class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
 class OpenKodiLog(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.message_dialog("todo")
+        sublime.active_window().open_file(LOG_FILE)
 
 
 def jump_to_label_declaration(view, label_id):
