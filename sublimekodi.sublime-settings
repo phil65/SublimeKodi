@@ -2,12 +2,19 @@
     KodiTranslateLabels default settings
 */
 {
+
+    /*
+     * Kodi Path
+     *
+     * Path to your local Kodi installation (used to get labels)
+     *
+     */
     "kodi_path": "",
 
     /*
      * Use native language
      *
-     * If set to true, this plugin will show the tooltips 
+     * If set to true, this plugin will show the tooltips
      * with both English and your native language.
      *
      */
@@ -19,7 +26,7 @@
      * Put your native language folder name here like:
      * Chinese (Simple)
      * Chinese (Traditional)
-     * 
+     *
      */
     "native_language": "Chinese (Simple)",
 }

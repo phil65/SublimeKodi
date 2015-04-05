@@ -5,22 +5,25 @@ import os
 import platform
 import codecs
 if platform.system() == "Linux":
-    KODI_PATH = "/usr/share/kodi/"
+    KODI_PRESET_PATH = "/usr/share/kodi/"
     LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
 elif platform.system() == "Windows":
-    KODI_PATH = "C:/Kodi/"
-    LOG_FILE = os.path.join(os.getenv('APPDATA'),"KODI","kodi.log")
+    KODI_PRESET_PATH = "C:/Kodi/"
+    LOG_FILE = os.path.join(os.getenv('APPDATA'), "KODI", "kodi.log")
 else:
-    KODI_PATH = ""
+    KODI_PRESET_PATH = ""
 
 
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 DEFAULT_LANGUAGE_FOLDER = "English"
 
+
 class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
-        self.string_list = None
+        self.id_list = []
+        self.string_list = []
+        self.native_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
 
@@ -28,7 +31,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         if command_name == "reload_kodi_language_files":
             self.update_labels(window.active_view())
         elif command_name == "set_kodi_folder":
-            sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PATH, self.set_kodi_folder, None, None)
+            sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
 
     def on_text_command(self, view, command_name, args):
         # log(command_name)
@@ -51,7 +54,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
             if "source.python" in scope_name or "text.xml" in scope_name:
-                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
+                                location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def return_label(self, view, selection):
         if selection.isdigit():
@@ -133,6 +137,7 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
     def run(self):
         pass
 
+
 class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
 
     def run(self):
@@ -149,6 +154,6 @@ def jump_to_label_declaration(view, label_id):
     view.run_command("insert", {"characters": label_id})
     view.hide_popup()
 
- 
+
 def log(string):
     print("SublimeKodi: " + string)
