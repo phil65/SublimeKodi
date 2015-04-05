@@ -6,8 +6,7 @@
     /*
      * Kodi Path
      *
-     * Path to your local Kodi installation (used to get labels)
-     *
+     * Path to your local Kodi installation (used to get labels) *
      */
     "kodi_path": "",
 

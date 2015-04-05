@@ -26,6 +26,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.native_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
+        self.actual_project = None
 
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
@@ -42,11 +43,15 @@ class SublimeKodi(sublime_plugin.EventListener):
         # log("on_selection_modified_async")
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 500)
 
+    def on_activated(self, view):
+        if view:
+            if not self.settings_loaded:
+                self.get_settings()
+            if not self.labels_loaded or view.window().project_file_name() != self.actual_project:
+                self.actual_project = view.window().project_file_name()
+                self.update_labels(view)
+
     def run(self, view, where):
-        if not self.settings_loaded:
-            self.get_settings()
-        if not self.labels_loaded:
-            self.update_labels(view)
         if len(view.sel()) > 1:
             return
         else:
