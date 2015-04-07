@@ -26,6 +26,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
+            self.get_settings()
             self.update_labels(window.active_view())
         elif command_name == "set_kodi_folder":
             sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PATH, self.set_kodi_folder, None, None)
