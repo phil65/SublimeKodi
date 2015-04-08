@@ -8,18 +8,22 @@ contexts:
     main:
         - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
           scope: keyword.date
-        - match: '"'
-          push: string
+        # - match: '"'
+        #   push: string
         - match: \b(WARNING)\b
           scope: constant.character.escape
         - match: \b(ERROR)\b
-          scope: keyword.control.import
+          scope: invalid.illegal
         - match: \b(NOTICE)\b
           scope: entity.name.function
+        - match: \w+(\.\w+)+[:]
+          scope: keyword.control.import
+        - match: http[s]?:\/\/?[^\/\s]+\/.*
+          scope: variable.parameter
 
-    string:
-        - meta_scope: string.quoted.double
-        - match: \\.
-          scope: constant.character.escape
-        - match: '"'
-          pop: true
+    # string:
+    #     - meta_scope: string.quoted.double
+    #     - match: \\.
+    #       scope: constant.character.escape
+    #     - match: '"'
+    #       pop: true
