@@ -47,6 +47,8 @@ class SublimeKodi(sublime_plugin.EventListener):
         if view:
             if not self.settings_loaded:
                 self.get_settings()
+            if not view.window():
+                return True
             if not self.labels_loaded or view.window().project_file_name() != self.actual_project:
                 self.actual_project = view.window().project_file_name()
                 self.update_labels(view)
