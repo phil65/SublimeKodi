@@ -18,7 +18,7 @@ contexts:
           scope: entity.name.function
         - match: \w+(\.\w+)+[:]
           scope: keyword.control.import
-        - match: (http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?
+        - match: ([a-z]*):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?
           scope: variable.parameter
 
     # string:
