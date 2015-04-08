@@ -16,7 +16,7 @@ contexts:
           scope: invalid.illegal
         - match: \b(NOTICE)\b
           scope: entity.name.function
-        - match: \w+(\.\w+)+[:]
+        - match: \b([a-z])+(\.\w+)+[:]
           scope: keyword.control.import
         - match: ([a-z]*):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?
           scope: variable.parameter
