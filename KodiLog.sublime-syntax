@@ -8,8 +8,6 @@ contexts:
     main:
         - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
           scope: keyword.date
-        # - match: '"'
-        #   push: string
         - match: \b(WARNING)\b
           scope: constant.character.escape
         - match: \b(ERROR)\b
@@ -20,10 +18,12 @@ contexts:
           scope: keyword.control.import
         - match: ([a-z]*):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?
           scope: variable.parameter
+        - match: '"'
+          push: string
 
-    # string:
-    #     - meta_scope: string.quoted.double
-    #     - match: \\.
-    #       scope: constant.character.escape
-    #     - match: '"'
-    #       pop: true
+    string:
+        - meta_scope: string.quoted.double
+        - match: \\.
+          scope: constant.character.escape
+        - match: '"'
+          pop: true
