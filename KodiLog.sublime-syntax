@@ -1,0 +1,25 @@
+%YAML 1.2
+---
+name: Kodi Log
+file_extensions: [log, LOG]
+scope: text.kodilog
+
+contexts:
+    main:
+        - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
+          scope: keyword.date
+        - match: '"'
+          push: string
+        - match: \b(WARNING)\b
+          scope: constant.character.escape
+        - match: \b(ERROR)\b
+          scope: keyword.control.import
+        - match: \b(NOTICE)\b
+          scope: entity.name.function
+
+    string:
+        - meta_scope: string.quoted.double
+        - match: \\.
+          scope: constant.character.escape
+        - match: '"'
+          pop: true
