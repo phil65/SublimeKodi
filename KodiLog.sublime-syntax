@@ -14,6 +14,8 @@ contexts:
           scope: invalid.illegal
         - match: 'EXCEPTION Thrown \(PythonToCppException\) : -->Python callback/script returned the following error<--'
           scope: invalid.illegal
+        - match: (?<=                                            ).*
+          scope: invalid.illegal
         - match: '-->End of Python script error report<--'
           scope: invalid.illegal
         - match: \b(NOTICE)\b
