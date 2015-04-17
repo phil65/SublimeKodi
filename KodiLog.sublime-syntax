@@ -24,10 +24,22 @@ contexts:
           scope: variable.parameter
         - match: '"'
           push: string
+        - match: 'Traceback \(most recent call last\):'
+          push: traceback_content
 
     string:
         - meta_scope: string.quoted.double
-        - match: \\.
-          scope: constant.character.escape
         - match: '"'
+          pop: true
+
+    traceback_content:
+        - meta_scope: variable.parameter
+        - match: 'File "(.*)", line (\d*), in (.*)'
+          captures:
+           1: string.quoted
+           2: constant.character.escape
+           3: storage.type.function
+        - match: '\b(?:Index|Key|Value|IO|Syntax|Import|Memory|Type|Reference|Runtime|Attribute)Error: (.*)$'
+          captures:
+           1: storage.type.function
           pop: true
