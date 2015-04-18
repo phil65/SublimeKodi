@@ -158,6 +158,22 @@ class OpenKodiLog(sublime_plugin.WindowCommand):
         sublime.active_window().open_file(LOG_FILE)
 
 
+class OpenSourceFromLog(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        for region in self.view.sel():
+            if region.empty():
+                line = self.view.line(region)
+                line_contents = self.view.substr(line)
+                ma = re.search('File "(.*?)", line (\d*), in .*', line_contents)
+                if ma:
+                    target_filename = ma.group(1)
+                    target_line = ma.group(2)
+                    sublime.active_window().open_file(target_filename + ":" + target_line, sublime.ENCODED_POSITION)
+            else:
+                self.view.insert(edit, region.begin(), self.view.substr(region))
+
+
 def jump_to_label_declaration(view, label_id):
     view.run_command("insert", {"characters": label_id})
     view.hide_popup()

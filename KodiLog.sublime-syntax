@@ -34,7 +34,8 @@ contexts:
 
     traceback_content:
         - meta_scope: variable.parameter
-        - match: 'File "(.*)", line (\d*), in (.*)'
+        - match: 'File "(.*?)", line (\d*), in (.*)'
+          scope: text.kodi.traceback
           captures:
            1: string.quoted
            2: constant.character.escape

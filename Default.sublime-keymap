@@ -1,0 +1,5 @@
+[
+    { "keys": ["enter"], "command": "open_source_from_log",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "text.kodi.traceback" }]
+    },
+]
