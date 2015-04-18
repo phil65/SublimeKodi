@@ -169,7 +169,7 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
                 if ma:
                     target_filename = ma.group(1)
                     target_line = ma.group(2)
-                    sublime.active_window().open_file(target_filename + ":" + target_line, sublime.ENCODED_POSITION)
+                    sublime.active_window().open_file("%s:%s" % (target_filename, target_line), sublime.ENCODED_POSITION)
             else:
                 self.view.insert(edit, region.begin(), self.view.substr(region))
 
