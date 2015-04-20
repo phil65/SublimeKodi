@@ -170,6 +170,14 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
                     target_filename = ma.group(1)
                     target_line = ma.group(2)
                     sublime.active_window().open_file("%s:%s" % (target_filename, target_line), sublime.ENCODED_POSITION)
+                    return
+                ma = re.search(r"', \('(.*?)', (\d+), (\d+), ", line_contents)
+                if ma:
+                    target_filename = ma.group(1)
+                    target_line = ma.group(2)
+                    target_col = ma.group(3)
+                    sublime.active_window().open_file("%s:%s:%s" % (target_filename, target_line, target_col), sublime.ENCODED_POSITION)
+                    return
             else:
                 self.view.insert(edit, region.begin(), self.view.substr(region))
 
