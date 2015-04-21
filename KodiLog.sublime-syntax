@@ -23,6 +23,8 @@ contexts:
         - match: 'EXCEPTION Thrown \(PythonToCppException\) : -->Python callback/script returned the following error<--'
           push: exception
           scope: invalid.illegal
+        - match: 'Traceback \(most recent call last\):'
+          push: traceback_content
 
     string:
         - meta_scope: string.quoted.double
@@ -30,6 +32,13 @@ contexts:
           pop: true
 
     exception:
+        - meta_scope: variable.parameter
+        - include: main
+        - match: '-->End of Python script error report<--'
+          scope: invalid.illegal
+          pop: true
+
+    traceback_content:
         - meta_scope: variable.parameter
         - match: 'File "(.*?)", line (\d*), in (.*)'
           scope: text.kodi.traceback
@@ -41,8 +50,4 @@ contexts:
           scope: text.kodi.traceback
           captures:
            1: storage.type.function
-        - match: '-->End of Python script error report<--'
-          scope: invalid.illegal
-          # captures:
-          #  1: storage.type.function
           pop: true
