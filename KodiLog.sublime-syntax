@@ -12,8 +12,6 @@ contexts:
           scope: constant.character.escape
         - match: \b(ERROR)\b
           scope: invalid.illegal
-        - match: 'EXCEPTION Thrown \(PythonToCppException\) : -->Python callback/script returned the following error<--'
-          scope: invalid.illegal
         - match: \b(NOTICE)\b
           scope: entity.name.function
         - match: \b([a-z])+(\.\w+)+[:]
@@ -22,15 +20,16 @@ contexts:
           scope: variable.parameter
         - match: '"'
           push: string
-        - match: 'Traceback \(most recent call last\):'
-          push: traceback_content
+        - match: 'EXCEPTION Thrown \(PythonToCppException\) : -->Python callback/script returned the following error<--'
+          push: exception
+          scope: invalid.illegal
 
     string:
         - meta_scope: string.quoted.double
         - match: '"'
           pop: true
 
-    traceback_content:
+    exception:
         - meta_scope: variable.parameter
         - match: 'File "(.*?)", line (\d*), in (.*)'
           scope: text.kodi.traceback
