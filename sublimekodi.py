@@ -4,6 +4,7 @@ import re
 import os
 import platform
 import codecs
+from xml.dom.minidom import parse, parseString
 if platform.system() == "Linux":
     KODI_PRESET_PATH = "/usr/share/kodi/"
     LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
@@ -179,6 +180,32 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
                     return
             else:
                 self.view.insert(edit, region.begin(), self.view.substr(region))
+
+
+class PreviewImageCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        path, filename = os.path.split(self.view.file_name())
+        line = self.view.line(self.view.sel()[0])
+        line_contents = self.view.substr(line)
+        dom = parseString(line_contents)
+        rel_image_path = dom.documentElement.childNodes[0].toxml()
+        if "special://skin/" in rel_image_path:
+            rel_image_path = rel_image_path.replace("special://skin/", "")
+            imagepath = os.path.join(path, "..", rel_image_path)
+        else:
+            imagepath = os.path.join(path, "..", "media", rel_image_path)
+        if os.path.exists(imagepath):
+            self.files = [imagepath]
+            sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+
+    def on_done(self, index):
+        sublime.active_window().focus_view(self.view)
+
+    def show_preview(self, index):
+        if index >= 0:
+            file_path = self.files[index]
+            sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
 def jump_to_label_declaration(view, label_id):
