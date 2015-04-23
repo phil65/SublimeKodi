@@ -4,7 +4,7 @@ import re
 import os
 import platform
 import codecs
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parseString
 if platform.system() == "Linux":
     KODI_PRESET_PATH = "/usr/share/kodi/"
     LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
@@ -183,12 +183,12 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         line = self.view.line(self.view.sel()[0])
         region = self.view.sel()[0]
         line_contents = self.view.substr(line)
-        dom = parseString(line_contents)
         scope_name = self.view.scope_name(region.begin())
         if "string.quoted.double.xml" in scope_name:
             scope_area = self.view.extract_scope(region.a)
             rel_image_path = self.view.substr(scope_area).replace('"', '')
         else:
+            dom = parseString(line_contents)
             rel_image_path = dom.documentElement.childNodes[0].toxml()
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
