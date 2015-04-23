@@ -196,7 +196,14 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         else:
             imagepath = os.path.join(path, "..", "media", rel_image_path)
         if os.path.exists(imagepath):
-            self.files = [imagepath]
+            if os.path.isdir(imagepath):
+                self.files = []
+                for (dirpath, dirnames, filenames) in os.walk(imagepath):
+                    self.files.extend(filenames)
+                    break
+                self.files = [imagepath + s for s in self.files]
+            else:
+                self.files = [imagepath]
             sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
     def on_done(self, index):
