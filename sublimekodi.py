@@ -70,9 +70,9 @@ class SublimeKodi(sublime_plugin.EventListener):
             id_string = "#" + selection
             if id_string in self.id_list:
                 index = self.id_list.index(id_string)
-                tooltips = self.string_list[index + 1]
+                tooltips = self.string_list[index]
                 if self.use_native:
-                    tooltips += "<br>" + self.native_string_list[index + 1]
+                    tooltips += "<br>" + self.native_string_list[index]
                 return tooltips
         return ""
 
