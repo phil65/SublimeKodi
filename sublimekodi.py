@@ -190,7 +190,7 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         line_contents = self.view.substr(line)
         dom = parseString(line_contents)
         rel_image_path = dom.documentElement.childNodes[0].toxml()
-        if "special://skin/" in rel_image_path:
+        if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
             imagepath = os.path.join(path, "..", rel_image_path)
         else:
