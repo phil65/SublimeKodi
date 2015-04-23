@@ -94,28 +94,22 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.settings_loaded = True
 
     def get_addon_lang_file(self, path):
-        if os.path.exists(os.path.join(path, "resources", "language", self.language_folder, "strings.po")):
-            lang_file_path = os.path.join(path, "resources", "language", self.language_folder, "strings.po")
-            log("found addon language file in %s" % lang_file_path)
-        elif os.path.exists(os.path.join(path, "..", "language", self.language_folder, "strings.po")):
-            lang_file_path = os.path.join(path, "..", "language", self.language_folder, "strings.po")
-            log("found addon language file in %s" % lang_file_path)
+        paths = [os.path.join(path, "resources", "language", self.language_folder, "strings.po"),
+                 os.path.join(path, "..", "language", self.language_folder, "strings.po")]
+        path = checkPaths(paths)
+        if path:
+            return codecs.open(path, "r", "utf-8").read()
         else:
-            log("could not find addon language file")
             return ""
-        return codecs.open(lang_file_path, "r", "utf-8").read()
 
     def get_kodi_lang_file(self):
-        if os.path.exists(os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")):
-            lang_file_path = os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po")
-            log("found Kodi language file in %s" % lang_file_path)
-        elif os.path.exists(os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")):
-            lang_file_path = os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")
-            log("found Kodi language file in %s" % lang_file_path)
+        paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
+                 os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
+        path = checkPaths(paths)
+        if path:
+            return codecs.open(path, "r", "utf-8").read()
         else:
-            log("could not find Kodi language file")
             return ""
-        return codecs.open(lang_file_path, "r", "utf-8").read()
 
     def get_builtin_label(self):
         kodi_lang_file = self.get_kodi_lang_file()
@@ -213,6 +207,14 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         if index >= 0:
             file_path = self.files[index]
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
+
+
+def checkPaths(paths):
+    for path in paths:
+        if os.path.exists(path):
+            log("found path: %s" % path)
+            return path
+    return ""
 
 
 def jump_to_label_declaration(view, label_id):
