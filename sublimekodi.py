@@ -31,13 +31,10 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
             self.get_settings()
+            self.get_builtin_label()
             self.update_labels(window.active_view())
         elif command_name == "set_kodi_folder":
             sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
-
-    def on_text_command(self, view, command_name, args):
-        # log(command_name)
-        pass
 
     def on_selection_modified_async(self, view):
         # log("on_selection_modified_async")
@@ -49,7 +46,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                 self.get_settings()
             if not view.window():
                 return True
-            if not self.labels_loaded or view.window().project_file_name() != self.actual_project:
+            if not self.labels_loaded:
+                self.get_builtin_label()
+            if view.window().project_file_name() != self.actual_project:
                 self.actual_project = view.window().project_file_name()
                 self.update_labels(view)
 
@@ -92,7 +91,6 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.language_folder = DEFAULT_LANGUAGE_FOLDER
             log("use default language: English")
         self.settings_loaded = True
-        # sublime.save_settings(history_filename)
 
     def get_addon_lang_file(self, path):
         if os.path.exists(os.path.join(path, "resources", "language", self.language_folder, "strings.po")):
@@ -118,26 +116,24 @@ class SublimeKodi(sublime_plugin.EventListener):
             return ""
         return codecs.open(lang_file_path, "r", "utf-8").read()
 
+    def get_builtin_label(self):
+        kodi_lang_file = self.get_kodi_lang_file()
+        if kodi_lang_file:
+            self.builtin_id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)
+            self.builtin_string_list = re.findall('^msgid \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
+            self.builtin_native_string_list = re.findall('^msgstr \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
+            self.labels_loaded = True
+            log("Builtin labels loaded. Amount: %i" % len(self.builtin_string_list))
+
     def update_labels(self, view):
-        self.id_list = []
-        self.string_list = []
-        self.native_string_list = []
         if view.file_name():
             path, filename = os.path.split(view.file_name())
             lang_file = self.get_addon_lang_file(path)
-            self.id_list += re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-            self.string_list += re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-            self.native_string_list += re.findall('^msgstr \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-        kodi_lang_file = self.get_kodi_lang_file()
-        if kodi_lang_file:
-            kodi_id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)
-            kodi_string_list = re.findall('^msgid \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
-            kodi_native_string_list = re.findall('^msgstr \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
-            self.id_list += kodi_id_list
-            self.string_list += kodi_string_list
-            self.native_string_list += kodi_native_string_list
-            self.labels_loaded = True
-            log("Addon labels updated. Amount: %i" % len(self.string_list))
+            if lang_file:
+                self.id_list = self.builtin_id_list + re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+                self.string_list = self.builtin_string_list + re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
+                self.native_string_list = self.builtin_native_string_list + re.findall('^msgstr \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
+                log("Labels updated. Amount: %i" % len(self.id_list))
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
