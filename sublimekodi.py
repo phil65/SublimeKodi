@@ -181,9 +181,15 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
         line = self.view.line(self.view.sel()[0])
+        region = self.view.sel()[0]
         line_contents = self.view.substr(line)
         dom = parseString(line_contents)
-        rel_image_path = dom.documentElement.childNodes[0].toxml()
+        scope_name = self.view.scope_name(region.begin())
+        if "string.quoted.double.xml" in scope_name:
+            scope_area = self.view.extract_scope(region.a)
+            rel_image_path = self.view.substr(scope_area).replace('"', '')
+        else:
+            rel_image_path = dom.documentElement.childNodes[0].toxml()
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
             imagepath = os.path.join(path, "..", rel_image_path)
