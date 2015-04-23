@@ -127,12 +127,15 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def update_labels(self, view):
         if view.file_name():
+            self.id_list = self.builtin_id_list
+            self.string_list = self.builtin_string_list
+            self.native_string_list = self.builtin_native_string_list
             path, filename = os.path.split(view.file_name())
             lang_file = self.get_addon_lang_file(path)
             if lang_file:
-                self.id_list = self.builtin_id_list + re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-                self.string_list = self.builtin_string_list + re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
-                self.native_string_list = self.builtin_native_string_list + re.findall('^msgstr \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
+                self.id_list += re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
+                self.string_list += re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
+                self.native_string_list += re.findall('^msgstr \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
                 log("Labels updated. Amount: %i" % len(self.id_list))
 
 
