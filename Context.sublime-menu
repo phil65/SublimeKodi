@@ -1,0 +1,15 @@
+[
+    {
+        "caption": "SublimeKodi",
+        "id": "sublimekodi_context",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }],
+        "children":
+        [
+            {
+                "command": "preview_image",
+                "caption": "Preview image",
+                "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
+            }
+        ]
+    }
+]
