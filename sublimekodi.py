@@ -180,8 +180,8 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
-        line = self.view.line(self.view.sel()[0])
         region = self.view.sel()[0]
+        line = self.view.line(region)
         line_contents = self.view.substr(line)
         scope_name = self.view.scope_name(region.begin())
         if "string.quoted.double.xml" in scope_name:
