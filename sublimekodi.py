@@ -34,8 +34,6 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.get_settings()
             self.get_builtin_label()
             self.update_labels(window.active_view())
-        elif command_name == "set_kodi_folder":
-            sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
 
     def on_selection_modified_async(self, view):
         # log("on_selection_modified_async")
@@ -75,10 +73,6 @@ class SublimeKodi(sublime_plugin.EventListener):
                     tooltips += "<br>" + self.native_string_list[index]
                 return tooltips
         return ""
-
-    def set_kodi_folder(self, path):
-        sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
-        sublime.save_settings(SETTINGS_FILE)
 
     def get_settings(self):
         history = sublime.load_settings(SETTINGS_FILE)
@@ -137,7 +131,11 @@ class SublimeKodi(sublime_plugin.EventListener):
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        pass
+        sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
+
+    def set_kodi_folder(self, path):
+        sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
+        sublime.save_settings(SETTINGS_FILE)
 
 
 class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
