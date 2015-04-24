@@ -2,13 +2,12 @@ import sublime_plugin
 import sublime
 import re
 import os
-import platform
 import codecs
 from xml.dom.minidom import parseString
-if platform.system() == "Linux":
+if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/kodi/"
     LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
-elif platform.system() == "Windows":
+elif sublime.platform() == "windows":
     KODI_PRESET_PATH = "C:/Kodi/"
     LOG_FILE = os.path.join(os.getenv('APPDATA'), "KODI", "kodi.log")
 else:
