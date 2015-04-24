@@ -4,15 +4,15 @@ import re
 import os
 import codecs
 from xml.dom.minidom import parseString
+APP_NAME = "kodi"
 if sublime.platform() == "linux":
-    KODI_PRESET_PATH = "/usr/share/kodi/"
-    LOG_FILE = os.path.join(os.path.expanduser("~"), ".kodi", "temp", "kodi.log")
+    KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
+    LOG_FILE = os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME, "temp", "%s.log" % APP_NAME)
 elif sublime.platform() == "windows":
-    KODI_PRESET_PATH = "C:/Kodi/"
-    LOG_FILE = os.path.join(os.getenv('APPDATA'), "KODI", "kodi.log")
+    KODI_PRESET_PATH = "C:/%s/" % APP_NAME
+    LOG_FILE = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
 else:
     KODI_PRESET_PATH = ""
-
 
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 DEFAULT_LANGUAGE_FOLDER = "English"
