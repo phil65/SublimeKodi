@@ -19,5 +19,9 @@
         "caption": "SublimeKodi: Search for image",
         "command": "search_for_image"
     },
+    {
+        "caption": "SublimeKodi: Search for font",
+        "command": "search_for_font"
+    },
 
 ]

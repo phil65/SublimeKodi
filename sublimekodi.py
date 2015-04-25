@@ -4,6 +4,7 @@ import re
 import os
 import codecs
 from xml.dom.minidom import parseString
+import xml.etree.ElementTree as ET
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
@@ -262,6 +263,26 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
         if index >= 0:
             file_path = os.path.join(self.imagepath, self.files[index])
         sublime.active_window().open_file(file_path, sublime.TRANSIENT)
+
+
+class SearchForFontCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        path, filename = os.path.split(self.view.file_name())
+        self.font_file = os.path.join(path, "Font.xml")
+        if os.path.exists(self.font_file):
+            tree = ET.parse(self.font_file)
+            root = tree.getroot()
+            self.fonts = []
+            for node in root[0]:
+                string_array = [node.find("name").text, node.find("size").text + "  -  " + node.find("filename").text]
+                self.fonts.append(string_array)
+            sublime.active_window().show_quick_panel(self.fonts, lambda s: self.on_done(s), selected_index=0)
+
+    def on_done(self, index):
+        if index >= 0:
+            self.view.run_command("insert", {"characters": self.fonts[index][0]})
+        sublime.active_window().focus_view(self.view)
 
 
 def checkPaths(paths):
