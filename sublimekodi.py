@@ -47,8 +47,19 @@ class SublimeKodi(sublime_plugin.EventListener):
             view.run_command("insert", {"characters": lang_string})
 
     def on_selection_modified_async(self, view):
-        # log("on_selection_modified_async")
-        sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 500)
+        if len(view.sel()) > 1:
+            return
+        else:
+            view.hide_popup()
+        # if view.sel() and view.sel()[0]:
+        try:
+            scope_name = view.scope_name(view.sel()[0].b)
+            selection = view.substr(view.word(view.sel()[0]))
+            if "source.python" in scope_name or "text.xml" in scope_name:
+                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
+                                location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+        except:
+            log("exception in on_selection_modified_async")
 
     def on_activated_async(self, view):
         if view:
@@ -61,18 +72,6 @@ class SublimeKodi(sublime_plugin.EventListener):
             if view.window().project_file_name() != self.actual_project:
                 self.actual_project = view.window().project_file_name()
                 self.update_labels(view)
-
-    def run(self, view, where):
-        if len(view.sel()) > 1:
-            return
-        else:
-            view.hide_popup()
-        if view.sel() and view.sel()[0]:
-            scope_name = view.scope_name(view.sel()[0].b)
-            selection = view.substr(view.word(view.sel()[0]))
-            if "source.python" in scope_name or "text.xml" in scope_name:
-                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                                location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def return_label(self, view, selection):
         if selection.isdigit():
