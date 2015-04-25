@@ -33,6 +33,11 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.get_settings()
             self.get_builtin_label()
             self.update_labels(window.active_view())
+        elif command_name == "search_for_label":
+            sublime.active_window().show_quick_panel(self.string_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
+
+    def label_search_ondone_action(self, index):
+        sublime.active_window().active_view().run_command("insert", {"characters": self.id_list[index][1:]})
 
     def on_selection_modified_async(self, view):
         # log("on_selection_modified_async")
@@ -138,6 +143,12 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
 
 class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
+
+    def run(self):
+        pass
+
+
+class SearchForLabel(sublime_plugin.WindowCommand):
 
     def run(self):
         pass

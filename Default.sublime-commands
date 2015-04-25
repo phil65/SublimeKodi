@@ -11,5 +11,9 @@
         "caption": "SublimeKodi: Reload language files",
         "command": "reload_kodi_language_files"
     },
+    {
+        "caption": "SublimeKodi: Search for Label",
+        "command": "search_for_label"
+    },
 
 ]
