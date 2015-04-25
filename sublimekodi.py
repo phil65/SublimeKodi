@@ -142,7 +142,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.active_window().show_input_panel("Set Kodi folder for language file", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
+        sublime.active_window().show_input_panel("Set Kodi folder", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
 
     def set_kodi_folder(self, path):
         sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
