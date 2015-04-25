@@ -34,7 +34,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.get_builtin_label()
             self.update_labels(window.active_view())
         elif command_name == "search_for_label":
-            sublime.active_window().show_quick_panel(self.string_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
+            label_list = ['%s (%s)' % t for t in zip(self.string_list, self.id_list)]
+            sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
     def label_search_ondone_action(self, index):
         if not index == -1:
