@@ -250,7 +250,9 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
                 if "studio" in path or "recordlabel" in path:
                     continue
                 for filename in files:
-                    image_path = os.path.join(path, filename).replace(self.imagepath + "\\", "").replace("\\", "/")
+                    image_path = os.path.join(path, filename).replace(self.imagepath, "").replace("\\", "/")
+                    if image_path.startswith("/"):
+                        image_path = image_path[1:]
                     self.files.append(image_path)
             sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
