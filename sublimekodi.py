@@ -68,7 +68,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             return
         else:
             view.hide_popup()
-        if view.sel()[0]:
+        if view.sel() and view.sel()[0]:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
             if "source.python" in scope_name or "text.xml" in scope_name:
