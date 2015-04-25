@@ -39,8 +39,13 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def label_search_ondone_action(self, index):
         if not index == -1:
-            lang_string = "$LOCALIZE[%s]" % self.id_list[index][1:]
-            sublime.active_window().active_view().run_command("insert", {"characters": lang_string})
+            view = sublime.active_window().active_view()
+            scope_name = view.scope_name(view.sel()[0].b)
+            if "text.xml" in scope_name:
+                lang_string = "$LOCALIZE[%s]" % self.id_list[index][1:]
+            else:
+                lang_string = self.id_list[index][1:]
+            view.run_command("insert", {"characters": lang_string})
 
     def on_selection_modified_async(self, view):
         # log("on_selection_modified_async")
