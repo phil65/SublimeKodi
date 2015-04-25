@@ -51,7 +51,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         # log("on_selection_modified_async")
         sublime.set_timeout(lambda: self.run(view, 'selection_modified'), 500)
 
-    def on_activated(self, view):
+    def on_activated_async(self, view):
         if view:
             if not self.settings_loaded:
                 self.get_settings()
@@ -68,7 +68,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             return
         else:
             view.hide_popup()
-        if view.sel():
+        if view.sel()[0]:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
             if "source.python" in scope_name or "text.xml" in scope_name:
@@ -229,6 +229,33 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         if index >= 0:
             file_path = self.files[index]
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
+
+
+class SearchForImageCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        path, filename = os.path.split(self.view.file_name())
+        self.imagepath = os.path.join(path, "..", "media")
+        # self.pos = self.view.sel()
+        if os.path.exists(self.imagepath):
+            self.files = []
+            for path, subdirs, files in os.walk(self.imagepath):
+                if "studio" in path or "recordlabel" in path:
+                    continue
+                for filename in files:
+                    image_path = os.path.join(path, filename).replace(self.imagepath + "\\", "").replace("\\", "/")
+                    self.files.append(image_path)
+            sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+
+    def on_done(self, index):
+        if index >= 0:
+            self.view.run_command("insert", {"characters": self.files[index]})
+        sublime.active_window().focus_view(self.view)
+
+    def show_preview(self, index):
+        if index >= 0:
+            file_path = os.path.join(self.imagepath, self.files[index])
+        sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
 def checkPaths(paths):

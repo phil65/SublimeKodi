@@ -1,10 +1,10 @@
 [
     {
-        "caption": "SublimeKodi: Set Kodi Folder",
+        "caption": "SublimeKodi: Set Kodi folder",
         "command": "set_kodi_folder"
     },
     {
-        "caption": "SublimeKodi: Open Log",
+        "caption": "SublimeKodi: Open log",
         "command": "open_kodi_log"
     },
     {
@@ -12,8 +12,12 @@
         "command": "reload_kodi_language_files"
     },
     {
-        "caption": "SublimeKodi: Search for Label",
+        "caption": "SublimeKodi: Search for label",
         "command": "search_for_label"
+    },
+    {
+        "caption": "SublimeKodi: Search for image",
+        "command": "search_for_image"
     },
 
 ]
