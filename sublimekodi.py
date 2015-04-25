@@ -258,6 +258,8 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
         items = ["Insert path", "Open Image"]
         if index >= 0:
             sublime.active_window().show_quick_panel(items, lambda s: self.insert_char(s, index), selected_index=0)
+        else:
+            sublime.active_window().focus_view(self.view)
 
     def insert_char(self, index, fileindex):
         if index == 0:
