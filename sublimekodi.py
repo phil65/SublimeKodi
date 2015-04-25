@@ -8,10 +8,8 @@ import xml.etree.ElementTree as ET
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
-    LOG_FILE = os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME, "temp", "%s.log" % APP_NAME)
 elif sublime.platform() == "windows":
     KODI_PRESET_PATH = "C:/%s/" % APP_NAME
-    LOG_FILE = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
 else:
     KODI_PRESET_PATH = ""
 
@@ -166,7 +164,15 @@ class SearchForLabel(sublime_plugin.WindowCommand):
 class OpenKodiLog(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.active_window().open_file(LOG_FILE)
+        history = sublime.load_settings(SETTINGS_FILE)
+        if sublime.platform() == "linux":
+            self.log_file = os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME, "temp", "%s.log" % APP_NAME)
+        elif sublime.platform() == "windows":
+            if history.get("portable_mode"):
+                self.log_file = os.path.join(history.get("kodi_path"), "portable_data", "%s.log" % APP_NAME)
+            else:
+                self.log_file = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
+        sublime.active_window().open_file(self.log_file)
 
 
 class OpenSourceFromLog(sublime_plugin.TextCommand):
