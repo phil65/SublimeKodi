@@ -168,19 +168,27 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
         sublime.save_settings(SETTINGS_FILE)
 
 
-class ReloadKodiLanguageFiles(sublime_plugin.WindowCommand):
+class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         pass
 
 
-class SearchForLabel(sublime_plugin.WindowCommand):
+class SearchForLabelCommand(sublime_plugin.WindowCommand):
+
+    def is_visible(self):
+        view = self.window.active_view()
+        scope_name = view.scope_name(view.sel()[0].b)
+        if "source.python" in scope_name or "text.xml" in scope_name:
+            return True
+        else:
+            return False
 
     def run(self):
         pass
 
 
-class OpenKodiLog(sublime_plugin.WindowCommand):
+class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         history = sublime.load_settings(SETTINGS_FILE)
@@ -259,6 +267,13 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
 
 class SearchForImageCommand(sublime_plugin.TextCommand):
 
+    def is_visible(self):
+        scope_name = self.view.scope_name(self.view.sel()[0].b)
+        if "source.python" in scope_name or "text.xml" in scope_name:
+            return True
+        else:
+            return False
+
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
         self.imagepath = os.path.join(path, "..", "media")
@@ -296,6 +311,13 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
 
 
 class SearchForFontCommand(sublime_plugin.TextCommand):
+
+    def is_visible(self):
+        scope_name = self.view.scope_name(self.view.sel()[0].b)
+        if "text.xml" in scope_name:
+            return True
+        else:
+            return False
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
