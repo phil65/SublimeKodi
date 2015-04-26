@@ -70,7 +70,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 else:
                     return
             elif "text.xml" in scope_name:
-                if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents:
+                if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                     pass
                 else:
                     return
