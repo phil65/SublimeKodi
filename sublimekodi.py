@@ -26,6 +26,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.labels_loaded = False
         self.settings_loaded = False
         self.actual_project = None
+        self.prev_selection = None
 
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
@@ -50,14 +51,27 @@ class SublimeKodi(sublime_plugin.EventListener):
         if len(view.sel()) > 1:
             return
         else:
-            view.hide_popup()
-        # if view.sel() and view.sel()[0]:
+            if self.prev_selection == view.sel()[0]:
+                return
+            else:
+                view.hide_popup()
+                self.prev_selection = view.sel()[0]
         try:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
-            if "source.python" in scope_name or "text.xml" in scope_name:
-                view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                                location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+            if "source.python" in scope_name:
+                pass
+            elif "text.xml" in scope_name:
+                line = view.line(view.sel()[0])
+                line_contents = view.substr(line)
+                if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents:
+                    pass
+                else:
+                    return
+            else:
+                return False
+            view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
+                            location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
         except:
             log("exception in on_selection_modified_async")
 
