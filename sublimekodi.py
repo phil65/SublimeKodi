@@ -179,10 +179,7 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
     def is_visible(self):
         view = self.window.active_view()
         scope_name = view.scope_name(view.sel()[0].b)
-        if "source.python" in scope_name or "text.xml" in scope_name:
-            return True
-        else:
-            return False
+        return "source.python" in scope_name or "text.xml" in scope_name
 
     def run(self):
         pass
@@ -269,10 +266,7 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        if "source.python" in scope_name or "text.xml" in scope_name:
-            return True
-        else:
-            return False
+        return "source.python" in scope_name or "text.xml" in scope_name
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
@@ -314,10 +308,7 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        if "text.xml" in scope_name:
-            return True
-        else:
-            return False
+        return "text.xml" in scope_name
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
