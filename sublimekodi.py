@@ -59,18 +59,24 @@ class SublimeKodi(sublime_plugin.EventListener):
         try:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
+            line = view.line(view.sel()[0])
+            line_contents = view.substr(line).lower()
+            popup_label = self.return_label(view, selection)
             if "source.python" in scope_name:
-                pass
+                if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
+                    pass
+                elif popup_label and popup_label > 30000:
+                    pass
+                else:
+                    return
             elif "text.xml" in scope_name:
-                line = view.line(view.sel()[0])
-                line_contents = view.substr(line)
                 if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents:
                     pass
                 else:
                     return
             else:
                 return False
-            view.show_popup(self.return_label(view, selection), sublime.COOPERATE_WITH_AUTO_COMPLETE,
+            view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                             location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
         except:
             log("exception in on_selection_modified_async")
