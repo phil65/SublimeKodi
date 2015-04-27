@@ -24,7 +24,6 @@ else:
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 DEFAULT_LANGUAGE_FOLDER = "English"
 
-
 class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
@@ -85,6 +84,20 @@ class SublimeKodi(sublime_plugin.EventListener):
         except:
             log("exception in on_selection_modified_async")
 
+    def on_load_async(self, view):
+        if self.check_project_change(view):
+            self.update_labels(view)
+            # sublime.message_dialog("on_load")
+
+    def check_project_change(self, view):
+        if view.window().project_file_name() != self.actual_project:
+            self.actual_project = view.window().project_file_name()
+            Infos.update_variable_list(view)
+            Infos.update_include_list(view)
+            return True
+        else:
+            return False
+
     def on_activated_async(self, view):
         if view:
             if not self.settings_loaded:
@@ -93,9 +106,12 @@ class SublimeKodi(sublime_plugin.EventListener):
                 return True
             if not self.labels_loaded:
                 self.get_builtin_label()
-            if view.window().project_file_name() != self.actual_project:
-                self.actual_project = view.window().project_file_name()
+            if self.check_project_change(view):
                 self.update_labels(view)
+
+    def on_post_save_async(self, view):
+        Infos.update_variable_list(view)
+        Infos.update_include_list(view)
 
     def return_label(self, view, selection):
         if selection.isdigit():
@@ -266,22 +282,63 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
+class InfoProvider():
+
+    def __init__(self):
+        self.include_list = []
+        self.var_list = []
+
+    def update_variable_list(self, view):
+        path, filename = os.path.split(view.file_name())
+        include_file = os.path.join(path, "Variables.xml")
+        if os.path.exists(include_file):
+            parser = ET.XMLParser(remove_blank_text=True)
+            tree = ET.parse(include_file, parser)
+            root = tree.getroot()
+            self.var_list = []
+            for node in root.findall("variable"):
+                var = {"name": node.attrib["name"],
+                       "file": include_file,
+                       "line": node.sourceline}
+                self.var_list.append(var)
+
+    def update_include_list(self, view):
+        path, filename = os.path.split(view.file_name())
+        include_file = os.path.join(path, "Includes.xml")
+        if os.path.exists(include_file):
+            parser = ET.XMLParser(remove_blank_text=True)
+            tree = ET.parse(include_file, parser)
+            root = tree.getroot()
+            self.include_list = []
+            for node in root.findall("include"):
+                include = {"name": node.attrib["name"],
+                           "file": include_file,
+                           "line": node.sourceline}
+                self.include_list.append(include)
+
+    def go_to_tag(self, view):
+        keyword = findWord(view)
+        goto_list = self.var_list + self.include_list
+        if keyword:
+            # sublime.message_dialog("go_to_tag")
+            log(str(goto_list))
+            for node in goto_list:
+                if node["name"] == keyword:
+                    sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+
+
 class GoToVariableCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        keyword = findWord(self.view)
-        path, filename = os.path.split(self.view.file_name())
-        var_file = os.path.join(path, "Variables.xml")
-        region = self.view.sel()[0]
-        line = self.view.line(region)
-        line_contents = self.view.substr(line)
-        if os.path.exists(var_file) and keyword:
-            parser = ET.XMLParser(remove_blank_text=True)
-            tree = ET.parse(var_file, parser)
-            root = tree.getroot()
-            for node in root.findall("variable"):
-                if node.attrib["name"] == keyword:
-                    sublime.active_window().open_file("%s:%s" % (var_file, node.sourceline), sublime.ENCODED_POSITION)
+        # Infos.update_variable_list(view=self.view)
+        Infos.go_to_tag(view=self.view)
+
+
+class GoToIncludeCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        # Infos.update_variable_list(view=self.view)
+        Infos.go_to_tag(view=self.view)
 
 
 class SearchForImageCommand(sublime_plugin.TextCommand):
@@ -378,3 +435,11 @@ def jump_to_label_declaration(view, label_id):
 
 def log(string):
     print("SublimeKodi: " + string)
+
+def plugin_loaded():
+    view = sublime.active_window().active_view()
+    Infos.update_variable_list(view)
+    Infos.update_include_list(view)
+
+Infos = InfoProvider()
+
