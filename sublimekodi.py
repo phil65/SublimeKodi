@@ -266,6 +266,24 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
+class GoToVariableCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        keyword = findWord(self.view)
+        path, filename = os.path.split(self.view.file_name())
+        var_file = os.path.join(path, "Variables.xml")
+        region = self.view.sel()[0]
+        line = self.view.line(region)
+        line_contents = self.view.substr(line)
+        if os.path.exists(var_file) and keyword:
+            parser = ET.XMLParser(remove_blank_text=True)
+            tree = ET.parse(var_file, parser)
+            root = tree.getroot()
+            for node in root.findall("variable"):
+                if node.attrib["name"] == keyword:
+                    sublime.active_window().open_file("%s:%s" % (var_file, node.sourceline), sublime.ENCODED_POSITION)
+
+
 class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
@@ -318,7 +336,8 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
         path, filename = os.path.split(self.view.file_name())
         self.font_file = os.path.join(path, "Font.xml")
         if os.path.exists(self.font_file):
-            tree = ET.parse(self.font_file)
+            parser = ET.XMLParser(remove_blank_text=True)
+            tree = ET.parse(self.font_file, parser)
             root = tree.getroot()
             self.fonts = []
             for node in root.find("fontset").findall("font"):
@@ -338,6 +357,18 @@ def checkPaths(paths):
             log("found path: %s" % path)
             return path
     return ""
+
+
+def findWord(view):
+    for region in view.sel():
+        if region.begin() == region.end():
+            word = view.word(region)
+        else:
+            word = region
+        if not word.empty():
+            return view.substr(word)
+        else:
+            return ""
 
 
 def jump_to_label_declaration(view, label_id):
