@@ -2,9 +2,17 @@ import sublime_plugin
 import sublime
 import re
 import os
+import sys
 import codecs
 from xml.dom.minidom import parseString
-import xml.etree.ElementTree as ET
+__file__ = os.path.normpath(os.path.abspath(__file__))
+__path__ = os.path.dirname(__file__)
+# sys.path.append(os.path.join(__path__))
+libs_path = os.path.join(__path__, 'libs')
+if libs_path not in sys.path:
+    sys.path.insert(0, libs_path)
+from lxml import etree as ET
+
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
@@ -313,7 +321,7 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
             tree = ET.parse(self.font_file)
             root = tree.getroot()
             self.fonts = []
-            for node in root[0]:
+            for node in root.find("fontset").findall("font"):
                 string_array = [node.find("name").text, node.find("size").text + "  -  " + node.find("filename").text]
                 self.fonts.append(string_array)
             sublime.active_window().show_quick_panel(self.fonts, lambda s: self.on_done(s), selected_index=0)
