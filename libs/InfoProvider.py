@@ -9,12 +9,19 @@ class InfoProvider():
     def __init__(self):
         self.include_list = []
         self.include_file_list = []
+        self.project_path = ""
+        self.xml_path = ""
+
+    def init_addon(self, path):
+        self.project_path = path
+        paths = [os.path.join(self.project_path, "1080i"),
+                 os.path.join(self.project_path, "720p")]
+        self.xml_path = checkPaths(paths)
 
     def get_include_files(self, view):
-        if view.file_name():
-            path, filename = os.path.split(view.file_name())
-            paths = [os.path.join(path, "Includes.xml"),
-                     os.path.join(path, "includes.xml")]
+        if self.project_path:
+            paths = [os.path.join(self.xml_path, "Includes.xml"),
+                     os.path.join(self.xml_path, "includes.xml")]
             include_file = checkPaths(paths)
             if include_file:
                 log("found include file: " + include_file)
@@ -24,8 +31,8 @@ class InfoProvider():
                 self.include_file_list = [include_file]
                 for node in root.findall("include"):
                     if "file" in node.attrib:
-                        self.include_file_list.append(os.path.join(path, node.attrib["file"]))
-                # log("File List" + str(self.include_file_list))
+                        self.include_file_list.append(os.path.join(self.xml_path, node.attrib["file"]))
+                log("File List: %i files found." % len(self.include_file_list))
             else:
                 log("Could not find include file")
                 log(paths)
@@ -35,6 +42,8 @@ class InfoProvider():
         self.get_include_files(view)
         for path in self.include_file_list:
             self.include_list += get_tags_from_file(path, ["include", "variable", "constant"])
+            # log("%s: %i nodes" % (path, len(self.include_list)))
+        log("Include List: %i nodes found." % len(self.include_list))
 
     def go_to_tag(self, view):
         keyword = findWord(view)
@@ -43,3 +52,5 @@ class InfoProvider():
             for node in self.include_list:
                 if node["name"] == keyword:
                     sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+                    return True
+            log("no node with name %s found" % keyword)

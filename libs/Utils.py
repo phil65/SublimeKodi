@@ -47,4 +47,6 @@ def get_tags_from_file(path, node_tags):
                     if node.getnext() is not None:
                         include["length"] = node.getnext().sourceline - node.sourceline
                     nodes.append(include)
+    else:
+        log("%s does not exist" % path)
     return nodes

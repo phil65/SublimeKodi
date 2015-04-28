@@ -14,6 +14,7 @@ from polib import polib
 from InfoProvider import InfoProvider
 from Utils import *
 Infos = InfoProvider()
+# sublime.log_commands(True)
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
@@ -94,15 +95,18 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def check_project_change(self, view):
         view = sublime.active_window().active_view()
-        project_name = view.window().project_file_name()
-        if view.window() and project_name and project_name != self.actual_project:
-            self.actual_project = project_name
-            log("project change detected: " + project_name)
-            Infos.update_include_list(view)
-            self.update_labels(view)
-            return True
-        else:
-            return False
+        if view.window():
+            project_name = view.window().project_file_name()
+            if view.window() and project_name and project_name != self.actual_project:
+                self.actual_project = project_name
+                log("project change detected: " + project_name)
+                path, filename = os.path.split(project_name)
+                Infos.init_addon(path)
+                Infos.update_include_list(view)
+                self.update_labels(view)
+                return True
+            else:
+                return False
 
     def on_activated_async(self, view):
         if view:
@@ -191,6 +195,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                 self.builtin_string_list.append(entry.msgid)
                 self.builtin_native_string_list.append(entry.msgstr)
             log("Labels updated. Amount: %i" % len(self.id_list))
+        else:
+            log("no label update. view.file_name() is None")
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
