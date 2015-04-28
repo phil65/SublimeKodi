@@ -7,12 +7,13 @@ import codecs
 from xml.dom.minidom import parseString
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
-# sys.path.append(os.path.join(__path__))
 libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
-
+from InfoProvider import InfoProvider
+from Utils import *
+Infos = InfoProvider()
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
@@ -20,9 +21,9 @@ elif sublime.platform() == "windows":
     KODI_PRESET_PATH = "C:/%s/" % APP_NAME
 else:
     KODI_PRESET_PATH = ""
-
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 DEFAULT_LANGUAGE_FOLDER = "English"
+
 
 class SublimeKodi(sublime_plugin.EventListener):
 
@@ -282,68 +283,6 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
-class InfoProvider():
-
-    def __init__(self):
-        self.include_list = []
-        self.var_list = []
-        self.file_list = []
-
-    def update_variable_list(self, view):
-        if view.file_name():
-            # sublime.message_dialog("updated var list")
-            path, filename = os.path.split(view.file_name())
-            include_file = os.path.join(path, "Variables.xml")
-            if os.path.exists(include_file):
-                parser = ET.XMLParser(remove_blank_text=True)
-                tree = ET.parse(include_file, parser)
-                root = tree.getroot()
-                self.var_list = []
-                for node in root.findall("variable"):
-                    var = {"name": node.attrib["name"],
-                           "file": include_file,
-                           "line": node.sourceline}
-                    self.var_list.append(var)
-
-    def get_include_files(self, view):
-        path, filename = os.path.split(view.file_name())
-        include_file = os.path.join(path, "Includes.xml")
-        if os.path.exists(include_file):
-            parser = ET.XMLParser(remove_blank_text=True)
-            tree = ET.parse(include_file, parser)
-            root = tree.getroot()
-            self.file_list = [include_file]
-            for node in root.findall("include"):
-                if "file" in node.attrib:
-                    self.file_list.append(os.path.join(path, node.attrib["file"]))
-            log("File List" + str(self.file_list))
-
-    def update_include_list(self, view):
-        self.get_include_files(view)
-        self.include_list = []
-        for path in self.file_list:
-            if os.path.exists(path):
-                parser = ET.XMLParser(remove_blank_text=True)
-                tree = ET.parse(path, parser)
-                root = tree.getroot()
-                for node in root.findall("include"):
-                    if "name" in node.attrib:
-                        include = {"name": node.attrib["name"],
-                                   "file": path,
-                                   "line": node.sourceline}
-                        self.include_list.append(include)
-        log("Include List" + str(self.include_list))
-
-    def go_to_tag(self, view):
-        keyword = findWord(view)
-        goto_list = self.var_list + self.include_list
-        if keyword:
-            log("goto list" + str(goto_list))
-            for node in goto_list:
-                if node["name"] == keyword:
-                    sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
-
-
 class GoToVariableCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
@@ -425,38 +364,8 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
         sublime.active_window().focus_view(self.view)
 
 
-def checkPaths(paths):
-    for path in paths:
-        if os.path.exists(path):
-            log("found path: %s" % path)
-            return path
-    return ""
-
-
-def findWord(view):
-    for region in view.sel():
-        if region.begin() == region.end():
-            word = view.word(region)
-        else:
-            word = region
-        if not word.empty():
-            return view.substr(word)
-        else:
-            return ""
-
-
-def jump_to_label_declaration(view, label_id):
-    view.run_command("insert", {"characters": label_id})
-    view.hide_popup()
-
-
-def log(string):
-    print("SublimeKodi: " + string)
-
 def plugin_loaded():
     view = sublime.active_window().active_view()
     Infos.update_variable_list(view)
     Infos.update_include_list(view)
-
-Infos = InfoProvider()
 
