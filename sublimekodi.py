@@ -3,14 +3,12 @@ import sublime
 import re
 import os
 import sys
-import codecs
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
-from polib import polib
 from InfoProvider import InfoProvider
 from Utils import *
 Infos = InfoProvider()
@@ -23,30 +21,21 @@ elif sublime.platform() == "windows":
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
-DEFAULT_LANGUAGE_FOLDER = "English"
 
 
 class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
-        self.id_list = []
-        self.string_list = []
-        self.native_string_list = []
-        self.builtin_id_list = []
-        self.builtin_string_list = []
-        self.builtin_native_string_list = []
-        self.labels_loaded = False
-        self.settings_loaded = False
         self.actual_project = None
         self.prev_selection = None
 
     def on_window_command(self, window, command_name, args):
         if command_name == "reload_kodi_language_files":
-            self.get_settings()
-            self.get_builtin_label()
-            self.update_labels(window.active_view())
+            Infos.get_settings()
+            Infos.get_builtin_label()
+            Infos.update_labels()
         elif command_name == "search_for_label":
-            label_list = ['%s (%s)' % t for t in zip(self.string_list, self.id_list)]
+            label_list = ['%s (%s)' % t for t in zip(Infos.string_list, Infos.id_list)]
             sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
     def label_search_ondone_action(self, index):
@@ -54,9 +43,9 @@ class SublimeKodi(sublime_plugin.EventListener):
             view = sublime.active_window().active_view()
             scope_name = view.scope_name(view.sel()[0].b)
             if "text.xml" in scope_name:
-                lang_string = "$LOCALIZE[%s]" % self.id_list[index][1:]
+                lang_string = "$LOCALIZE[%s]" % Infos.id_list[index][1:]
             else:
-                lang_string = self.id_list[index][1:]
+                lang_string = Infos.id_list[index][1:]
             view.run_command("insert", {"characters": lang_string})
 
     def on_selection_modified_async(self, view):
@@ -64,17 +53,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             return
         else:
             view.hide_popup()
-            # if self.prev_selection == view.sel():
-            #     return
-            # else:
-            #     view.hide_popup()
-            #     self.prev_selection = view.sel()
         try:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
             line = view.line(view.sel()[0])
             line_contents = view.substr(line).lower()
-            popup_label = self.return_label(view, selection)
+            popup_label = Infos.return_label(view, selection)
             doTranslate = False
             if "source.python" in scope_name:
                 if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
@@ -91,112 +75,32 @@ class SublimeKodi(sublime_plugin.EventListener):
             log("exception in on_selection_modified_async")
 
     def on_load_async(self, view):
-        self.check_project_change(view)
+        self.check_project_change()
 
-    def check_project_change(self, view):
+    def on_activated_async(self, view):
+        self.check_project_change()
+
+    def on_post_save_async(self, view):
+        Infos.update_include_list()
+
+    def check_project_change(self):
         view = sublime.active_window().active_view()
         if view.window():
+            if not Infos.settings_loaded:
+                Infos.get_settings()
+            if not Infos.labels_loaded:
+                Infos.get_builtin_label()
             project_name = view.window().project_file_name()
             if view.window() and project_name and project_name != self.actual_project:
                 self.actual_project = project_name
                 log("project change detected: " + project_name)
                 path, filename = os.path.split(project_name)
                 Infos.init_addon(path)
-                Infos.update_include_list(view)
-                self.update_labels(view)
+                Infos.update_include_list()
+                Infos.update_labels()
                 return True
             else:
                 return False
-
-    def on_activated_async(self, view):
-        if view:
-            if not self.settings_loaded:
-                self.get_settings()
-            if not view.window():
-                return True
-            if not self.labels_loaded:
-                self.get_builtin_label()
-            self.check_project_change(view)
-
-    def on_post_save_async(self, view):
-        Infos.update_include_list(view)
-
-    def return_label(self, view, selection):
-        if selection.isdigit():
-            id_string = "#" + selection
-            if id_string in self.id_list:
-                index = self.id_list.index(id_string)
-                tooltips = self.string_list[index]
-                if self.use_native:
-                    tooltips += "<br>" + self.native_string_list[index]
-                return tooltips
-        return ""
-
-    def get_settings(self):
-        history = sublime.load_settings(SETTINGS_FILE)
-        self.kodi_path = history.get("kodi_path")
-        log("kodi path: " + self.kodi_path)
-        self.use_native = history.get("use_native_language")
-        if self.use_native:
-            self.language_folder = history.get("native_language")
-            log("use native language: " + self.language_folder)
-        else:
-            self.language_folder = DEFAULT_LANGUAGE_FOLDER
-            log("use default language: English")
-        self.settings_loaded = True
-
-    def get_addon_lang_file(self, path):
-        paths = [os.path.join(path, "resources", "language", self.language_folder, "strings.po"),
-                 os.path.join(path, "..", "language", self.language_folder, "strings.po")]
-        path = checkPaths(paths)
-        if path:
-            return codecs.open(path, "r", "utf-8").read()
-        else:
-            log("Could not find addon language file")
-            log(paths)
-            return ""
-
-    def get_kodi_lang_file(self):
-        paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
-                 os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
-        path = checkPaths(paths)
-        if path:
-            return codecs.open(path, "r", "utf-8").read()
-        else:
-            log("Could not find kodi language file")
-            log(paths)
-            return ""
-
-    def get_builtin_label(self):
-        kodi_lang_file = self.get_kodi_lang_file()
-        if kodi_lang_file:
-            po = polib.pofile(kodi_lang_file)
-            self.builtin_id_list = []
-            self.builtin_string_list = []
-            self.builtin_native_string_list = []
-            for entry in po:
-                self.builtin_id_list.append(entry.msgctxt)
-                self.builtin_string_list.append(entry.msgid)
-                self.builtin_native_string_list.append(entry.msgstr)
-            self.labels_loaded = True
-            log("Builtin labels loaded. Amount: %i" % len(self.builtin_string_list))
-
-    def update_labels(self, view):
-        if view.file_name():
-            self.id_list = self.builtin_id_list
-            self.string_list = self.builtin_string_list
-            self.native_string_list = self.builtin_native_string_list
-            path, filename = os.path.split(view.file_name())
-            lang_file = self.get_addon_lang_file(path)
-            po = polib.pofile(lang_file)
-            log("Update labels for: %s" % path)
-            for entry in po:
-                self.builtin_id_list.append(entry.msgctxt)
-                self.builtin_string_list.append(entry.msgid)
-                self.builtin_native_string_list.append(entry.msgstr)
-            log("Labels updated. Amount: %i" % len(self.id_list))
-        else:
-            log("no label update. view.file_name() is None")
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
@@ -388,5 +292,5 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 
 # def plugin_loaded():
 #     view = sublime.active_window().active_view()
-#     Infos.update_include_list(view)
+#     Infos.update_include_list()
 
