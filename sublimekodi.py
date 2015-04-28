@@ -31,6 +31,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.id_list = []
         self.string_list = []
         self.native_string_list = []
+        self.builtin_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
         self.actual_project = None
@@ -92,10 +93,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             # sublime.message_dialog("on_load")
 
     def check_project_change(self, view):
-        if view.window().project_file_name() != self.actual_project:
+        if view.window() and view.window().project_file_name() != self.actual_project:
             self.actual_project = view.window().project_file_name()
+            log("project change detected")
             Infos.update_variable_list(view)
             Infos.update_include_list(view)
+            self.update_labels(view)
             return True
         else:
             return False
