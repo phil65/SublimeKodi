@@ -4,7 +4,6 @@ import re
 import os
 import sys
 import codecs
-from xml.dom.minidom import parseString
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -263,8 +262,8 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             scope_area = self.view.extract_scope(region.a)
             rel_image_path = self.view.substr(scope_area).replace('"', '')
         else:
-            dom = parseString(line_contents)
-            rel_image_path = dom.documentElement.childNodes[0].toxml()
+            root = ET.fromstring(line_contents)
+            rel_image_path = root.text
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
             imagepath = os.path.join(path, "..", rel_image_path)
