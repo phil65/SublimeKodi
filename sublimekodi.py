@@ -190,7 +190,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 self.builtin_id_list.append(entry.msgctxt)
                 self.builtin_string_list.append(entry.msgid)
                 self.builtin_native_string_list.append(entry.msgstr)
-                log("Labels updated. Amount: %i" % len(self.id_list))
+            log("Labels updated. Amount: %i" % len(self.id_list))
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
