@@ -59,11 +59,12 @@ class SublimeKodi(sublime_plugin.EventListener):
         if len(view.sel()) > 1:
             return
         else:
-            if self.prev_selection == view.sel()[0]:
-                return
-            else:
-                view.hide_popup()
-                self.prev_selection = view.sel()[0]
+            view.hide_popup()
+            # if self.prev_selection == view.sel():
+            #     return
+            # else:
+            #     view.hide_popup()
+            #     self.prev_selection = view.sel()
         try:
             scope_name = view.scope_name(view.sel()[0].b)
             selection = view.substr(view.word(view.sel()[0]))
