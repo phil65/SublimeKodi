@@ -28,7 +28,7 @@ def jump_to_label_declaration(view, label_id):
 
 
 def log(string):
-    print("SublimeKodi: " + string)
+    print("SublimeKodi: " + str(string))
 
 
 def get_tags_from_file(path, node_tags):

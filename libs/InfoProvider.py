@@ -28,6 +28,7 @@ class InfoProvider():
                 # log("File List" + str(self.include_file_list))
             else:
                 log("Could not find include file")
+                log(paths)
 
     def update_include_list(self, view):
         self.include_list = []

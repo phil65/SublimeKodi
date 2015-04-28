@@ -92,9 +92,11 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.check_project_change(view)
 
     def check_project_change(self, view):
-        if view.window() and view.window().project_file_name() != self.actual_project:
-            self.actual_project = view.window().project_file_name()
-            log("project change detected")
+        view = sublime.active_window().active_view()
+        project_name = view.window().project_file_name()
+        if view.window() and project_name and project_name != self.actual_project:
+            self.actual_project = project_name
+            log("project change detected: " + project_name)
             Infos.update_include_list(view)
             self.update_labels(view)
             return True
@@ -146,6 +148,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             return codecs.open(path, "r", "utf-8").read()
         else:
             log("Could not find addon language file")
+            log(paths)
             return ""
 
     def get_kodi_lang_file(self):
@@ -156,6 +159,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             return codecs.open(path, "r", "utf-8").read()
         else:
             log("Could not find kodi language file")
+            log(paths)
             return ""
 
     def get_builtin_label(self):
@@ -169,12 +173,12 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def update_labels(self, view):
         if view.file_name():
-            log("Update labels for: %s" % view.file_name())
             self.id_list = self.builtin_id_list
             self.string_list = self.builtin_string_list
             self.native_string_list = self.builtin_native_string_list
             path, filename = os.path.split(view.file_name())
             lang_file = self.get_addon_lang_file(path)
+            log("Update labels for: %s" % path)
             if lang_file:
                 self.id_list += re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
                 self.string_list += re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
@@ -369,7 +373,7 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
         sublime.active_window().focus_view(self.view)
 
 
-def plugin_loaded():
-    view = sublime.active_window().active_view()
-    Infos.update_include_list(view)
+# def plugin_loaded():
+#     view = sublime.active_window().active_view()
+#     Infos.update_include_list(view)
 
