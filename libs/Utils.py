@@ -44,5 +44,7 @@ def get_tags_from_file(path, node_tags):
                                "file": path,
                                "type": node.tag,
                                "line": node.sourceline}
+                    if node.getnext():
+                        include["length"] = node.getnext().sourceline - node.sourceline
                     nodes.append(include)
     return nodes
