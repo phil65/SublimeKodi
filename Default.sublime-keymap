@@ -2,7 +2,7 @@
     { "keys": ["shift+enter"], "command": "open_source_from_log",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.kodi.traceback" }]
     },
-    { "keys": ["shift+enter"], "command": "preview_image",
+    { "keys": ["ctrl+enter"], "command": "preview_image",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
     { "keys": ["shift+enter"], "command": "go_to_variable",
