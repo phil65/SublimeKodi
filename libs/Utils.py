@@ -1,4 +1,5 @@
 import os
+from lxml import etree as ET
 
 
 def checkPaths(paths):
@@ -29,3 +30,17 @@ def jump_to_label_declaration(view, label_id):
 def log(string):
     print("SublimeKodi: " + string)
 
+
+def get_tags_from_file(path):
+    nodes = []
+    if os.path.exists(path):
+        parser = ET.XMLParser(remove_blank_text=True)
+        tree = ET.parse(path, parser)
+        root = tree.getroot()
+        for node in root.findall(path):
+            if "name" in node.attrib:
+                include = {"name": node.attrib["name"],
+                           "file": path,
+                           "line": node.sourceline}
+                nodes.append(include)
+    return nodes
