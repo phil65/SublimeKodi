@@ -33,6 +33,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.native_string_list = []
         self.builtin_id_list = []
         self.builtin_string_list = []
+        self.builtin_native_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
         self.actual_project = None
@@ -90,7 +91,8 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         if self.check_project_change(view):
-            self.update_labels(view)
+            pass
+            # self.update_labels(view)
             # sublime.message_dialog("on_load")
 
     def check_project_change(self, view):
@@ -112,7 +114,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             if not self.labels_loaded:
                 self.get_builtin_label()
             if self.check_project_change(view):
-                self.update_labels(view)
+                # self.update_labels(view)
+                pass
 
     def on_post_save_async(self, view):
         Infos.update_include_list(view)
@@ -170,6 +173,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def update_labels(self, view):
         if view.file_name():
+            log("Update labels for: %s" % view.file_name())
             self.id_list = self.builtin_id_list
             self.string_list = self.builtin_string_list
             self.native_string_list = self.builtin_native_string_list
