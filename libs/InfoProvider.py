@@ -13,8 +13,10 @@ class InfoProvider():
     def get_include_files(self, view):
         if view.file_name():
             path, filename = os.path.split(view.file_name())
-            include_file = os.path.join(path, "Includes.xml")
-            if os.path.exists(include_file):
+            paths = [os.path.join(path, "Includes.xml"),
+                     os.path.join(path, "includes.xml")]
+            include_file = checkPaths(paths)
+            if include_file:
                 log("found include file: " + include_file)
                 parser = ET.XMLParser(remove_blank_text=True)
                 tree = ET.parse(include_file, parser)
