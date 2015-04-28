@@ -31,16 +31,17 @@ def log(string):
     print("SublimeKodi: " + string)
 
 
-def get_tags_from_file(path, node_tag):
+def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
         parser = ET.XMLParser(remove_blank_text=True)
         tree = ET.parse(path, parser)
         root = tree.getroot()
-        for node in root.findall(node_tag):
-            if "name" in node.attrib:
-                include = {"name": node.attrib["name"],
-                           "file": path,
-                           "line": node.sourceline}
-                nodes.append(include)
+        for node_tag in node_tags:
+            for node in root.findall(node_tag):
+                if "name" in node.attrib:
+                    include = {"name": node.attrib["name"],
+                               "file": path,
+                               "line": node.sourceline}
+                    nodes.append(include)
     return nodes

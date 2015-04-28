@@ -96,7 +96,6 @@ class SublimeKodi(sublime_plugin.EventListener):
         if view.window() and view.window().project_file_name() != self.actual_project:
             self.actual_project = view.window().project_file_name()
             log("project change detected")
-            Infos.update_variable_list(view)
             Infos.update_include_list(view)
             self.update_labels(view)
             return True
@@ -115,7 +114,6 @@ class SublimeKodi(sublime_plugin.EventListener):
                 self.update_labels(view)
 
     def on_post_save_async(self, view):
-        Infos.update_variable_list(view)
         Infos.update_include_list(view)
 
     def return_label(self, view, selection):
@@ -290,14 +288,12 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
 class GoToVariableCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        # Infos.update_variable_list(view=self.view)
         Infos.go_to_tag(view=self.view)
 
 
 class GoToIncludeCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        # Infos.update_variable_list(view=self.view)
         Infos.go_to_tag(view=self.view)
 
 
@@ -370,6 +366,5 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 
 def plugin_loaded():
     view = sublime.active_window().active_view()
-    Infos.update_variable_list(view)
     Infos.update_include_list(view)
 

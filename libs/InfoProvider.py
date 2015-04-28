@@ -11,11 +11,6 @@ class InfoProvider():
         self.var_list = []
         self.include_file_list = []
 
-    def update_variable_list(self, view):
-        if view.file_name():
-            path, filename = os.path.split(view.file_name())
-            self.var_list = get_tags_from_file(os.path.join(path, "Variables.xml"), "variable")
-
     def get_include_files(self, view):
         if view.file_name():
             path, filename = os.path.split(view.file_name())
@@ -34,7 +29,7 @@ class InfoProvider():
         self.include_list = []
         self.get_include_files(view)
         for path in self.include_file_list:
-            self.include_list += get_tags_from_file(path, "include")
+            self.include_list += get_tags_from_file(path, ["include", "variable", "constant"])
 
     def go_to_tag(self, view):
         keyword = findWord(view)
