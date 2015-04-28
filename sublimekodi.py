@@ -194,8 +194,11 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
         sublime.active_window().show_input_panel("Set Kodi folder", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
 
     def set_kodi_folder(self, path):
-        sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
-        sublime.save_settings(SETTINGS_FILE)
+        if os.path.exists(path):
+            sublime.load_settings(SETTINGS_FILE).set("kodi_path", path)
+            sublime.save_settings(SETTINGS_FILE)
+        else:
+            sublime.message_dialog("Folder %s does not exist." % path)
 
 
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
