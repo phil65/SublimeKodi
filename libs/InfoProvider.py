@@ -18,12 +18,9 @@ class InfoProvider():
         self.color_dict = {}
         self.project_path = ""
         self.xml_path = ""
-        self.id_list = []
+        self.builtin_list = []
         self.string_list = []
-        self.native_string_list = []
-        self.builtin_id_list = []
-        self.builtin_string_list = []
-        self.builtin_native_string_list = []
+        self.addon_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
 
@@ -87,12 +84,12 @@ class InfoProvider():
     def return_label(self, view, selection):
         if selection.isdigit():
             id_string = "#" + selection
-            if id_string in self.id_list:
-                index = self.id_list.index(id_string)
-                tooltips = self.string_list[index]
-                if self.use_native:
-                    tooltips += "<br>" + self.native_string_list[index]
-                return tooltips
+            for item in self.string_list:
+                if id_string == item["id"]:
+                    tooltips = item["string"]
+                    if self.use_native:
+                        tooltips += "<br>" + item["native_string"]
+                    return tooltips
         return ""
 
     def get_settings(self):
@@ -134,26 +131,25 @@ class InfoProvider():
         kodi_lang_file = self.get_kodi_lang_file()
         if kodi_lang_file:
             po = polib.pofile(kodi_lang_file)
-            self.builtin_id_list = []
-            self.builtin_string_list = []
-            self.builtin_native_string_list = []
+            self.builtin_list = []
             for entry in po:
-                self.builtin_id_list.append(entry.msgctxt)
-                self.builtin_string_list.append(entry.msgid)
-                self.builtin_native_string_list.append(entry.msgstr)
+                string = {"id": entry.msgctxt,
+                          "string": entry.msgid,
+                          "native_string": entry.msgstr}
+                self.builtin_list.append(string)
             self.labels_loaded = True
-            log("Builtin labels loaded. Amount: %i" % len(self.builtin_string_list))
+            log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
 
     def update_labels(self):
         if self.project_path:
-            self.id_list = self.builtin_id_list
-            self.string_list = self.builtin_string_list
-            self.native_string_list = self.builtin_native_string_list
             lang_file = self.get_addon_lang_file(self.project_path)
             po = polib.pofile(lang_file)
             log("Update labels for: %s" % self.project_path)
+            self.addon_string_list = []
             for entry in po:
-                self.builtin_id_list.append(entry.msgctxt)
-                self.builtin_string_list.append(entry.msgid)
-                self.builtin_native_string_list.append(entry.msgstr)
-            log("Labels updated. Amount: %i" % len(self.id_list))
+                string = {"id": entry.msgctxt,
+                          "string": entry.msgid,
+                          "native_string": entry.msgstr}
+                self.addon_string_list.append(string)
+            self.string_list = self.builtin_list + self.addon_string_list
+            log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
