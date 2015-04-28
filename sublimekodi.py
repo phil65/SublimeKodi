@@ -151,6 +151,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         if path:
             return codecs.open(path, "r", "utf-8").read()
         else:
+            log("Could not find addon language file")
             return ""
 
     def get_kodi_lang_file(self):
@@ -160,6 +161,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         if path:
             return codecs.open(path, "r", "utf-8").read()
         else:
+            log("Could not find kodi language file")
             return ""
 
     def get_builtin_label(self):
@@ -312,17 +314,18 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
         path, filename = os.path.split(self.view.file_name())
         self.imagepath = os.path.join(path, "..", "media")
         # self.pos = self.view.sel()
-        if os.path.exists(self.imagepath):
-            self.files = []
-            for path, subdirs, files in os.walk(self.imagepath):
-                if "studio" in path or "recordlabel" in path:
-                    continue
-                for filename in files:
-                    image_path = os.path.join(path, filename).replace(self.imagepath, "").replace("\\", "/")
-                    if image_path.startswith("/"):
-                        image_path = image_path[1:]
-                    self.files.append(image_path)
-            sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        if not os.path.exists(self.imagepath):
+            log("Could not find file " + self.imagepath)
+        self.files = []
+        for path, subdirs, files in os.walk(self.imagepath):
+            if "studio" in path or "recordlabel" in path:
+                continue
+            for filename in files:
+                image_path = os.path.join(path, filename).replace(self.imagepath, "").replace("\\", "/")
+                if image_path.startswith("/"):
+                    image_path = image_path[1:]
+                self.files.append(image_path)
+        sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
     def on_done(self, index):
         items = ["Insert path", "Open Image"]
