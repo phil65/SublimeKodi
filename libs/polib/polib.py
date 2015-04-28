@@ -1365,9 +1365,12 @@ class _POFileParser(object):
                 line = line[len(tokens[1]):].lstrip()
                 self.current_token = line
                 self.process(prev_keywords[tokens[1]])
+            # Patch to fix parsing of Kodi po files
+            elif tokens[0].startswith("#"):
+                continue
 
             else:
-                raise IOError('1Syntax error in po file %s (line %s)' %
+                raise IOError('Syntax error in po file %s (line %s)' %
                               (self.instance.fpath, self.current_line))
 
         if self.current_entry and len(tokens) > 0 and \
