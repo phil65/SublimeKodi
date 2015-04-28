@@ -85,7 +85,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
-        if view.window():
+        if view and view.window():
             if not Infos.settings_loaded:
                 Infos.get_settings()
             if not Infos.labels_loaded:
