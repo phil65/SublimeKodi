@@ -161,9 +161,9 @@ class SublimeKodi(sublime_plugin.EventListener):
     def get_builtin_label(self):
         kodi_lang_file = self.get_kodi_lang_file()
         if kodi_lang_file:
-            self.builtin_id_list = re.findall('^msgctxt \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)
-            self.builtin_string_list = re.findall('^msgid \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
-            self.builtin_native_string_list = re.findall('^msgstr \"(.*)\"[^\"]*', kodi_lang_file, re.MULTILINE)[1:]
+            self.builtin_id_list = re.findall('^msgctxt \"(.+)\"[^\"]*', kodi_lang_file, re.MULTILINE)
+            self.builtin_string_list = re.findall('^msgid \"(.+)\"[^\"]*', kodi_lang_file, re.MULTILINE)
+            self.builtin_native_string_list = re.findall('^msgstr \"(.+)\"[^\"]*', kodi_lang_file, re.MULTILINE)
             self.labels_loaded = True
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_string_list))
 
@@ -176,9 +176,9 @@ class SublimeKodi(sublime_plugin.EventListener):
             path, filename = os.path.split(view.file_name())
             lang_file = self.get_addon_lang_file(path)
             if lang_file:
-                self.id_list += re.findall('^msgctxt \"(.*)\"[^\"]*', lang_file, re.MULTILINE)
-                self.string_list += re.findall('^msgid \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
-                self.native_string_list += re.findall('^msgstr \"(.*)\"[^\"]*', lang_file, re.MULTILINE)[1:]
+                self.id_list += re.findall('^msgctxt \"(.+)\"[^\"]*', lang_file, re.MULTILINE)
+                self.string_list += re.findall('^msgid \"(.+)\"[^\"]*', lang_file, re.MULTILINE)
+                self.native_string_list += re.findall('^msgstr \"(.+)\"[^\"]*', lang_file, re.MULTILINE)
                 log("Labels updated. Amount: %i" % len(self.id_list))
 
 
