@@ -35,7 +35,7 @@ class InfoProvider():
         keyword = findWord(view)
         goto_list = self.var_list + self.include_list
         if keyword:
-            log("goto list" + str(goto_list))
+            # log("goto list" + str(goto_list))
             for node in goto_list:
                 if node["name"] == keyword:
                     sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
