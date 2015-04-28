@@ -90,10 +90,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             log("exception in on_selection_modified_async")
 
     def on_load_async(self, view):
-        if self.check_project_change(view):
-            pass
-            # self.update_labels(view)
-            # sublime.message_dialog("on_load")
+        self.check_project_change(view)
 
     def check_project_change(self, view):
         if view.window() and view.window().project_file_name() != self.actual_project:
@@ -113,9 +110,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 return True
             if not self.labels_loaded:
                 self.get_builtin_label()
-            if self.check_project_change(view):
-                # self.update_labels(view)
-                pass
+            self.check_project_change(view)
 
     def on_post_save_async(self, view):
         Infos.update_include_list(view)
