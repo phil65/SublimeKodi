@@ -31,6 +31,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.id_list = []
         self.string_list = []
         self.native_string_list = []
+        self.builtin_id_list = []
         self.builtin_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
