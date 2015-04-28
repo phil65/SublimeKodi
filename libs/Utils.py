@@ -42,6 +42,7 @@ def get_tags_from_file(path, node_tags):
                 if "name" in node.attrib:
                     include = {"name": node.attrib["name"],
                                "file": path,
+                               "type": node.tag,
                                "line": node.sourceline}
                     nodes.append(include)
     return nodes

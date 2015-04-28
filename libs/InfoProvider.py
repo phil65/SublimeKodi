@@ -23,7 +23,7 @@ class InfoProvider():
                 for node in root.findall("include"):
                     if "file" in node.attrib:
                         self.include_file_list.append(os.path.join(path, node.attrib["file"]))
-                log("File List" + str(self.include_file_list))
+                # log("File List" + str(self.include_file_list))
 
     def update_include_list(self, view):
         self.include_list = []
