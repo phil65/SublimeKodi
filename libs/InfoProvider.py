@@ -9,7 +9,7 @@ class InfoProvider():
     def __init__(self):
         self.include_list = []
         self.include_file_list = []
-        self.color_list = []
+        self.color_dict = {}
         self.project_path = ""
         self.xml_path = ""
 
@@ -28,10 +28,10 @@ class InfoProvider():
                 parser = ET.XMLParser(remove_blank_text=True)
                 tree = ET.parse(color_file, parser)
                 root = tree.getroot()
-                self.color_list = {}
+                self.color_dict = {}
                 for node in root.findall("color"):
-                    self.color_list[node.attrib["name"]] = node.text
-                log(self.color_list)
+                    self.color_dict[node.attrib["name"]] = node.text
+                log("color list: %i colors found" % len(self.color_dict))
 
     def get_include_files(self, view):
         if self.project_path:
