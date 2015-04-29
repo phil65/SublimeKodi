@@ -81,6 +81,14 @@ class InfoProvider():
                     return True
             log("no node with name %s found" % keyword)
 
+    def return_node_content(self, view):
+        keyword = findWord(view)
+        if keyword:
+            for node in self.include_list:
+                if node["name"] == keyword:
+                    return node["content"]
+            log("no node with name %s found" % keyword)
+
     def return_label(self, view, selection):
         if selection.isdigit():
             id_string = "#" + selection

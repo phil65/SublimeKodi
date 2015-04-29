@@ -43,6 +43,7 @@ def get_tags_from_file(path, node_tags):
                     include = {"name": node.attrib["name"],
                                "file": path,
                                "type": node.tag,
+                               "content": ET.tostring(node, pretty_print=True),
                                "line": node.sourceline}
                     if node.getnext() is not None:
                         include["length"] = node.getnext().sourceline - node.sourceline

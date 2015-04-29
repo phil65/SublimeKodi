@@ -3,6 +3,7 @@ import sublime
 import re
 import os
 import sys
+import cgi
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -53,27 +54,30 @@ class SublimeKodi(sublime_plugin.EventListener):
             return
         else:
             view.hide_popup()
-        try:
-            scope_name = view.scope_name(view.sel()[0].b)
-            selection = view.substr(view.word(view.sel()[0]))
-            line = view.line(view.sel()[0])
-            line_contents = view.substr(line).lower()
-            popup_label = None
-            if "source.python" in scope_name:
-                if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                    popup_label = Infos.return_label(view, selection)
-                elif popup_label and popup_label > 30000:
-                    popup_label = Infos.return_label(view, selection)
-            elif "text.xml" in scope_name:
-                if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                    popup_label = Infos.return_label(view, selection)
-                elif "<textcolor" in line_contents:
-                    popup_label = Infos.color_dict[selection]
-            if popup_label:
-                view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                                location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
-        except:
-            log("exception in on_selection_modified_async")
+        scope_name = view.scope_name(view.sel()[0].b)
+        selection = view.substr(view.word(view.sel()[0]))
+        line = view.line(view.sel()[0])
+        line_contents = view.substr(line).lower()
+        popup_label = None
+        if "source.python" in scope_name:
+            if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
+                popup_label = Infos.return_label(view, selection)
+            elif popup_label and popup_label > 30000:
+                popup_label = Infos.return_label(view, selection)
+        elif "text.xml" in scope_name:
+            if "$var[" in line_contents:
+                node_content = str(Infos.return_node_content(view))
+                ind1 = node_content.find('\\n')
+                popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
+                if popup_label:
+                    popup_label = "&nbsp;" + popup_label
+            elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
+                popup_label = Infos.return_label(view, selection)
+            elif "<textcolor" in line_contents or "<color" in line_contents:
+                popup_label = Infos.color_dict[selection]
+        if popup_label:
+            view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
+                            location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_load_async(self, view):
         self.check_project_change()
