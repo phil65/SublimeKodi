@@ -31,9 +31,10 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.prev_selection = None
 
     def on_selection_modified_async(self, view):
-        if len(view.sel()) > 1:
+        if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
             return
         else:
+            self.prev_selection = view.sel()[0]
             view.hide_popup()
         scope_name = view.scope_name(view.sel()[0].b)
         selection = view.substr(view.word(view.sel()[0]))
