@@ -95,18 +95,16 @@ class SublimeKodi(sublime_plugin.EventListener):
                 Infos.get_settings()
             if not Infos.labels_loaded:
                 Infos.get_builtin_label()
-            project_name = view.window().project_file_name()
-            if view.window() and project_name and project_name != self.actual_project:
-                self.actual_project = project_name
-                log("project change detected: " + project_name)
-                path, filename = os.path.split(project_name)
-                Infos.init_addon(path)
-                Infos.update_include_list()
-                Infos.get_colors()
-                Infos.update_labels()
-                return True
-            else:
-                return False
+            if view.window():
+                variables = view.window().extract_variables()
+                project_folder = variables["project_path"]
+                if project_folder and project_folder != self.actual_project:
+                    self.actual_project = project_folder
+                    log("project change detected: " + project_folder)
+                    Infos.init_addon(project_folder)
+                    Infos.update_include_list()
+                    Infos.get_colors()
+                    Infos.update_labels()
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
