@@ -58,17 +58,18 @@ class SublimeKodi(sublime_plugin.EventListener):
             selection = view.substr(view.word(view.sel()[0]))
             line = view.line(view.sel()[0])
             line_contents = view.substr(line).lower()
-            popup_label = Infos.return_label(view, selection)
-            doTranslate = False
+            popup_label = None
             if "source.python" in scope_name:
                 if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                    doTranslate = True
+                    popup_label = Infos.return_label(view, selection)
                 elif popup_label and popup_label > 30000:
-                    doTranslate = True
+                    popup_label = Infos.return_label(view, selection)
             elif "text.xml" in scope_name:
                 if "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                    doTranslate = True
-            if doTranslate:
+                    popup_label = Infos.return_label(view, selection)
+                elif "<textcolor" in line_contents:
+                    popup_label = Infos.color_dict[selection]
+            if popup_label:
                 view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                                 location=-1, max_width=1000, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
         except:
@@ -97,6 +98,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 path, filename = os.path.split(project_name)
                 Infos.init_addon(path)
                 Infos.update_include_list()
+                Infos.get_colors()
                 Infos.update_labels()
                 return True
             else:
