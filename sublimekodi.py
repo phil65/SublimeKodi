@@ -97,7 +97,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 Infos.get_builtin_label()
             if view.window():
                 variables = view.window().extract_variables()
-                project_folder = variables["project_path"]
+                project_folder = variables["folder"]
                 if project_folder and project_folder != self.actual_project:
                     self.actual_project = project_folder
                     log("project change detected: " + project_folder)
