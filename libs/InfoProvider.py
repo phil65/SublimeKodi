@@ -70,12 +70,21 @@ class InfoProvider():
     def go_to_tag(self, view):
         keyword = findWord(view)
         if keyword:
-            log("include_list" + str(self.include_list))
-            for node in self.include_list:
-                if node["name"] == keyword:
-                    sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
-                    return True
-            log("no node with name %s found" % keyword)
+            if keyword.isdigit():
+                for node in self.string_list:
+                    if node["id"] == "#" + keyword:
+                        if int(keyword) >= 31000 and int(keyword) <= 33000:
+                            file_path = self.addon_lang_path
+                        else:
+                            file_path = self.kodi_lang_path
+                        sublime.active_window().open_file("%s:%s" % (file_path, node["line"]), sublime.ENCODED_POSITION)
+                        return True
+            else:
+                for node in self.include_list:
+                    if node["name"] == keyword:
+                        sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+                        return True
+                log("no node with name %s found" % keyword)
 
     def return_node_content(self, view):
         keyword = findWord(view)
@@ -112,9 +121,9 @@ class InfoProvider():
     def get_addon_lang_file(self, path):
         paths = [os.path.join(path, "resources", "language", self.language_folder, "strings.po"),
                  os.path.join(path, "language", self.language_folder, "strings.po")]
-        path = checkPaths(paths)
-        if path:
-            return codecs.open(path, "r", "utf-8").read()
+        self.addon_lang_path = checkPaths(paths)
+        if self.addon_lang_path:
+            return codecs.open(self.addon_lang_path, "r", "utf-8").read()
         else:
             log("Could not find addon language file")
             log(paths)
@@ -123,9 +132,9 @@ class InfoProvider():
     def get_kodi_lang_file(self):
         paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
                  os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
-        path = checkPaths(paths)
-        if path:
-            return codecs.open(path, "r", "utf-8").read()
+        self.kodi_lang_path = checkPaths(paths)
+        if self.kodi_lang_path:
+            return codecs.open(self.kodi_lang_path, "r", "utf-8").read()
         else:
             log("Could not find kodi language file")
             log(paths)
@@ -138,7 +147,9 @@ class InfoProvider():
             self.builtin_list = []
             for entry in po:
                 string = {"id": entry.msgctxt,
+                          "line": entry.linenum,
                           "string": entry.msgid,
+                          # "file": self.kodi_lang_path,
                           "native_string": entry.msgstr}
                 self.builtin_list.append(string)
             self.labels_loaded = True
@@ -152,7 +163,9 @@ class InfoProvider():
             self.addon_string_list = []
             for entry in po:
                 string = {"id": entry.msgctxt,
+                          "line": entry.linenum,
                           "string": entry.msgid,
+                          # "file": self.addon_lang_path,
                           "native_string": entry.msgstr}
                 self.addon_string_list.append(string)
             self.string_list = self.builtin_list + self.addon_string_list
