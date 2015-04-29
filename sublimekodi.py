@@ -30,13 +30,6 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.actual_project = None
         self.prev_selection = None
 
-    def on_window_command(self, window, command_name, args):
-        if command_name == "reload_kodi_language_files":
-            Infos.get_settings()
-            Infos.get_builtin_label()
-            Infos.update_labels()
-
-
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1:
             return
@@ -111,7 +104,9 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        pass
+        Infos.get_settings()
+        Infos.get_builtin_label()
+        Infos.update_labels()
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
