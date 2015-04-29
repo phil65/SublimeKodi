@@ -34,9 +34,7 @@ def log(string):
 def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
-        parser = ET.XMLParser(remove_blank_text=True)
-        tree = ET.parse(path, parser)
-        root = tree.getroot()
+        root = get_root_from_file(path)
         for node_tag in node_tags:
             for node in root.findall(node_tag):
                 if "name" in node.attrib:
@@ -51,3 +49,9 @@ def get_tags_from_file(path, node_tags):
     else:
         log("%s does not exist" % path)
     return nodes
+
+
+def get_root_from_file(xml_file):
+    parser = ET.XMLParser(remove_blank_text=True)
+    tree = ET.parse(xml_file, parser)
+    return tree.getroot()

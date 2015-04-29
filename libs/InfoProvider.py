@@ -36,9 +36,7 @@ class InfoProvider():
             color_file = checkPaths(paths)
             if color_file:
                 log("found color file: " + color_file)
-                parser = ET.XMLParser(remove_blank_text=True)
-                tree = ET.parse(color_file, parser)
-                root = tree.getroot()
+                root = get_root_from_file(color_file)
                 self.color_dict = {}
                 for node in root.findall("color"):
                     self.color_dict[node.attrib["name"]] = node.text
@@ -51,9 +49,7 @@ class InfoProvider():
             include_file = checkPaths(paths)
             if include_file:
                 log("found include file: " + include_file)
-                parser = ET.XMLParser(remove_blank_text=True)
-                tree = ET.parse(include_file, parser)
-                root = tree.getroot()
+                root = get_root_from_file(include_file)
                 self.include_file_list = [include_file]
                 for node in root.findall("include"):
                     if "file" in node.attrib:

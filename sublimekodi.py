@@ -277,9 +277,7 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
                  os.path.join(path, "font.xml")]
         self.font_file = checkPaths(paths)
         if self.font_file:
-            parser = ET.XMLParser(remove_blank_text=True)
-            tree = ET.parse(self.font_file, parser)
-            root = tree.getroot()
+            root = get_root_from_file(self.font_file)
             self.fonts = []
             for node in root.find("fontset").findall("font"):
                 string_array = [node.find("name").text, node.find("size").text + "  -  " + node.find("filename").text]
