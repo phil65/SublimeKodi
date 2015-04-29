@@ -35,19 +35,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             Infos.get_settings()
             Infos.get_builtin_label()
             Infos.update_labels()
-        elif command_name == "search_for_label":
-            label_list = ['%s (%s)' % t for t in zip(Infos.string_list, Infos.id_list)]
-            sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
-    def label_search_ondone_action(self, index):
-        if not index == -1:
-            view = sublime.active_window().active_view()
-            scope_name = view.scope_name(view.sel()[0].b)
-            if "text.xml" in scope_name:
-                lang_string = "$LOCALIZE[%s]" % Infos.id_list[index][1:]
-            else:
-                lang_string = Infos.id_list[index][1:]
-            view.run_command("insert", {"characters": lang_string})
 
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1:
@@ -134,7 +122,20 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
         return "source.python" in scope_name or "text.xml" in scope_name
 
     def run(self):
-        pass
+        label_list = []
+        for item in Infos.string_list:
+            label_list.append("%s (%s)" % (item["string"], item["id"]))
+        sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
+
+    def label_search_ondone_action(self, index):
+        if not index == -1:
+            view = self.window.active_view()
+            scope_name = view.scope_name(view.sel()[0].b)
+            if "text.xml" in scope_name:
+                lang_string = "$LOCALIZE[%s]" % Infos.id_list[index][1:]
+            else:
+                lang_string = Infos.id_list[index][1:]
+            view.run_command("insert", {"characters": lang_string})
 
 
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
