@@ -26,9 +26,12 @@ class InfoProvider():
 
     def init_addon(self, path):
         self.project_path = path
-        paths = [os.path.join(self.project_path, "1080i"),
-                 os.path.join(self.project_path, "720p")]
-        self.xml_path = checkPaths(paths)
+        addon_xml_file = os.path.join(self.project_path, "addon.xml")
+        root = get_root_from_file(addon_xml_file)
+        folders = []
+        for node in root.findall('.//res'):
+            folders.append(node.attrib["folder"])
+        self.xml_path = os.path.join(self.project_path, folders[0])
 
     def get_colors(self):
         if self.project_path:
@@ -43,7 +46,7 @@ class InfoProvider():
                 log("color list: %i colors found" % len(self.color_dict))
 
     def get_include_files(self):
-        if self.project_path:
+        if self.xml_path:
             paths = [os.path.join(self.xml_path, "Includes.xml"),
                      os.path.join(self.xml_path, "includes.xml")]
             include_file = checkPaths(paths)
