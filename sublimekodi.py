@@ -53,6 +53,12 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
+            elif "<font" in line_contents:
+                node_content = str(Infos.return_node_content(findWord(view)))
+                ind1 = node_content.find('\\n')
+                popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
+                if popup_label:
+                    popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                 popup_label = Infos.return_label(view, selection)
             elif "<textcolor" in line_contents or "<color" in line_contents:

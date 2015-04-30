@@ -26,12 +26,13 @@ class InfoProvider():
 
     def init_addon(self, path):
         self.project_path = path
-        addon_xml_file = os.path.join(self.project_path, "addon.xml")
-        root = get_root_from_file(addon_xml_file)
-        self.xml_folders = []
-        for node in root.findall('.//res'):
-            self.xml_folders.append(node.attrib["folder"])
-        self.xml_path = os.path.join(self.project_path, self.xml_folders[0])
+        addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
+        if addon_xml_file:
+            root = get_root_from_file(addon_xml_file)
+            self.xml_folders = []
+            for node in root.findall('.//res'):
+                self.xml_folders.append(node.attrib["folder"])
+            self.xml_path = os.path.join(path, self.xml_folders[0])
 
     def get_colors(self):
         if self.project_path:
@@ -57,6 +58,7 @@ class InfoProvider():
                     string_dict = {"name": node.find("name").text,
                                    "size": node.find("size").text,
                                    "line": node.sourceline,
+                                   "content": ET.tostring(node, pretty_print=True),
                                    "filename": node.find("filename").text}
                     self.fonts.append(string_dict)
 
@@ -110,6 +112,10 @@ class InfoProvider():
 
     def return_node_content(self, keyword=None, return_entry="content"):
         if keyword:
+            for node in self.fonts:
+                if node["name"] == keyword:
+                    return node[return_entry]
+
             for node in self.include_list:
                 if node["name"] == keyword:
                     return node[return_entry]
