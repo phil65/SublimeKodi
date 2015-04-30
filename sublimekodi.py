@@ -88,6 +88,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     Infos.init_addon(project_folder)
                     Infos.update_include_list()
                     Infos.get_colors()
+                    Infos.get_fonts()
                     Infos.update_labels()
 
 
@@ -275,21 +276,15 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
         return "text.xml" in scope_name
 
     def run(self, edit):
-        path, filename = os.path.split(self.view.file_name())
-        paths = [os.path.join(path, "Font.xml"),
-                 os.path.join(path, "font.xml")]
-        self.font_file = checkPaths(paths)
-        if self.font_file:
-            root = get_root_from_file(self.font_file)
-            self.fonts = []
-            for node in root.find("fontset").findall("font"):
-                string_array = [node.find("name").text, node.find("size").text + "  -  " + node.find("filename").text]
-                self.fonts.append(string_array)
-            sublime.active_window().show_quick_panel(self.fonts, lambda s: self.on_done(s), selected_index=0)
+        self.font_entries = []
+        for node in Infos.fonts:
+            string_array = [node["name"], node["size"] + "  -  " + node["filename"]]
+            self.font_entries.append(string_array)
+        sublime.active_window().show_quick_panel(self.font_entries, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
         if index >= 0:
-            self.view.run_command("insert", {"characters": self.fonts[index][0]})
+            self.view.run_command("insert", {"characters": self.font_entries[index][0]})
         sublime.active_window().focus_view(self.view)
 
 

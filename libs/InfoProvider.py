@@ -19,6 +19,7 @@ class InfoProvider():
         self.xml_path = ""
         self.builtin_list = []
         self.string_list = []
+        self.xml_folders = []
         self.addon_string_list = []
         self.labels_loaded = False
         self.settings_loaded = False
@@ -27,10 +28,10 @@ class InfoProvider():
         self.project_path = path
         addon_xml_file = os.path.join(self.project_path, "addon.xml")
         root = get_root_from_file(addon_xml_file)
-        folders = []
+        self.xml_folders = []
         for node in root.findall('.//res'):
-            folders.append(node.attrib["folder"])
-        self.xml_path = os.path.join(self.project_path, folders[0])
+            self.xml_folders.append(node.attrib["folder"])
+        self.xml_path = os.path.join(self.project_path, self.xml_folders[0])
 
     def get_colors(self):
         if self.project_path:
@@ -43,6 +44,21 @@ class InfoProvider():
                 for node in root.findall("color"):
                     self.color_dict[node.attrib["name"]] = node.text
                 log("color list: %i colors found" % len(self.color_dict))
+
+    def get_fonts(self):
+        if self.xml_path:
+            paths = [os.path.join(self.xml_path, "Font.xml"),
+                     os.path.join(self.xml_path, "font.xml")]
+            self.font_file = checkPaths(paths)
+            if self.font_file:
+                root = get_root_from_file(self.font_file)
+                self.fonts = []
+                for node in root.find("fontset").findall("font"):
+                    string_dict = {"name": node.find("name").text,
+                                   "size": node.find("size").text,
+                                   "line": node.sourceline,
+                                   "filename": node.find("filename").text}
+                    self.fonts.append(string_dict)
 
     def get_include_files(self):
         if self.xml_path:
@@ -85,6 +101,10 @@ class InfoProvider():
                 for node in self.include_list:
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+                        return True
+                for node in self.fonts:
+                    if node["name"] == keyword:
+                        sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
                 log("no node with name %s found" % keyword)
 
