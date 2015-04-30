@@ -48,7 +48,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = Infos.return_label(view, selection)
         elif "text.xml" in scope_name:
             if "$var[" in line_contents:
-                node_content = str(Infos.return_node_content(view))
+                node_content = str(Infos.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
@@ -57,6 +57,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = Infos.return_label(view, selection)
             elif "<textcolor" in line_contents or "<color" in line_contents:
                 popup_label = Infos.color_dict[selection]
+            elif "<fadetime" in line_contents:
+                popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
         if popup_label:
             view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                             location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))

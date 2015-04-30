@@ -86,12 +86,11 @@ class InfoProvider():
                         return True
                 log("no node with name %s found" % keyword)
 
-    def return_node_content(self, view):
-        keyword = findWord(view)
+    def return_node_content(self, keyword=None, return_entry="content"):
         if keyword:
             for node in self.include_list:
                 if node["name"] == keyword:
-                    return node["content"]
+                    return node[return_entry]
             log("no node with name %s found" % keyword)
 
     def return_label(self, view, selection):
