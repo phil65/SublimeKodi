@@ -1,5 +1,4 @@
 import os
-from lxml import etree as ET
 from Utils import *
 import sublime
 import codecs
