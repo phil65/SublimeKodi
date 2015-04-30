@@ -18,6 +18,7 @@ class InfoProvider():
         self.project_path = ""
         self.xml_path = ""
         self.builtin_list = []
+        self.fonts = []
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
