@@ -47,7 +47,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif popup_label and popup_label > 30000:
                 popup_label = Infos.return_label(view, selection)
         elif "text.xml" in scope_name:
-            if "$var[" in line_contents:
+            if "$var[" in line_contents or "<include" in line_contents:
                 node_content = str(Infos.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
