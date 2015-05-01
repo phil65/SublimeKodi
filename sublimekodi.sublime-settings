@@ -80,6 +80,7 @@
      * Tooltip delay
      *
      * Choose the delay until the info tooltip shows up
+     * Choose -1 if you do not want tooltip at all
      *
      */
     "tooltip_delay": 0,

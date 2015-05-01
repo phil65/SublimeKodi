@@ -115,7 +115,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
-        if popup_label:
+        if popup_label and history.get("tooltip_delay", 0) > -1:
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), history.get("tooltip_delay", 0))
 
     def show_tooltip(self, view, tooltip_label):
