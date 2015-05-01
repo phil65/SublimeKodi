@@ -180,9 +180,11 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.active_window().show_input_panel("Execute builtin", "", self.execute_builtin, None, None)
+        self.history = sublime.load_settings(SETTINGS_FILE)
+        sublime.active_window().show_input_panel("Execute builtin", self.history.get("prev_json_builtin", ""), self.execute_builtin, None, None)
 
     def execute_builtin(self, builtin):
+        self.history.set("prev_json_builtin", builtin)
         sublime.active_window().run_command("execute_builtin", {"builtin": builtin})
 
 

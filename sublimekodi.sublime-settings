@@ -66,6 +66,7 @@
      * Tooltip height
      *
      * Choose the height for the info tooltip
+     * needs latest script.toolbox installed
      *
      */
     "tooltip_height": 300,
