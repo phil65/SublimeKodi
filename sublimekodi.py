@@ -41,6 +41,8 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
             return
+        elif not Infos.project_path:
+            return
         else:
             self.prev_selection = view.sel()[0]
             view.hide_popup()
