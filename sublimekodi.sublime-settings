@@ -62,4 +62,18 @@
      *
      */
     "auto_reload_skin": true,
+    /*
+     * Tooltip height
+     *
+     * Choose the height for the info tooltip
+     *
+     */
+    "tooltip_height": 300,
+    /*
+     * Tooltip width
+     *
+     * Choose the width for the info tooltip
+     *
+     */
+    "tooltip_width": 1000,
 }

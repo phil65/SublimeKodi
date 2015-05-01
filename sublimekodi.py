@@ -11,10 +11,7 @@ libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
-try:
-    from PIL import Image
-except:
-    pass
+from PIL import Image
 from InfoProvider import InfoProvider
 from Utils import *
 Infos = InfoProvider()
@@ -37,11 +34,12 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.is_modified = False
 
     def on_selection_modified_async(self, view):
+        history = sublime.load_settings(SETTINGS_FILE)
         if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
             return
         elif not Infos.project_path:
             return
-        inside_bracket = False
+        # inside_bracket = False
         popup_label = None
         identifier = ""
         self.prev_selection = view.sel()[0]
@@ -50,17 +48,18 @@ class SublimeKodi(sublime_plugin.EventListener):
         selection = view.substr(view.word(view.sel()[0]))
         line = view.line(view.sel()[0])
         line_contents = view.substr(line).lower()
-        label_region = view.expand_by_class(view.sel()[0], sublime.CLASS_WORD_START | sublime.CLASS_WORD_END, '$],')
-        bracket_region = view.expand_by_class(view.sel()[0], sublime.CLASS_WORD_START | sublime.CLASS_WORD_END, '<>')
+        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+        label_region = view.expand_by_class(view.sel()[0], flags, '$],')
+        bracket_region = view.expand_by_class(view.sel()[0], flags, '<>')
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
-            inside_bracket = True
+            # inside_bracket = True
             identifier = view.substr(label_region)
             log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
                 popup_label = Infos.return_label(view, selection)
-            elif popup_label and popup_label > 30000:
-                popup_label = Infos.return_label(view, selection)
+            # elif popup_label and popup_label > 30000:
+            #     popup_label = Infos.return_label(view, selection)
         elif "text.xml" in scope_name:
             if identifier.startswith("VAR"):
                 node_content = str(Infos.return_node_content(identifier[4:]))
@@ -118,7 +117,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
         if popup_label:
             view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                            location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+                            location=-1, max_width=history.get("tooltip_width", 1000), max_height=history.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
         if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
@@ -147,15 +146,18 @@ class SublimeKodi(sublime_plugin.EventListener):
                 Infos.get_builtin_label()
             if view.window():
                 variables = view.window().extract_variables()
-                project_folder = variables["folder"]
-                if project_folder and project_folder != self.actual_project:
-                    self.actual_project = project_folder
-                    log("project change detected: " + project_folder)
-                    Infos.init_addon(project_folder)
-                    Infos.update_include_list()
-                    Infos.get_colors()
-                    Infos.get_fonts()
-                    Infos.update_labels()
+                if "folder" in variables:
+                    project_folder = variables["folder"]
+                    if project_folder and project_folder != self.actual_project:
+                        self.actual_project = project_folder
+                        log("project change detected: " + project_folder)
+                        Infos.init_addon(project_folder)
+                        Infos.update_include_list()
+                        Infos.get_colors()
+                        Infos.get_fonts()
+                        Infos.update_labels()
+                else:
+                    log("Could not find folder path in project file")
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
