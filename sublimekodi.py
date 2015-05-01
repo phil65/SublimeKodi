@@ -42,15 +42,16 @@ class SublimeKodi(sublime_plugin.EventListener):
         # inside_bracket = False
         popup_label = None
         identifier = ""
-        self.prev_selection = view.sel()[0]
+        region = view.sel()[0]
+        self.prev_selection = region
         view.hide_popup()
-        scope_name = view.scope_name(view.sel()[0].b)
-        selection = view.substr(view.word(view.sel()[0]))
-        line = view.line(view.sel()[0])
+        scope_name = view.scope_name(region.b)
+        selection = view.substr(view.word(region))
+        line = view.line(region)
         line_contents = view.substr(line).lower()
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
-        label_region = view.expand_by_class(view.sel()[0], flags, '$],')
-        bracket_region = view.expand_by_class(view.sel()[0], flags, '<>')
+        label_region = view.expand_by_class(region, flags, '$],')
+        bracket_region = view.expand_by_class(region, flags, '<>')
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             # inside_bracket = True
             identifier = view.substr(label_region)
