@@ -135,12 +135,20 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.check_project_change()
 
     def on_post_save_async(self, view):
+        log("saved " + view.file_name())
         if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
             history = sublime.load_settings(SETTINGS_FILE)
-            if history.get("auto_reload_skin", True) and self.is_modified:
-                self.is_modified = False
-                sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
-            Infos.update_include_list()
+            if self.is_modified:
+                if history.get("auto_reload_skin", True):
+                    self.is_modified = False
+                    sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
+                Infos.update_include_list()
+                if view.file_name().endswith("colors/defaults.xml"):
+                    Infos.get_colors()
+                if view.file_name().endswith("ont.xml"):
+                    Infos.get_fonts()
+        if view.file_name().endswith(".po"):
+            Infos.update_labels()
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
