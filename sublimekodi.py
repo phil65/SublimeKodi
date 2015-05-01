@@ -13,6 +13,10 @@ libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
+try:
+    from PIL import Image
+except:
+    pass
 from InfoProvider import InfoProvider
 from Utils import *
 Infos = InfoProvider()
@@ -69,6 +73,24 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = Infos.color_dict[selection]
             elif "<fadetime" in line_contents:
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
+            elif "<texture" in line_contents:
+                region = view.sel()[0]
+                line = view.line(region)
+                line_contents = view.substr(line)
+                scope_name = view.scope_name(region.begin())
+                if "string.quoted.double.xml" in scope_name:
+                    scope_area = view.extract_scope(region.a)
+                    rel_image_path = view.substr(scope_area).replace('"', '')
+                else:
+                    root = ET.fromstring(line_contents)
+                    rel_image_path = root.text
+                if rel_image_path.startswith("special://skin/"):
+                    imagepath = os.path.join(Infos.project_path, rel_image_path.replace("special://skin/", ""))
+                else:
+                    imagepath = os.path.join(Infos.project_path, "media", rel_image_path)
+                if os.path.exists(imagepath) and not os.path.isdir(imagepath):
+                    im = Image.open(imagepath)
+                    popup_label = "Size: " + str(im.size)
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
@@ -218,7 +240,6 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
 class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        path, filename = os.path.split(self.view.file_name())
         region = self.view.sel()[0]
         line = self.view.line(region)
         line_contents = self.view.substr(line)
@@ -231,9 +252,9 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             rel_image_path = root.text
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
-            imagepath = os.path.join(path, "..", rel_image_path)
+            imagepath = os.path.join(Infos.project_path, rel_image_path)
         else:
-            imagepath = os.path.join(path, "..", "media", rel_image_path)
+            imagepath = os.path.join(Infos.project_path, "media", rel_image_path)
         if os.path.exists(imagepath):
             if os.path.isdir(imagepath):
                 self.files = []
