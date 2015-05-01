@@ -3,6 +3,7 @@ import sublime
 import re
 import os
 import sys
+import json
 import cgi
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
@@ -40,21 +41,40 @@ class SublimeKodi(sublime_plugin.EventListener):
             return
         elif not Infos.project_path:
             return
-        else:
-            self.prev_selection = view.sel()[0]
-            view.hide_popup()
+        inside_bracket = False
+        popup_label = None
+        identifier = ""
+        self.prev_selection = view.sel()[0]
+        view.hide_popup()
         scope_name = view.scope_name(view.sel()[0].b)
         selection = view.substr(view.word(view.sel()[0]))
         line = view.line(view.sel()[0])
         line_contents = view.substr(line).lower()
-        popup_label = None
+        label_region = view.expand_by_class(view.sel()[0], sublime.CLASS_WORD_START | sublime.CLASS_WORD_END, '$],')
+        bracket_region = view.expand_by_class(view.sel()[0], sublime.CLASS_WORD_START | sublime.CLASS_WORD_END, '<>')
+        if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
+            inside_bracket = True
+            identifier = view.substr(label_region)
+            log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
                 popup_label = Infos.return_label(view, selection)
             elif popup_label and popup_label > 30000:
                 popup_label = Infos.return_label(view, selection)
         elif "text.xml" in scope_name:
-            if "$var[" in line_contents or "<include" in line_contents:
+            if identifier.startswith("VAR"):
+                node_content = str(Infos.return_node_content(identifier[4:]))
+                ind1 = node_content.find('\\n')
+                popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
+                if popup_label:
+                    popup_label = "&nbsp;" + popup_label
+            elif identifier.startswith("INFO"):
+                data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
+                result = kodi_json_request(data)
+                result = json.loads(result.decode("utf-8"))
+                log(result)
+                popup_label = str(result["result"])
+            elif "<include" in line_contents:
                 node_content = str(Infos.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
