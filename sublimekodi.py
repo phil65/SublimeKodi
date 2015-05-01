@@ -73,7 +73,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                 result = kodi_json_request(data)
                 result = json.loads(result.decode("utf-8"))
                 log(result)
-                popup_label = str(result["result"])
+                key, value = result["result"].popitem()
+                if value:
+                    popup_label = str(value)
             elif "<include" in line_contents:
                 node_content = str(Infos.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
