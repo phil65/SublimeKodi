@@ -82,6 +82,6 @@
      * Choose the delay until the info tooltip shows up
      *
      */
-    "tooltip_delay": 1000,
+    "tooltip_delay": 0,
 
 }
