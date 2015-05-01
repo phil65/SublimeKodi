@@ -5,6 +5,6 @@
     {"caption": "SublimeKodi: Search for label", "command": "search_for_label"},
     {"caption": "SublimeKodi: Search for image", "command": "search_for_image"},
     {"caption": "SublimeKodi: Search for font", "command": "search_for_font"},
-    {"caption": "SublimeKodi: JSON-RPC: Reload Skin", "command": "send_json", "args": { "builtin": "ReloadSkin()" }},
-    {"caption": "SublimeKodi: JSON-RPC: Execute Builtin", "command": "execute_builtin"},
+    {"caption": "SublimeKodi: JSON-RPC: Reload Skin", "command": "execute_builtin", "args": { "builtin": "ReloadSkin()" }},
+    {"caption": "SublimeKodi: JSON-RPC: Execute Builtin", "command": "execute_builtin_prompt"},
 ]

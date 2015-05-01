@@ -114,7 +114,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             history = sublime.load_settings(SETTINGS_FILE)
             if history.get("auto_reload_skin", True) and self.is_modified:
                 self.is_modified = False
-                sublime.active_window().run_command("send_json", {"builtin": "ReloadSkin()"})
+                sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
             Infos.update_include_list()
 
     def check_project_change(self):
@@ -150,13 +150,13 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog("Folder %s does not exist." % path)
 
 
-class ExecuteBuiltin(sublime_plugin.WindowCommand):
+class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         sublime.active_window().show_input_panel("Execute builtin", "", self.execute_builtin, None, None)
 
     def execute_builtin(self, builtin):
-        sublime.active_window().run_command("send_json", {"builtin": builtin})
+        sublime.active_window().run_command("execute_builtin", {"builtin": builtin})
 
 
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
@@ -167,7 +167,7 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
         Infos.update_labels()
 
 
-class SendJsonCommand(sublime_plugin.WindowCommand):
+class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self, builtin):
         history = sublime.load_settings(SETTINGS_FILE)
