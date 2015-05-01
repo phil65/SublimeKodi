@@ -32,6 +32,7 @@ class SublimeKodi(sublime_plugin.EventListener):
     def __init__(self, **kwargs):
         self.actual_project = None
         self.prev_selection = None
+        self.is_modified = False
 
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
@@ -75,6 +76,10 @@ class SublimeKodi(sublime_plugin.EventListener):
             view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                             location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
+    def on_modified_async(self, view):
+        if Infos.project_path and view.file_name().endswith(".xml"):
+            self.is_modified = True
+
     def on_load_async(self, view):
         self.check_project_change()
 
@@ -84,7 +89,8 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
         if Infos.project_path and view.file_name().endswith(".xml"):
             history = sublime.load_settings(SETTINGS_FILE)
-            if history.get("auto_reload_skin", True):
+            if history.get("auto_reload_skin", True) and self.is_modified:
+                self.is_modified = False
                 sublime.active_window().run_command("send_json")
             Infos.update_include_list()
 
