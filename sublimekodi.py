@@ -165,8 +165,8 @@ class SendJsonCommand(sublime_plugin.WindowCommand):
         address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
         data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "ReloadSkin()"}}}'
         log(data)
-        credentials = b'kodi:kodi'
-        encoded_credentials = base64.b64encode(credentials)
+        credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
+        encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
         authorization = b'Basic ' + encoded_credentials
         headers = {'Content-Type': 'application/json', 'Authorization': authorization}
         json_data = json.dumps(json.loads(data))

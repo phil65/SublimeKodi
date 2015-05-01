@@ -42,6 +42,20 @@
      */
     "kodi_address": "http://localhost:8080",
     /*
+     * Kodi username
+     *
+     * username for JSON requests, needs proper kodi config
+     *
+     */
+    "kodi_username": "kodi",
+    /*
+     * Kodi password
+     *
+     * password for JSON requests, needs proper kodi config
+     *
+     */
+    "kodi_password": "",
+    /*
      * Auto-reload skin on saving
      *
      * Choose if you want to auto-reload the skin after saving a skin xml
