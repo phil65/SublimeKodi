@@ -34,4 +34,18 @@
      *
      */
     "native_language": "Chinese (Simple)",
+    /*
+     * Kodi address
+     *
+     * Put the URL and port of the kodi instance you´re workin with here:
+     *
+     */
+    "kodi_address": "http://localhost:8080",
+    /*
+     * Auto-reload skin on saving
+     *
+     * Choose if you want to auto-reload the skin after saving a skin xml
+     *
+     */
+    "auto_reload_skin": true,
 }

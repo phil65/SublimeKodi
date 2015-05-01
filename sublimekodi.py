@@ -4,6 +4,9 @@ import re
 import os
 import sys
 import cgi
+from urllib.request import Request, urlopen
+import base64
+import json
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -65,6 +68,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = Infos.color_dict[selection]
             elif "<fadetime" in line_contents:
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
+            elif "<control " in line_contents:
+                # todo: add positioning based on parent nodes
+                popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
         if popup_label:
             view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                             location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
@@ -76,7 +82,11 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.check_project_change()
 
     def on_post_save_async(self, view):
-        Infos.update_include_list()
+        if Infos.project_path and view.file_name().endswith(".xml"):
+            history = sublime.load_settings(SETTINGS_FILE)
+            if history.get("auto_reload_skin", True):
+                sublime.active_window().run_command("send_json")
+            Infos.update_include_list()
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
@@ -117,6 +127,24 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
         Infos.get_settings()
         Infos.get_builtin_label()
         Infos.update_labels()
+
+
+class SendJsonCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        history = sublime.load_settings(SETTINGS_FILE)
+        address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
+        data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "ReloadSkin()"}}}'
+        log(data)
+        credentials = b'kodi:kodi'
+        encoded_credentials = base64.b64encode(credentials)
+        authorization = b'Basic ' + encoded_credentials
+        headers = {'Content-Type': 'application/json', 'Authorization': authorization}
+        json_data = json.dumps(json.loads(data))
+        post_data = json_data.encode('utf-8')
+        request = Request(address, post_data, headers)
+        result = urlopen(request)
+        log(result.read())
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
@@ -297,4 +325,3 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 # def plugin_loaded():
 #     view = sublime.active_window().active_view()
 #     Infos.update_include_list()
-
