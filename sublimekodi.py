@@ -174,6 +174,16 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
         log(result)
 
 
+class GetInfoLabelsCommand(sublime_plugin.WindowCommand):
+
+    def run(self, label_string):
+        words = label_string.split(",")
+        labels = ', '.join('"{0}"'.format(w) for w in words)
+        data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
+        result = kodi_json_request(data)
+        log(result)
+
+
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
