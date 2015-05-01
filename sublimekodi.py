@@ -4,9 +4,6 @@ import re
 import os
 import sys
 import cgi
-from urllib.request import Request, urlopen
-import base64
-import json
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -172,19 +169,9 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self, builtin):
-        history = sublime.load_settings(SETTINGS_FILE)
-        address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
         data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
-        log(data)
-        credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
-        encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
-        authorization = b'Basic ' + encoded_credentials
-        headers = {'Content-Type': 'application/json', 'Authorization': authorization}
-        json_data = json.dumps(json.loads(data))
-        post_data = json_data.encode('utf-8')
-        request = Request(address, post_data, headers)
-        result = urlopen(request)
-        log(result.read())
+        result = kodi_json_request(data)
+        log(result)
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):

@@ -1,5 +1,10 @@
 import os
 from lxml import etree as ET
+import sublime
+import base64
+import json
+from urllib.request import Request, urlopen
+SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
 
 def checkPaths(paths):
@@ -55,3 +60,17 @@ def get_root_from_file(xml_file):
     parser = ET.XMLParser(remove_blank_text=True)
     tree = ET.parse(xml_file, parser)
     return tree.getroot()
+
+
+def kodi_json_request(data):
+    history = sublime.load_settings(SETTINGS_FILE)
+    address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
+    credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
+    encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
+    authorization = b'Basic ' + encoded_credentials
+    headers = {'Content-Type': 'application/json', 'Authorization': authorization}
+    json_data = json.dumps(json.loads(data))
+    post_data = json_data.encode('utf-8')
+    request = Request(address, post_data, headers)
+    result = urlopen(request)
+    return result.read()
