@@ -77,7 +77,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                             location=-1, max_width=1920, on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
-        if Infos.project_path and view.file_name().endswith(".xml"):
+        if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
             self.is_modified = True
 
     def on_load_async(self, view):
@@ -87,7 +87,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.check_project_change()
 
     def on_post_save_async(self, view):
-        if Infos.project_path and view.file_name().endswith(".xml"):
+        if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
             history = sublime.load_settings(SETTINGS_FILE)
             if history.get("auto_reload_skin", True) and self.is_modified:
                 self.is_modified = False
