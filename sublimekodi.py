@@ -116,8 +116,12 @@ class SublimeKodi(sublime_plugin.EventListener):
                 # todo: add positioning based on parent nodes
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
         if popup_label:
-            view.show_popup(popup_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                            location=-1, max_width=history.get("tooltip_width", 1000), max_height=history.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+            sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), history.get("tooltip_delay", 0))
+
+    def show_tooltip(self, view, tooltip_label):
+        history = sublime.load_settings(SETTINGS_FILE)
+        view.show_popup(tooltip_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
+                        location=-1, max_width=history.get("tooltip_width", 1000), max_height=history.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
         if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):

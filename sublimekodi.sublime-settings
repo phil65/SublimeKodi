@@ -76,4 +76,12 @@
      *
      */
     "tooltip_width": 1000,
+    /*
+     * Tooltip delay
+     *
+     * Choose the delay until the info tooltip shows up
+     *
+     */
+    "tooltip_delay": 1000,
+
 }
