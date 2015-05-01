@@ -150,6 +150,15 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog("Folder %s does not exist." % path)
 
 
+class ExecuteBuiltin(sublime_plugin.WindowCommand):
+
+    def run(self):
+        sublime.active_window().show_input_panel("Execute builtin", "", self.execute_builtin, None, None)
+
+    def execute_builtin(self, builtin):
+        sublime.active_window().run_command("send_json", {"builtin": builtin})
+
+
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
