@@ -114,7 +114,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             history = sublime.load_settings(SETTINGS_FILE)
             if history.get("auto_reload_skin", True) and self.is_modified:
                 self.is_modified = False
-                sublime.active_window().run_command("send_json")
+                sublime.active_window().run_command("send_json", {"builtin": "ReloadSkin()"})
             Infos.update_include_list()
 
     def check_project_change(self):
@@ -160,10 +160,10 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
 class SendJsonCommand(sublime_plugin.WindowCommand):
 
-    def run(self):
+    def run(self, builtin):
         history = sublime.load_settings(SETTINGS_FILE)
         address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
-        data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "ReloadSkin()"}}}'
+        data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
         log(data)
         credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
         encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
