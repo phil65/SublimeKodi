@@ -94,7 +94,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = Infos.color_dict[selection]
             elif "<fadetime" in line_contents:
                 popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
-            elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents:
+            elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
                 region = view.sel()[0]
                 line = view.line(region)
                 line_contents = view.substr(line)
