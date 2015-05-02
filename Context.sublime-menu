@@ -9,7 +9,13 @@
                 "command": "preview_image",
                 "caption": "Preview image",
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
+            },
+            {
+                "command": "move_to_language_file",
+                "caption": "Move to language file",
+                "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
             }
+
         ]
     }
 ]
