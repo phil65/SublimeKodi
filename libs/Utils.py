@@ -62,6 +62,26 @@ def get_root_from_file(xml_file):
     return tree.getroot()
 
 
+def get_include_file_paths(xml_path):
+    if xml_path:
+        paths = [os.path.join(xml_path, "Includes.xml"),
+                 os.path.join(xml_path, "includes.xml")]
+        include_file = checkPaths(paths)
+        if include_file:
+            log("found include file: " + include_file)
+            root = get_root_from_file(include_file)
+            include_file_list = [include_file]
+            for node in root.findall("include"):
+                if "file" in node.attrib:
+                    include_file_list.append(os.path.join(xml_path, node.attrib["file"]))
+            log("File List: %i files found." % len(include_file_list))
+            return include_file_list
+        else:
+            log("Could not find include file")
+            log(paths)
+            return []
+
+
 def kodi_json_request(data):
     history = sublime.load_settings(SETTINGS_FILE)
     address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"

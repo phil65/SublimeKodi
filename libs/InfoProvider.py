@@ -14,7 +14,7 @@ class InfoProvider():
     def __init__(self):
         self.include_list = []
         self.include_file_list = []
-        self.color_dict = {}
+        self.color_list = []
         self.project_path = ""
         self.xml_path = ""
         self.builtin_list = []
@@ -42,10 +42,14 @@ class InfoProvider():
             if color_file:
                 log("found color file: " + color_file)
                 root = get_root_from_file(color_file)
-                self.color_dict = {}
+                self.color_list = []
                 for node in root.findall("color"):
-                    self.color_dict[node.attrib["name"]] = node.text
-                log("color list: %i colors found" % len(self.color_dict))
+                    color_dict = {"name": node.attrib["name"],
+                                  "line": node.sourceline,
+                                  "content": node.text,
+                                  "filename": color_file}
+                    self.color_list.append(color_dict)
+                log("color list: %i colors found" % len(self.color_list))
 
     def get_fonts(self):
         if self.xml_path:
@@ -63,26 +67,9 @@ class InfoProvider():
                                    "filename": node.find("filename").text}
                     self.fonts.append(string_dict)
 
-    def get_include_files(self):
-        if self.xml_path:
-            paths = [os.path.join(self.xml_path, "Includes.xml"),
-                     os.path.join(self.xml_path, "includes.xml")]
-            include_file = checkPaths(paths)
-            if include_file:
-                log("found include file: " + include_file)
-                root = get_root_from_file(include_file)
-                self.include_file_list = [include_file]
-                for node in root.findall("include"):
-                    if "file" in node.attrib:
-                        self.include_file_list.append(os.path.join(self.xml_path, node.attrib["file"]))
-                log("File List: %i files found." % len(self.include_file_list))
-            else:
-                log("Could not find include file")
-                log(paths)
-
     def update_include_list(self):
         self.include_list = []
-        self.get_include_files()
+        self.include_file_list = get_include_file_paths(self.xml_path)
         for path in self.include_file_list:
             self.include_list += get_tags_from_file(path, ["include", "variable", "constant"])
             # log("%s: %i nodes" % (path, len(self.include_list)))
@@ -106,6 +93,10 @@ class InfoProvider():
                         sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
                         return True
                 for node in self.fonts:
+                    if node["name"] == keyword:
+                        sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
+                        return True
+                for node in self.colors:
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
