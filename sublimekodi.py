@@ -36,6 +36,15 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.prev_selection = None
         self.is_modified = False
 
+    def on_query_completions(self, view, prefix, locations):
+        completions = []
+        scope_name = view.scope_name(view.sel()[0].b)
+        if "source.python" in scope_name or "text.xml" in scope_name:
+            for node in Infos.include_list:
+                completions.append(node["name"])
+            completions.sort()
+            return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
             return
