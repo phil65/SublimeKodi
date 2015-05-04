@@ -12,8 +12,8 @@ DEFAULT_LANGUAGE_FOLDER = "English"
 class InfoProvider():
 
     def __init__(self):
-        self.include_list = []
-        self.include_file_list = []
+        self.include_list = {}
+        self.include_file_list = {}
         self.color_list = []
         self.font_file = ""
         self.color_file = ""
@@ -74,11 +74,14 @@ class InfoProvider():
                     self.fonts.append(string_dict)
 
     def update_include_list(self):
-        self.include_list = []
-        self.include_file_list = get_include_file_paths(self.xml_path)
-        for path in self.include_file_list:
-            self.include_list += get_tags_from_file(path, ["include", "variable", "constant"])
-            sublime.status_message("SublimeKodi: Updating Includes from " + path)
+        self.include_list = {}
+        for path in self.xml_folders:
+            xml_folder = os.path.join(self.project_path, path)
+            self.include_file_list[path] = get_include_file_paths(xml_folder)
+            self.include_list[path] = []
+            for xml_file in self.include_file_list[path]:
+                sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
+                self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
             # log("%s: %i nodes" % (path, len(self.include_list)))
         log("Include List: %i nodes found." % len(self.include_list))
 
@@ -95,7 +98,7 @@ class InfoProvider():
                         sublime.active_window().open_file("%s:%s" % (file_path, node["line"]), sublime.ENCODED_POSITION)
                         return True
             else:
-                for node in self.include_list:
+                for node in self.include_list[view.file_name().split(os.sep)[-2]]:
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
                         return True
@@ -114,8 +117,8 @@ class InfoProvider():
             for node in self.fonts:
                 if node["name"] == keyword:
                     return node[return_entry]
-
-            for node in self.include_list:
+            view = sublime.active_window().active_view()
+            for node in self.include_list[view.file_name().split(os.sep)[-2]]:
                 if node["name"] == keyword:
                     return node[return_entry]
             log("no node with name %s found" % keyword)

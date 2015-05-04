@@ -57,9 +57,13 @@ def get_tags_from_file(path, node_tags):
 
 
 def get_root_from_file(xml_file):
-    parser = ET.XMLParser(remove_blank_text=True)
-    tree = ET.parse(xml_file, parser)
-    return tree.getroot()
+    try:
+        parser = ET.XMLParser(remove_blank_text=True)
+        tree = ET.parse(xml_file, parser)
+        return tree.getroot()
+    except:
+        sublime.message_dialog("Error when parsing %s" % xml_file)
+        return None
 
 
 def get_include_file_paths(xml_path):
