@@ -80,7 +80,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<include" in line_contents:
                 node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
-                popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
+                popup_label = cgi.escape(node_content[ind1 + 2:-16]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<font" in line_contents:
