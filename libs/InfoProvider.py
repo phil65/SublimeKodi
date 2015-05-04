@@ -15,6 +15,8 @@ class InfoProvider():
         self.include_list = []
         self.include_file_list = []
         self.color_list = []
+        self.font_file = ""
+        self.color_file = ""
         self.project_path = ""
         self.xml_path = ""
         self.builtin_list = []
