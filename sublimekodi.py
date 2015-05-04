@@ -15,7 +15,7 @@ from lxml import etree as ET
 from PIL import Image
 from InfoProvider import InfoProvider
 from Utils import *
-Infos = InfoProvider()
+INFOS = InfoProvider()
 # sublime.log_commands(True)
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
@@ -38,7 +38,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         history = sublime.load_settings(SETTINGS_FILE)
         if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
             return
-        elif not Infos.project_path:
+        elif not INFOS.project_path:
             return
         # inside_bracket = False
         popup_label = None
@@ -59,12 +59,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                popup_label = Infos.return_label(view, selection)
+                popup_label = INFOS.return_label(view, selection)
             # elif popup_label and popup_label > 30000:
-            #     popup_label = Infos.return_label(view, selection)
+            #     popup_label = INFOS.return_label(view, selection)
         elif "text.xml" in scope_name:
             if identifier.startswith("VAR"):
-                node_content = str(Infos.return_node_content(identifier[4:]))
+                node_content = str(INFOS.return_node_content(identifier[4:]))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
@@ -78,26 +78,26 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if value:
                     popup_label = str(value)
             elif "<include" in line_contents:
-                node_content = str(Infos.return_node_content(findWord(view)))
+                node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<font" in line_contents:
-                node_content = str(Infos.return_node_content(findWord(view)))
+                node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-12]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                popup_label = Infos.return_label(view, selection)
+                popup_label = INFOS.return_label(view, selection)
             elif "<textcolor" in line_contents or "<color" in line_contents:
-                for item in Infos.color_list:
+                for item in INFOS.color_list:
                     if item["name"] == selection:
                         popup_label = item["content"]
                         break
             elif "<fadetime" in line_contents:
-                popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
+                popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
                 region = view.sel()[0]
                 line = view.line(region)
@@ -110,16 +110,16 @@ class SublimeKodi(sublime_plugin.EventListener):
                     root = ET.fromstring(line_contents)
                     rel_image_path = root.text
                 if rel_image_path.startswith("special://skin/"):
-                    imagepath = os.path.join(Infos.project_path, rel_image_path.replace("special://skin/", ""))
+                    imagepath = os.path.join(INFOS.project_path, rel_image_path.replace("special://skin/", ""))
                 else:
-                    imagepath = os.path.join(Infos.project_path, "media", rel_image_path)
+                    imagepath = os.path.join(INFOS.project_path, "media", rel_image_path)
                 if os.path.exists(imagepath) and not os.path.isdir(imagepath):
                     im = Image.open(imagepath)
                     file_size = os.path.getsize(imagepath) / 1024
                     popup_label = "Size: %s <br>File size: %.2f kb" % (str(im.size), file_size)
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
-                popup_label = str(Infos.return_node_content(findWord(view)))[2:-3]
+                popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
         if popup_label and history.get("tooltip_delay", 0) > -1:
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), history.get("tooltip_delay", 0))
 
@@ -129,7 +129,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                         location=-1, max_width=history.get("tooltip_width", 1000), max_height=history.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
-        if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
+        if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
             self.is_modified = True
 
     def on_load_async(self, view):
@@ -140,27 +140,27 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_post_save_async(self, view):
         log("saved " + view.file_name())
-        if Infos.project_path and view.file_name() and view.file_name().endswith(".xml"):
+        if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
             history = sublime.load_settings(SETTINGS_FILE)
             if self.is_modified:
                 if history.get("auto_reload_skin", True):
                     self.is_modified = False
                     sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
-                Infos.update_include_list()
+                INFOS.update_include_list()
                 if view.file_name().endswith("colors/defaults.xml"):
-                    Infos.get_colors()
+                    INFOS.get_colors()
                 if view.file_name().endswith("ont.xml"):
-                    Infos.get_fonts()
+                    INFOS.get_fonts()
         if view.file_name().endswith(".po"):
-            Infos.update_labels()
+            INFOS.update_labels()
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
         if view and view.window():
-            if not Infos.settings_loaded:
-                Infos.get_settings()
-            if not Infos.labels_loaded:
-                Infos.get_builtin_label()
+            if not INFOS.settings_loaded:
+                INFOS.get_settings()
+            if not INFOS.labels_loaded:
+                INFOS.get_builtin_label()
             if view.window():
                 variables = view.window().extract_variables()
                 if "folder" in variables:
@@ -168,11 +168,11 @@ class SublimeKodi(sublime_plugin.EventListener):
                     if project_folder and project_folder != self.actual_project:
                         self.actual_project = project_folder
                         log("project change detected: " + project_folder)
-                        Infos.init_addon(project_folder)
-                        Infos.update_include_list()
-                        Infos.get_colors()
-                        Infos.get_fonts()
-                        Infos.update_labels()
+                        INFOS.init_addon(project_folder)
+                        INFOS.update_include_list()
+                        INFOS.get_colors()
+                        INFOS.get_fonts()
+                        INFOS.update_labels()
                 else:
                     log("Could not find folder path in project file")
 
@@ -204,9 +204,9 @@ class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        Infos.get_settings()
-        Infos.get_builtin_label()
-        Infos.update_labels()
+        INFOS.get_settings()
+        INFOS.get_builtin_label()
+        INFOS.update_labels()
 
 
 class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
@@ -236,7 +236,7 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         label_list = []
-        for item in Infos.string_list:
+        for item in INFOS.string_list:
             label_list.append("%s (%s)" % (item["string"], item["id"]))
         sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
@@ -245,9 +245,9 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
             view = self.window.active_view()
             scope_name = view.scope_name(view.sel()[0].b)
             if "text.xml" in scope_name:
-                lang_string = "$LOCALIZE[%s]" % Infos.id_list[index][1:]
+                lang_string = "$LOCALIZE[%s]" % INFOS.id_list[index][1:]
             else:
-                lang_string = Infos.id_list[index][1:]
+                lang_string = INFOS.id_list[index][1:]
             view.run_command("insert", {"characters": lang_string})
 
 
@@ -304,9 +304,9 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             rel_image_path = root.text
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
-            imagepath = os.path.join(Infos.project_path, rel_image_path)
+            imagepath = os.path.join(INFOS.project_path, rel_image_path)
         else:
-            imagepath = os.path.join(Infos.project_path, "media", rel_image_path)
+            imagepath = os.path.join(INFOS.project_path, "media", rel_image_path)
         if os.path.exists(imagepath):
             if os.path.isdir(imagepath):
                 self.files = []
@@ -330,13 +330,13 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
 class GoToVariableCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        Infos.go_to_tag(view=self.view)
+        INFOS.go_to_tag(view=self.view)
 
 
 class GoToIncludeCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        Infos.go_to_tag(view=self.view)
+        INFOS.go_to_tag(view=self.view)
 
 
 class SearchForImageCommand(sublime_plugin.TextCommand):
@@ -390,7 +390,7 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         self.font_entries = []
-        for node in Infos.fonts:
+        for node in INFOS.fonts:
             string_array = [node["name"], node["size"] + "  -  " + node["filename"]]
             self.font_entries.append(string_array)
         sublime.active_window().show_quick_panel(self.font_entries, lambda s: self.on_done(s), selected_index=0)
@@ -408,9 +408,9 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         return "text.xml" in scope_name
 
     def run(self, edit):
-        if Infos.project_path:
+        if INFOS.project_path:
             word = findWord(self.view)
-            po = polib.pofile(Infos.addon_lang_path)
+            po = polib.pofile(INFOS.addon_lang_path)
             string_ids = []
             index = 0
             for i, entry in enumerate(po):
@@ -423,7 +423,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             msgstr = "#" + str(label_id)
             new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
             po.insert(index, new_entry)
-            po.save(Infos.addon_lang_path)
+            po.save(INFOS.addon_lang_path)
             for region in self.view.sel():
                 if region.begin() == region.end():
                     word = view.word(region)
@@ -433,4 +433,4 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
 # def plugin_loaded():
 #     view = sublime.active_window().active_view()
-#     Infos.update_include_list()
+#     INFOS.update_include_list()
