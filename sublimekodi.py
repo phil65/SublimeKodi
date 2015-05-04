@@ -169,10 +169,13 @@ class SublimeKodi(sublime_plugin.EventListener):
                         self.actual_project = project_folder
                         log("project change detected: " + project_folder)
                         INFOS.init_addon(project_folder)
-                        INFOS.update_include_list()
-                        INFOS.get_colors()
-                        INFOS.get_fonts()
-                        INFOS.update_labels()
+                        if INFOS.xml_folders:
+                            log("Kodi project detected: " + project_folder)
+                            INFOS.update_include_list()
+                            INFOS.get_colors()
+                            INFOS.get_fonts()
+                            INFOS.update_labels()
+                            sublime.status_message("SublimeKodi: successfully loaded addon")
                 else:
                     log("Could not find folder path in project file")
 
@@ -411,8 +414,14 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         return False
 
     def run(self, edit):
-        scope_name = self.view.scope_name(self.view.sel()[0].b)
-        word = findWord(self.view)
+        label_id = ""
+        available_ids = []
+        region = self.view.sel()[0]
+        if region.begin() == region.end():
+            sublime.message_dialog("Please select the complete label")
+            return False
+        scope_name = self.view.scope_name(region.b)
+        word = self.view.substr(region)
         po = polib.pofile(INFOS.addon_lang_path)
         string_ids = []
         index = 0
@@ -423,24 +432,38 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
                 string_ids.append(entry.msgctxt)
         if "text.xml" in scope_name:
             start_id = 31000
+            template = "$LOCALIZE[%s]"
         else:
             start_id = 32000
-        for label_id in range(start_id, start_id + 1000):
-            if label_id not in string_ids:
-                log("first free: " + str(label_id))
-                index = label_id - 31000
+            template = "%s"
+        for label in INFOS.string_list:
+            if label["string"] == word:
+                available_ids.append(label)
                 break
-        msgstr = "#" + str(label_id)
-        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-        for region in self.view.sel():
-            if not region.begin() == region.end():
-                po.insert(index, new_entry)
-                po.save(INFOS.addon_lang_path)
-                self.view.replace(edit, region, "$LOCALIZE[%i]" % label_id)
-                break
+        if available_ids:
+            log(available_ids)
+            label_id = available_ids[0]["id"]
+            label_string = available_ids[0]["string"]
+            message = "Found label %s with id %s" % (str(label_string), str(label_id))
+            answer = sublime.yes_no_cancel_dialog(message, "Use this", "Create new")
+            if answer == sublime.DIALOG_YES:
+                label_id = label_id[1:]
+            elif answer == sublime.DIALOG_NO:
+                label_id = ""
             else:
-                sublime.message_dialog("Please select the complete label")
-                break
+                return
+        if not label_id:
+            for label_id in range(start_id, start_id + 1000):
+                if label_id not in string_ids:
+                    log("first free: " + str(label_id))
+                    break
+            msgstr = "#" + str(label_id)
+            new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
+            index = int(label_id) - start_id
+            po.insert(index, new_entry)
+            po.save(INFOS.addon_lang_path)
+        self.view.replace(edit, region, template % str(label_id))
+        INFOS.update_labels()
 
 
 # def plugin_loaded():
