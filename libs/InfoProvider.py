@@ -58,6 +58,7 @@ class InfoProvider():
 
     def get_fonts(self):
         if self.xml_path:
+            sublime.status_message("SublimeKodi: Updating fonts...")
             paths = [os.path.join(self.xml_path, "Font.xml"),
                      os.path.join(self.xml_path, "font.xml")]
             self.font_file = checkPaths(paths)
@@ -77,6 +78,7 @@ class InfoProvider():
         self.include_file_list = get_include_file_paths(self.xml_path)
         for path in self.include_file_list:
             self.include_list += get_tags_from_file(path, ["include", "variable", "constant"])
+            sublime.status_message("SublimeKodi: Updating Includes from " + path)
             # log("%s: %i nodes" % (path, len(self.include_list)))
         log("Include List: %i nodes found." % len(self.include_list))
 
@@ -180,7 +182,8 @@ class InfoProvider():
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
 
     def update_labels(self):
-        if self.project_path:
+        if self.xml_folders:
+            sublime.status_message("SublimeKodi: Updating Labels...")
             lang_file = self.get_addon_lang_file(self.project_path)
             po = polib.pofile(lang_file)
             log("Update labels for: %s" % self.project_path)
@@ -193,4 +196,5 @@ class InfoProvider():
                           "native_string": entry.msgstr}
                 self.addon_string_list.append(string)
             self.string_list = self.builtin_list + self.addon_string_list
+            sublime.status_message("")
             log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
