@@ -405,31 +405,34 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        return "text.xml" in scope_name
+        if INFOS.project_path and INFOS.addon_lang_path:
+            if "text.xml" in scope_name:
+                return True
+        return False
 
     def run(self, edit):
-        if INFOS.project_path:
-            word = findWord(self.view)
-            po = polib.pofile(INFOS.addon_lang_path)
-            string_ids = []
-            index = 0
-            for i, entry in enumerate(po):
-                string_ids.append(int(entry.msgctxt[1:]))
-            for label_id in range(31000, 32000):
-                if label_id not in string_ids:
-                    log("first free: " + str(label_id))
-                    index = label_id - 31000
-                    break
-            msgstr = "#" + str(label_id)
-            new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-            po.insert(index, new_entry)
-            po.save(INFOS.addon_lang_path)
-            for region in self.view.sel():
-                if region.begin() == region.end():
-                    word = view.word(region)
-                else:
-                    word = region
-            self.view.replace(edit, word, "$LOCALIZE[%i]" % label_id)
+        word = findWord(self.view)
+        po = polib.pofile(INFOS.addon_lang_path)
+        string_ids = []
+        index = 0
+        for i, entry in enumerate(po):
+            string_ids.append(int(entry.msgctxt[1:]))
+        for label_id in range(31000, 32000):
+            if label_id not in string_ids:
+                log("first free: " + str(label_id))
+                index = label_id - 31000
+                break
+        msgstr = "#" + str(label_id)
+        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
+        po.insert(index, new_entry)
+        po.save(INFOS.addon_lang_path)
+        for region in self.view.sel():
+            if region.begin() == region.end():
+                word = view.word(region)
+            else:
+                word = region
+        self.view.replace(edit, word, "$LOCALIZE[%i]" % label_id)
+
 
 # def plugin_loaded():
 #     view = sublime.active_window().active_view()
