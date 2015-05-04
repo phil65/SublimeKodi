@@ -35,7 +35,10 @@ class InfoProvider():
             self.xml_folders = []
             for node in root.findall('.//res'):
                 self.xml_folders.append(node.attrib["folder"])
-            self.xml_path = os.path.join(path, self.xml_folders[0])
+            if self.xml_folders:
+                self.xml_path = os.path.join(path, self.xml_folders[0])
+            else:
+                self.xml_path = ""
 
     def get_colors(self):
         if self.project_path:
