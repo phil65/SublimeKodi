@@ -41,6 +41,7 @@ Shortcuts:
 - jump to label definition (shift+enter)
 - jump to color definition (shift+enter)
 - preview skin image (ctrl+enter)
+- switch xml folder (ctrl+shift+enter)
 
 
 Fuzzy searches:
@@ -52,5 +53,5 @@ Fuzzy searches:
 
 Context menu:
 
-- "move label to language file" (creates entry in strings.po using the first free id and replaces selected text with $LOCAIZE[])
-
+- move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCAIZE[])
+- go to Kodi online wiki (opens corresponding online help page, only for control types atm)

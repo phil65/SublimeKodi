@@ -37,10 +37,12 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_selection_modified_async(self, view):
         history = sublime.load_settings(SETTINGS_FILE)
-        if len(view.sel()) > 1 or view.sel()[0] == self.prev_selection:
-            return
+        if len(view.sel()) > 1:
+            return None
+        if view.sel() and view.sel()[0] == self.prev_selection:
+            return None
         elif not INFOS.project_path:
-            return
+            return None
         # inside_bracket = False
         popup_label = None
         identifier = ""
@@ -519,6 +521,35 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         INFOS.update_labels()
 
 
+class SwitchXmlFolder(sublime_plugin.TextCommand):
+
+    def is_visible(self):
+        return len(INFOS.xml_folders) > 1
+
+    def run(self, edit):
+        self.element = None
+        self.file = self.view.file_name()
+        root = get_root_from_file(self.file)
+        tree = ET.ElementTree(root)
+        line, column = self.view.rowcol(self.view.sel()[0].b)
+        elements = [e for e in tree.iter()]
+        for e in elements:
+            if line < e.sourceline:
+                self.element = e
+                log(tree.getpath(e))
+                log(e.sourceline)
+                break
+    # if len(INFOS.xml_folders) > 2:
+        sublime.active_window().show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+
+    def show_preview(self, index):
+        path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
+        sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        # sublime.active_window().focus_view(self.view)
+
+    def on_done(self, index):
+        path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
+        sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION)
 # def plugin_loaded():
 #     view = sublime.active_window().active_view()
 #     INFOS.update_include_list()

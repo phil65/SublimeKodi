@@ -8,4 +8,7 @@
     { "keys": ["shift+enter"], "command": "go_to_variable",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
+    { "keys": ["shift+ctrl+enter"], "command": "switch_xml_folder",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
+    },
 ]
