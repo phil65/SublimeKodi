@@ -436,6 +436,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         po.save(INFOS.addon_lang_path)
         for region in self.view.sel():
             if region.begin() == region.end():
+                view = sublime.active_window().active_view()
                 word = view.word(region)
             else:
                 word = region
