@@ -432,15 +432,15 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
                 break
         msgstr = "#" + str(label_id)
         new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-        po.insert(index, new_entry)
-        po.save(INFOS.addon_lang_path)
         for region in self.view.sel():
-            if region.begin() == region.end():
-                view = sublime.active_window().active_view()
-                word = view.word(region)
+            if not region.begin() == region.end():
+                po.insert(index, new_entry)
+                po.save(INFOS.addon_lang_path)
+                self.view.replace(edit, region, "$LOCALIZE[%i]" % label_id)
+                break
             else:
-                word = region
-        self.view.replace(edit, word, "$LOCALIZE[%i]" % label_id)
+                sublime.message_dialog("Please select the complete label")
+                break
 
 
 # def plugin_loaded():
