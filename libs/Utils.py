@@ -80,6 +80,8 @@ def get_include_file_paths(xml_path):
             log("Could not find include file")
             log(paths)
             return []
+    else:
+        return []
 
 
 def kodi_json_request(data):
