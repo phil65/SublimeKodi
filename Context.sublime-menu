@@ -11,6 +11,11 @@
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
             },
             {
+                "command": "go_to_online_help",
+                "caption": "Show info from Kodi Wiki",
+                "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
+            },
+            {
                 "command": "move_to_language_file",
                 "caption": "Move to language file",
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
