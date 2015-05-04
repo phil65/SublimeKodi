@@ -38,16 +38,16 @@ class InfoProvider():
     def get_colors(self):
         if self.project_path:
             paths = [os.path.join(self.project_path, "colors", "defaults.xml")]
-            color_file = checkPaths(paths)
-            if color_file:
-                log("found color file: " + color_file)
-                root = get_root_from_file(color_file)
+            self.color_file = checkPaths(paths)
+            if self.color_file:
+                log("found color file: " + self.color_file)
+                root = get_root_from_file(self.color_file)
                 self.color_list = []
                 for node in root.findall("color"):
                     color_dict = {"name": node.attrib["name"],
                                   "line": node.sourceline,
                                   "content": node.text,
-                                  "filename": color_file}
+                                  "filename": self.color_file}
                     self.color_list.append(color_dict)
                 log("color list: %i colors found" % len(self.color_list))
 
@@ -96,9 +96,9 @@ class InfoProvider():
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
-                for node in self.colors:
+                for node in self.color_list:
                     if node["name"] == keyword:
-                        sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
+                        sublime.active_window().open_file("%s:%s" % (self.color_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
                 log("no node with name %s found" % keyword)
 
