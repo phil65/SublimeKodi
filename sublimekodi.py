@@ -469,56 +469,72 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         return False
 
     def run(self, edit):
-        label_id = ""
         available_ids = []
         region = self.view.sel()[0]
         if region.begin() == region.end():
             sublime.message_dialog("Please select the complete label")
             return False
-        scope_name = self.view.scope_name(region.b)
         word = self.view.substr(region)
+        for label in INFOS.string_list:
+            if label["string"].lower() == word.lower():
+                available_ids.append(label)
+        if available_ids:
+            self.labels = []
+            self.label_ids = []
+            for item in available_ids:
+                self.labels.append("%s %s" % (item["string"], item["id"]))
+                self.label_ids.append(item["id"])
+            self.labels.append("Create new label")
+            sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
+        else:
+            label_id = self.create_new_label(word)
+            self.view.run_command("replace_text", {"label_id": label_id})
+
+    def on_done(self, index, region):
+        if self.labels[index] == "Create new label":
+            label_id = self.create_new_label(self.view.substr(region))
+        else:
+            label_id = self.label_ids[index][1:]
+        self.view.run_command("replace_text", {"label_id": label_id})
+
+    def create_new_label(self, word):
+        region = self.view.sel()[0]
+        scope_name = self.view.scope_name(region.b)
+        if "text.xml" in scope_name:
+            start_id = 31000
+        else:
+            start_id = 32000
         po = polib.pofile(INFOS.addon_lang_path)
         string_ids = []
-        index = 0
         for i, entry in enumerate(po):
             try:
                 string_ids.append(int(entry.msgctxt[1:]))
             except:
                 string_ids.append(entry.msgctxt)
+        for label_id in range(start_id, start_id + 1000):
+            if label_id not in string_ids:
+                log("first free: " + str(label_id))
+                break
+        msgstr = "#" + str(label_id)
+        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
+        po_index = int(label_id) - start_id
+        po.insert(po_index, new_entry)
+        po.save(INFOS.addon_lang_path)
+        INFOS.update_labels()
+        return label_id
+
+
+class ReplaceTextCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit, label_id):
+        region = self.view.sel()[0]
+        scope_name = self.view.scope_name(region.b)
         if "text.xml" in scope_name:
-            start_id = 31000
             template = "$LOCALIZE[%s]"
         else:
-            start_id = 32000
             template = "%s"
-        for label in INFOS.string_list:
-            if label["string"] == word:
-                available_ids.append(label)
-                break
-        if available_ids:
-            log(available_ids)
-            label_id = available_ids[0]["id"]
-            label_string = available_ids[0]["string"]
-            message = "Found label %s with id %s" % (str(label_string), str(label_id))
-            answer = sublime.yes_no_cancel_dialog(message, "Use this", "Create new")
-            if answer == sublime.DIALOG_YES:
-                label_id = label_id[1:]
-            elif answer == sublime.DIALOG_NO:
-                label_id = ""
-            else:
-                return
-        if not label_id:
-            for label_id in range(start_id, start_id + 1000):
-                if label_id not in string_ids:
-                    log("first free: " + str(label_id))
-                    break
-            msgstr = "#" + str(label_id)
-            new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-            index = int(label_id) - start_id
-            po.insert(index, new_entry)
-            po.save(INFOS.addon_lang_path)
         self.view.replace(edit, region, template % str(label_id))
-        INFOS.update_labels()
+
 
 
 class SwitchXmlFolder(sublime_plugin.TextCommand):
