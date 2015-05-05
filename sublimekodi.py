@@ -527,14 +527,13 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 class ReplaceTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, label_id):
-        region = self.view.sel()[0]
-        scope_name = self.view.scope_name(region.b)
-        if "text.xml" in scope_name:
-            template = "$LOCALIZE[%s]"
-        else:
-            template = "%s"
-        self.view.replace(edit, region, template % str(label_id))
-
+        for region in self.view.sel():
+            scope_name = self.view.scope_name(region.b)
+            if "text.xml" in scope_name:
+                template = "$LOCALIZE[%s]"
+            else:
+                template = "%s"
+            self.view.replace(edit, region, template % str(label_id))
 
 
 class SwitchXmlFolder(sublime_plugin.TextCommand):
