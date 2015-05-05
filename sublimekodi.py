@@ -80,7 +80,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 key, value = result["result"].popitem()
                 if value:
                     popup_label = str(value)
-            elif "<include" in line_contents:
+            elif "<include" in line_contents and "name=" not in line_contents:
                 node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 2:-16]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
@@ -536,7 +536,30 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
             self.view.replace(edit, region, template % str(label_id))
 
 
-class SwitchXmlFolder(sublime_plugin.TextCommand):
+class CreateElementRowCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.window.show_input_panel("Enter number of items to generate", "1", on_done=self.generate_items, on_change=None, on_cancel=None)
+
+    def generate_items(self, num_items):
+        self.window.run_command("replace_xml_elements", {"num_items": num_items})
+
+
+class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit, num_items):
+        selected_text = self.view.substr(self.view.sel()[0])
+        # new_text = selected_text + "\n"
+        new_text = ""
+        for i in range(1, int(num_items) + 1):
+            new_text = new_text + selected_text.replace("[X]", str(i)) + "\n"
+            i += 1
+        for region in self.view.sel():
+            self.view.replace(edit, region, new_text)
+            break
+
+
+class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
         return len(INFOS.xml_folders) > 1

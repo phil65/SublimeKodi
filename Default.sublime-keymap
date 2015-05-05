@@ -8,6 +8,9 @@
     { "keys": ["ctrl+shift+m"], "command": "move_to_language_file",
         // "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
+    { "keys": ["ctrl+shift+r"], "command": "create_element_row",
+        "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
+    },
     { "keys": ["ctrl+shift+w"], "command": "go_to_online_help",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
