@@ -102,10 +102,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
-                region = view.sel()[0]
-                line = view.line(region)
                 line_contents = view.substr(line)
-                scope_name = view.scope_name(region.begin())
                 if "string.quoted.double.xml" in scope_name:
                     scope_area = view.extract_scope(region.a)
                     rel_image_path = view.substr(scope_area).replace('"', '')
