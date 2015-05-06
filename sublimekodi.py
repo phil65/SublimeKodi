@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import cgi
+import colorsys
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -26,6 +27,21 @@ elif sublime.platform() == "windows":
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
+
+
+def tohex(r, g, b, a=None):
+    if a is None:
+        a = 255
+    return "#%02X%02X%02X%02X" % (r, g, b, a)
+
+
+def get_cont_col(col):
+    (h, l, s) = colorsys.rgb_to_hls(int(col[1:3], 16)/255.0, int(col[3:5], 16)/255.0, int(col[5:7], 16)/255.0)
+    l1 = 1 - l
+    if abs(l1 - l) < .15:
+        l1 = .15
+    (r, g, b) = colorsys.hls_to_rgb(h, l1, s)
+    return tohex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
 class SublimeKodi(sublime_plugin.EventListener):
@@ -94,10 +110,12 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                 popup_label = INFOS.return_label(view, selection)
-            elif "<textcolor" in line_contents or "<color" in line_contents:
+            elif "<textcolor" in line_contents or "<color" in line_contents or "<focusedcolor" in line_contents:
                 for item in INFOS.color_list:
                     if item["name"] == selection:
-                        popup_label = item["content"]
+                        color_hex = "#" + item["content"][2:]
+                        cont_color = get_cont_col(color_hex)
+                        popup_label = '<a style="background-color:%s;color:%s">%s</a>' % (color_hex+item["content"][0:2], cont_color, item["content"])
                         break
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
