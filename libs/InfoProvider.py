@@ -185,7 +185,7 @@ class InfoProvider():
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
 
     def update_labels(self):
-        if self.xml_folders:
+        if self.project_path:
             sublime.status_message("SublimeKodi: Updating Labels...")
             lang_file = self.get_addon_lang_file(self.project_path)
             po = polib.pofile(lang_file)
