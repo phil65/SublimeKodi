@@ -129,7 +129,7 @@ class InfoProvider():
             for node in self.include_list[view.file_name().split(os.sep)[-2]]:
                 if node["name"] == keyword:
                     return node[return_entry]
-            log("no node with name %s found" % keyword)
+            # log("no node with name %s found" % keyword)
 
     def return_label(self, view, selection):
         if selection.isdigit():
