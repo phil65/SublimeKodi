@@ -3,6 +3,7 @@ from Utils import *
 import sublime
 import codecs
 from polib import polib
+import re
 
 
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
@@ -14,6 +15,7 @@ class InfoProvider():
     def __init__(self):
         self.include_list = {}
         self.include_file_list = {}
+        self.window_file_list = {}
         self.color_list = []
         self.font_file = ""
         self.color_file = ""
@@ -84,6 +86,12 @@ class InfoProvider():
                 self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
             # log("%s: %i nodes" % (path, len(self.include_list)))
         log("Include List: %i nodes found." % len(self.include_list))
+
+    def update_xml_files(self):
+        self.include_ref_list = {}
+        for path in self.xml_folders:
+            xml_folder = os.path.join(self.project_path, path)
+            self.window_file_list[path] = get_xml_file_paths(xml_folder)
 
     def go_to_tag(self, view):
         keyword = findWord(view)
@@ -201,3 +209,28 @@ class InfoProvider():
             self.string_list = self.builtin_list + self.addon_string_list
             sublime.status_message("")
             log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
+
+
+    def check_variables(self, tag_type, regex):
+        var_regex = "(?<=\$%s\[)[^\]]+" % regex
+        var_refs = []
+        unused_vars = []
+        undefined_vars = []
+        for xml_file in self.window_file_list["1080i"]:
+            path = os.path.join(self.project_path, "1080i", xml_file)
+            with open(path) as f:
+                content = "\n".join(f.readlines())
+            matches = re.findall(var_regex, content)
+            for match in matches:
+                if match not in var_refs:
+                    var_refs.append(match.split(",")[0])
+        for ref in var_refs:
+            for node in self.include_list["1080i"]:
+                if node["type"] == tag_type and node["name"] == ref:
+                    break
+            else:
+                undefined_vars.append(node)
+        for node in self.include_list["1080i"]:
+            if node["type"] == tag_type and node["name"] not in var_refs:
+                unused_vars.append(node)
+        return undefined_vars, unused_vars

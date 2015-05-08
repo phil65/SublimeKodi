@@ -88,6 +88,18 @@ def get_include_file_paths(xml_path):
         return []
 
 
+def get_xml_file_paths(xml_path):
+    xml_files = []
+    if os.path.exists(xml_path):
+            for xml_file in os.listdir(xml_path):
+                if xml_file.endswith(".xml"):
+                    xml_files.append(xml_file)
+            log("File List: %i files found." % len(xml_files))
+            return xml_files
+    else:
+        return []
+
+
 def kodi_json_request(data):
     history = sublime.load_settings(SETTINGS_FILE)
     address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
