@@ -239,3 +239,31 @@ class InfoProvider():
             if node["type"] == tag_type and node["name"] not in ref_list:
                 unused_vars.append(node)
         return undefined_vars, unused_vars
+
+    def check_values(self):
+        common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include"]
+        checks = [[".//control[@type='button']/*", common + ["colordiffuse", "texturefocus", "animation", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
+                  [".//control[@type='radiobutton']/*", common + ["colordiffuse", "texturefocus", "animation", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus", "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
+                  [".//control[@type='togglebutton']/*", common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "animation", "texturenofocus", "label", "altlabel", "usealttexture", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
+                  [".//control[@type='label']/*", common + ["align", "aligny", "animation", "scroll", "scrollout", "info", "number", "angle", "haspath", "label", "textcolor", "selectedcolor", "font", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline", "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
+                  [".//control[@type='textbox']/*", common + ["align", "aligny", "animation", "autoscroll", "label", "info", "font", "textcolor", "selectedcolor", "shadowcolor", "pagecontrol"]],
+                  [".//control[@type='edit']/*", common + ["colordiffuse", "align", "aligny", "animation", "label", "hinttext", "font", "textoffsetx", "textoffsety", "pulseonselect", "textcolor", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor", "texturefocus", "texturenofocus", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "hitrect", "enable"]],
+                  [".//control[@type='image']/*", common + ["align", "aligny", "animation", "aspectratio", "fadetime", "colordiffuse", "texture", "bordertexture", "bordersize", "info"]],
+                  [".//control[@type='multiimage']/*", common + ["align", "aligny", "animation", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
+                  [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "animation", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
+                  [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "animation", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
+                  [".//content/*", ["item", "include"]]]
+        listitems = []
+        for xml_file in self.window_file_list["1080i"]:
+            path = os.path.join(self.project_path, "1080i", xml_file)
+            root = get_root_from_file(path)
+            for check in checks:
+                for node in root.findall(check[0]):
+                    if node.tag not in check[1]:
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "filename": xml_file,
+                                "file": path}
+                        listitems.append(item)
+        return listitems
+
