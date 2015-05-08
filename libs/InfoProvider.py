@@ -218,26 +218,27 @@ class InfoProvider():
         var_refs = []
         unused_vars = []
         undefined_vars = []
-        for xml_file in self.window_file_list["1080i"]:
-            path = os.path.join(self.project_path, "1080i", xml_file)
-            with open(path, encoding="utf8") as f:
-                for i, line in enumerate(f.readlines()):
-                    for match in re.finditer(var_regex, line):
-                        item = {"line": i + 1,
-                                "type": tag_type,
-                                "file": path,
-                                "name": match.group(0).split(",")[0]}
-                        var_refs.append(item)
-        for ref in var_refs:
-            for node in self.include_list["1080i"]:
-                if node["type"] == tag_type and node["name"] == ref["name"]:
-                    break
-            else:
-                undefined_vars.append(ref)
-        ref_list = [d['name'] for d in var_refs]
-        for node in self.include_list["1080i"]:
-            if node["type"] == tag_type and node["name"] not in ref_list:
-                unused_vars.append(node)
+        for folder in self.xml_folders:
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                with open(path, encoding="utf8") as f:
+                    for i, line in enumerate(f.readlines()):
+                        for match in re.finditer(var_regex, line):
+                            item = {"line": i + 1,
+                                    "type": tag_type,
+                                    "file": path,
+                                    "name": match.group(0).split(",")[0]}
+                            var_refs.append(item)
+            for ref in var_refs:
+                for node in self.include_list[folder]:
+                    if node["type"] == tag_type and node["name"] == ref["name"]:
+                        break
+                else:
+                    undefined_vars.append(ref)
+            ref_list = [d['name'] for d in var_refs]
+            for node in self.include_list[folder]:
+                if node["type"] == tag_type and node["name"] not in ref_list:
+                    unused_vars.append(node)
         return undefined_vars, unused_vars
 
     def check_values(self):
@@ -254,16 +255,17 @@ class InfoProvider():
                   [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "animation", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
                   [".//content/*", ["item", "include"]]]
         listitems = []
-        for xml_file in self.window_file_list["1080i"]:
-            path = os.path.join(self.project_path, "1080i", xml_file)
-            root = get_root_from_file(path)
-            for check in checks:
-                for node in root.findall(check[0]):
-                    if node.tag not in check[1]:
-                        item = {"line": node.sourceline,
-                                "type": node.tag,
-                                "filename": xml_file,
-                                "file": path}
-                        listitems.append(item)
+        for folder in self.xml_folders:
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                root = get_root_from_file(path)
+                for check in checks:
+                    for node in root.findall(check[0]):
+                        if node.tag not in check[1]:
+                            item = {"line": node.sourceline,
+                                    "type": node.tag,
+                                    "filename": xml_file,
+                                    "file": path}
+                            listitems.append(item)
         return listitems
 
