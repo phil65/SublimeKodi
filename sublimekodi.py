@@ -75,7 +75,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             # inside_bracket = True
             identifier = view.substr(label_region)
-            log(identifier)
+            # log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
                 popup_label = INFOS.return_label(view, selection)
@@ -235,7 +235,6 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
     def run(self, tag_type, regex):
         INFOS.update_xml_files()
         self.undefined_vars, self.unused_vars = INFOS.check_variables(tag_type, regex)
-        self.undefined_vars = []  # todo: fix undefined
         listitems = []
         self.nodes = self.unused_vars + self.undefined_vars
         for item in self.unused_vars:

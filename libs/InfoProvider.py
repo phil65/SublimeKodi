@@ -210,7 +210,6 @@ class InfoProvider():
             sublime.status_message("")
             log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
 
-
     def check_variables(self, tag_type, regex):
         var_regex = "(?<=\$%s\[)[^\]]+" % regex
         var_refs = []
@@ -219,18 +218,21 @@ class InfoProvider():
         for xml_file in self.window_file_list["1080i"]:
             path = os.path.join(self.project_path, "1080i", xml_file)
             with open(path) as f:
-                content = "\n".join(f.readlines())
-            matches = re.findall(var_regex, content)
-            for match in matches:
-                if match not in var_refs:
-                    var_refs.append(match.split(",")[0])
+                for i, line in enumerate(f.readlines()):
+                    for match in re.finditer(var_regex, line):
+                        item = {"line": i + 1,
+                                "type": tag_type,
+                                "file": path,
+                                "name": match.group(0).split(",")[0]}
+                        var_refs.append(item)
         for ref in var_refs:
             for node in self.include_list["1080i"]:
-                if node["type"] == tag_type and node["name"] == ref:
+                if node["type"] == tag_type and node["name"] == ref["name"]:
                     break
             else:
-                undefined_vars.append(node)
+                undefined_vars.append(ref)
+        ref_list = [d['name'] for d in var_refs]
         for node in self.include_list["1080i"]:
-            if node["type"] == tag_type and node["name"] not in var_refs:
+            if node["type"] == tag_type and node["name"] not in ref_list:
                 unused_vars.append(node)
         return undefined_vars, unused_vars
