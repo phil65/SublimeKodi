@@ -222,7 +222,7 @@ class InfoProvider():
                     for match in re.finditer(var_regex, line):
                         item = {"line": i + 1,
                                 "type": tag_type,
-                                "file": path.encode("utf-8"),
+                                "file": path,
                                 "name": match.group(0).split(",")[0]}
                         var_refs.append(item)
         for ref in var_refs:

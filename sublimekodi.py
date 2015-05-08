@@ -610,8 +610,6 @@ class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
         for e in elements:
             if line < e.sourceline:
                 self.element = e
-                log(tree.getpath(e))
-                log(e.sourceline)
                 break
     # if len(INFOS.xml_folders) > 2:
         sublime.active_window().show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
