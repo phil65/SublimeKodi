@@ -210,8 +210,11 @@ class InfoProvider():
             sublime.status_message("")
             log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
 
-    def check_variables(self, tag_type, regex):
-        var_regex = "(?<=\$%s\[)[^\]]+" % regex
+    def check_variables(self, tag_type):
+        if tag_type == "variable":
+            var_regex = "(?<=\$VAR\[)[^\]]+"
+        else:
+            var_regex = "(?<=<include>)[^<]+"
         var_refs = []
         unused_vars = []
         undefined_vars = []

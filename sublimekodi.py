@@ -232,9 +232,9 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
 class CheckVariablesCommand(sublime_plugin.WindowCommand):
 
-    def run(self, tag_type, regex):
+    def run(self, tag_type):
         INFOS.update_xml_files()
-        self.undefined_vars, self.unused_vars = INFOS.check_variables(tag_type, regex)
+        self.undefined_vars, self.unused_vars = INFOS.check_variables(tag_type)
         listitems = []
         self.nodes = self.unused_vars + self.undefined_vars
         for item in self.unused_vars:
