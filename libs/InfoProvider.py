@@ -217,12 +217,12 @@ class InfoProvider():
         undefined_vars = []
         for xml_file in self.window_file_list["1080i"]:
             path = os.path.join(self.project_path, "1080i", xml_file)
-            with open(path) as f:
+            with open(path, encoding="utf8") as f:
                 for i, line in enumerate(f.readlines()):
                     for match in re.finditer(var_regex, line):
                         item = {"line": i + 1,
                                 "type": tag_type,
-                                "file": path,
+                                "file": path.encode("utf-8"),
                                 "name": match.group(0).split(",")[0]}
                         var_refs.append(item)
         for ref in var_refs:
