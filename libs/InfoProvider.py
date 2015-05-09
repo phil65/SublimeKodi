@@ -287,6 +287,7 @@ class InfoProvider():
                       ["animation", ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       ["effect", ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
+        noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
@@ -326,6 +327,14 @@ class InfoProvider():
                                 "type": node.tag,
                                 "filename": xml_file,
                                 "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.attrib["condition"]),
+                                "file": path}
+                        listitems.append(item)
+                for node in root.xpath(noop_tags):
+                    if node.text == "-" or not node.text:
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "filename": xml_file,
+                                "message": "Use 'noop' instead of '-' for %s:%i" % (xml_file, node.sourceline),
                                 "file": path}
                         listitems.append(item)
         return listitems
