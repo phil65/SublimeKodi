@@ -286,7 +286,7 @@ class InfoProvider():
                       ["control", ["id", "type"]],
                       ["animation", ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       ["effect", ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
-
+        bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
@@ -309,5 +309,19 @@ class InfoProvider():
                                         "filename": xml_file,
                                         "file": path}
                                 listitems.append(item)
-
+                for tag in bracket_tags:
+                    for node in root.findall(tag):
+                        if not check_brackets(node.text):
+                            item = {"line": node.sourceline,
+                                    "type": node.tag,
+                                    "filename": xml_file,
+                                    "file": path}
+                            listitems.append(item)
+                for node in root.findall(".//*[@condition]"):
+                    if not check_brackets(node.attrib["condition"]):
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "filename": xml_file,
+                                "file": path}
+                        listitems.append(item)
         return listitems
