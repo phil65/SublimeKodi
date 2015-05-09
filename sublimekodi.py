@@ -245,6 +245,8 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
             listitems.append("Missing definition: %s" % (item["name"]))
         if listitems:
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        else:
+            sublime.message_dialog("No unused or undefined %ss found" % tag_type)
 
     def on_done(self, index):
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
