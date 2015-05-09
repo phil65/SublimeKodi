@@ -243,23 +243,56 @@ class InfoProvider():
 
     def check_values(self):
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
-        checks = [[".//control[@type='button']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
-                  [".//control[@type='radiobutton']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus", "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
-                  [".//control[@type='togglebutton']/*", common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "label", "altlabel", "usealttexture", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
-                  [".//control[@type='label']/*", common + ["align", "aligny", "scroll", "scrollout", "info", "number", "angle", "haspath", "label", "textcolor", "selectedcolor", "font", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline", "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
-                  [".//control[@type='textbox']/*", common + ["align", "aligny", "autoscroll", "label", "info", "font", "textcolor", "selectedcolor", "shadowcolor", "pagecontrol"]],
-                  [".//control[@type='edit']/*", common + ["colordiffuse", "align", "aligny", "label", "hinttext", "font", "textoffsetx", "textoffsety", "pulseonselect", "textcolor", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor", "texturefocus", "texturenofocus", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "hitrect", "enable"]],
-                  [".//control[@type='image']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "texture", "bordertexture", "bordersize", "info"]],
-                  [".//control[@type='multiimage']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
-                  [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
-                  [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
-                  [".//content/*", ["item", "include"]]]
+        tag_checks = [[".//control[@type='button']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
+                      [".//control[@type='radiobutton']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus", "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
+                      [".//control[@type='togglebutton']/*", common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "label", "altlabel", "usealttexture", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
+                      [".//control[@type='label']/*", common + ["align", "aligny", "scroll", "scrollout", "info", "number", "angle", "haspath", "label", "textcolor", "selectedcolor", "font", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline", "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
+                      [".//control[@type='textbox']/*", common + ["align", "aligny", "autoscroll", "label", "info", "font", "textcolor", "selectedcolor", "shadowcolor", "pagecontrol"]],
+                      [".//control[@type='edit']/*", common + ["colordiffuse", "align", "aligny", "label", "hinttext", "font", "textoffsetx", "textoffsety", "pulseonselect", "textcolor", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor", "texturefocus", "texturenofocus", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "hitrect", "enable"]],
+                      [".//control[@type='image']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "texture", "bordertexture", "bordersize", "info"]],
+                      [".//control[@type='multiimage']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
+                      [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
+                      [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
+                      [".//content/*", ["item", "include"]],
+                      [".//variable/*", ["value"]]]
+        att_checks = [["aspectratio", ["align", "aligny", "scalediffuse"]],
+                      ["texture", ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
+                      ["label", ["fallback"]],
+                      ["align", []],
+                      ["aligny", []],
+                      ["posx", []],
+                      ["posy", []],
+                      ["height", ["min", "max"]],
+                      ["width", ["min", "max"]],
+                      ["camera", ["x", "y"]],
+                      ["hitrect", ["x", "y", "w", "h"]],
+                      ["textoffsetx", []],
+                      ["textoffsety", []],
+                      ["onload", ["condition"]],
+                      ["onunload", ["condition"]],
+                      ["onclick", ["condition"]],
+                      ["onleft", ["condition"]],
+                      ["onright", ["condition"]],
+                      ["onup", ["condition"]],
+                      ["ondown", ["condition"]],
+                      ["onback", ["condition"]],
+                      ["onfocus", ["condition"]],
+                      ["onunfocus", ["condition"]],
+                      ["value", ["condition"]],
+                      ["property", ["name", "fallback"]],
+                      ["focusedlayout", ["height", "width", "condition"]],
+                      ["itemlayout", ["height", "width", "condition"]],
+                      ["item", ["id"]],
+                      ["control", ["id", "type"]],
+                      ["animation", ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
+                      ["effect", ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
+
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
-                for check in checks:
+                for check in tag_checks:
                     for node in root.findall(check[0]):
                         if node.tag not in check[1]:
                             item = {"line": node.sourceline,
@@ -267,5 +300,14 @@ class InfoProvider():
                                     "filename": xml_file,
                                     "file": path}
                             listitems.append(item)
-        return listitems
+                for check in att_checks:
+                    for node in root.findall(".//%s" % check[0]):
+                        for attr in node.attrib:
+                            if attr not in check[1]:
+                                item = {"line": node.sourceline,
+                                        "type": node.tag,
+                                        "filename": xml_file,
+                                        "file": path}
+                                listitems.append(item)
 
+        return listitems
