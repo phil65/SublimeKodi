@@ -212,9 +212,9 @@ class InfoProvider():
 
     def check_variables(self, tag_type):
         if tag_type == "variable":
-            var_regex = "(?<=\$VAR\[)[^\]]+"
+            var_regex = "\$VAR\[(.*?)\]"
         else:
-            var_regex = "(?<=<include>)[^<]+"
+            var_regex = "<include.*>(.*?)<\/include>"
         var_refs = []
         unused_vars = []
         undefined_vars = []
@@ -227,7 +227,7 @@ class InfoProvider():
                             item = {"line": i + 1,
                                     "type": tag_type,
                                     "file": path,
-                                    "name": match.group(0).split(",")[0]}
+                                    "name": match.group(1).split(",")[0]}
                             var_refs.append(item)
             for ref in var_refs:
                 for node in self.include_list[folder]:
