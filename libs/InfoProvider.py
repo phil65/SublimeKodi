@@ -85,7 +85,7 @@ class InfoProvider():
                 sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
                 self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
             # log("%s: %i nodes" % (path, len(self.include_list)))
-        log("Include List: %i nodes found." % len(self.include_list))
+            log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[path]), path))
 
     def update_xml_files(self):
         self.include_ref_list = {}
