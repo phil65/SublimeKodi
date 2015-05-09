@@ -3,6 +3,7 @@ from lxml import etree as ET
 import sublime
 import base64
 import json
+import threading
 from urllib.request import Request, urlopen
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
@@ -100,15 +101,35 @@ def get_xml_file_paths(xml_path):
         return []
 
 
-def kodi_json_request(data):
-    history = sublime.load_settings(SETTINGS_FILE)
-    address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
-    credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
-    encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
-    authorization = b'Basic ' + encoded_credentials
-    headers = {'Content-Type': 'application/json', 'Authorization': authorization}
-    json_data = json.dumps(json.loads(data))
-    post_data = json_data.encode('utf-8')
-    request = Request(address, post_data, headers)
-    result = urlopen(request)
-    return result.read()
+def kodi_json_request(data, wait=False):
+    request_thread = json_request_thread(data)
+    request_thread.start()
+    if wait:
+        request_thread.join()
+        return request_thread.result
+    else:
+        return True
+
+
+class json_request_thread(threading.Thread):
+
+    def __init__(self, data=None):
+        threading.Thread.__init__(self)
+        self.data = data
+        self.result = None
+
+    def run(self):
+        history = sublime.load_settings(SETTINGS_FILE)
+        address = history.get("kodi_address", "http://localhost:8080") + "/jsonrpc"
+        credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
+        encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
+        authorization = b'Basic ' + encoded_credentials
+        headers = {'Content-Type': 'application/json', 'Authorization': authorization}
+        json_data = json.dumps(json.loads(self.data))
+        post_data = json_data.encode('utf-8')
+        request = Request(address, post_data, headers)
+        result = urlopen(request).read()
+        result = json.loads(result.decode("utf-8"))
+        log(result)
+        self.result = result
+        return result

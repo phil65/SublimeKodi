@@ -88,14 +88,14 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
-            elif identifier.startswith("INFO"):
-                data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
-                result = kodi_json_request(data)
-                result = json.loads(result.decode("utf-8"))
-                log(result)
-                key, value = result["result"].popitem()
-                if value:
-                    popup_label = str(value)
+            # elif identifier.startswith("INFO"):
+            #     data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
+            #     result = kodi_json_request(data)
+            #     result = json.loads(result.decode("utf-8"))
+            #     log(result)
+            #     key, value = result["result"].popitem()
+            #     if value:
+            #         popup_label = str(value)
             elif "<include" in line_contents and "name=" not in line_contents:
                 node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
@@ -164,7 +164,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if history.get("auto_reload_skin", True):
                     self.is_modified = False
                     sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
-                INFOS.update_include_list()
+                folder = view.file_name().split(os.sep)[-2]
+                if view.file_name() in INFOS.include_file_list[folder]:
+                    INFOS.update_include_list()
                 if view.file_name().endswith("colors/defaults.xml"):
                     INFOS.get_colors()
                 if view.file_name().endswith("ont.xml"):
@@ -273,8 +275,7 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self, builtin):
         data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
-        result = kodi_json_request(data)
-        log(result)
+        kodi_json_request(data)
 
 
 class GetInfoLabelsCommand(sublime_plugin.WindowCommand):
@@ -283,8 +284,7 @@ class GetInfoLabelsCommand(sublime_plugin.WindowCommand):
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
-        result = kodi_json_request(data)
-        log(result)
+        kodi_json_request(data)
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
