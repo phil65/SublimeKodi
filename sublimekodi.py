@@ -259,12 +259,14 @@ class CheckValuesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         INFOS.update_xml_files()
-        panel_items = []
+        listitems = []
         self.nodes = INFOS.check_values()
         for item in self.nodes:
-            panel_items.append("invalid value in %s:%i: %s" % (item["filename"], item["line"], item["type"]))
-        if panel_items:
-            sublime.active_window().show_quick_panel(panel_items, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+            listitems.append(item["message"])
+        if listitems:
+            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        else:
+            sublime.message_dialog("No errors detected")
 
     def on_done(self, index):
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)

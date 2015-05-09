@@ -298,6 +298,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
+                                    "message": "invalid value in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
@@ -307,6 +308,7 @@ class InfoProvider():
                                 item = {"line": node.sourceline,
                                         "type": node.tag,
                                         "filename": xml_file,
+                                        "message": "invalid value in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
                                         "file": path}
                                 listitems.append(item)
                 for tag in bracket_tags:
@@ -315,6 +317,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
+                                    "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.text),
                                     "file": path}
                             listitems.append(item)
                 for node in root.findall(".//*[@condition]"):
@@ -322,6 +325,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
+                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.attrib["condition"]),
                                 "file": path}
                         listitems.append(item)
         return listitems
