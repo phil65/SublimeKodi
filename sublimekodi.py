@@ -134,7 +134,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if os.path.exists(imagepath) and not os.path.isdir(imagepath):
                     im = Image.open(imagepath)
                     file_size = os.path.getsize(imagepath) / 1024
-                    popup_label = "Size: %s <br>File size: %.2f kb" % (str(im.size), file_size)
+                    popup_label = "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
