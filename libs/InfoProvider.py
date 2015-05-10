@@ -288,11 +288,15 @@ class InfoProvider():
                       ["effect", ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
+        double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
+                       "colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor",
+                       "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
+                tree = ET.ElementTree(root)
                 for check in tag_checks:
                     for node in root.findall(check[0]):
                         if node.tag not in check[1]:
@@ -334,7 +338,17 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "Use 'noop' instead of '-' for %s:%i" % (xml_file, node.sourceline),
+                                "message": "Use 'noop' for empty calls in %s:%i <%s>" % (xml_file, node.sourceline, node.tag),
                                 "file": path}
                         listitems.append(item)
+                for check in double_tags:
+                    for node in root.xpath(".//" + check):
+                        xpath = tree.getpath(node)
+                        if xpath.endswith("]"):
+                            item = {"line": node.sourceline,
+                                    "type": node.tag,
+                                    "filename": xml_file,
+                                    "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "file": path}
+                            listitems.append(item)
         return listitems
