@@ -360,9 +360,7 @@ class InfoProvider():
                                     "file": path}
                             listitems.append(item)
                 for check in allowed_attr:
-                    xpath = ".//*[(@%s)]" % check[0]
-                    log(xpath)
-                    for node in root.xpath(xpath):
+                    for node in root.xpath(".//*[(@%s)]" % check[0]):
                         if node.attrib[check[0]] not in check[1]:
                             item = {"line": node.sourceline,
                                     "type": node.tag,
