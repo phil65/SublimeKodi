@@ -255,55 +255,33 @@ class InfoProvider():
                       [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
                       [".//content/*", ["item", "include"]],
                       [".//variable/*", ["value"]]]
-        att_checks = [["aspectratio", ["align", "aligny", "scalediffuse"]],
-                      ["texture", ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
-                      ["label", ["fallback"]],
-                      ["align", []],
-                      ["aligny", []],
-                      ["posx", []],
-                      ["posy", []],
-                      ["height", ["min", "max"]],
-                      ["width", ["min", "max"]],
-                      ["camera", ["x", "y"]],
-                      ["hitrect", ["x", "y", "w", "h"]],
-                      ["textoffsetx", []],
-                      ["textoffsety", []],
-                      ["onload", ["condition"]],
-                      ["onunload", ["condition"]],
-                      ["onclick", ["condition"]],
-                      ["onleft", ["condition"]],
-                      ["onright", ["condition"]],
-                      ["onup", ["condition"]],
-                      ["ondown", ["condition"]],
-                      ["onback", ["condition"]],
-                      ["onfocus", ["condition"]],
-                      ["onunfocus", ["condition"]],
-                      ["value", ["condition"]],
-                      ["property", ["name", "fallback"]],
-                      ["focusedlayout", ["height", "width", "condition"]],
-                      ["itemlayout", ["height", "width", "condition"]],
-                      ["item", ["id"]],
-                      ["control", ["id", "type"]],
-                      ["animation", ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
-                      ["effect", ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
+        att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
+                      [["texture"], ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
+                      [["label"], ["fallback"]],
+                      [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], []],
+                      [["height", "width"], ["min", "max"]],
+                      [["camera"], ["x", "y"]],
+                      [["hitrect"], ["x", "y", "w", "h"]],
+                      [["onload", "onunload", "onclick", "onleft", "onright", "onup", "ondown", "onback", "onfocus", "onunfocus", "value"], ["condition"]],
+                      [["property"], ["name", "fallback"]],
+                      [["focusedlayout", "itemlayout"], ["height", "width", "condition"]],
+                      [["item"], ["id"]],
+                      [["control"], ["id", "type"]],
+                      [["animation"], ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
+                      [["effect"], ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
                        "colordiffuse", "texturefocus", "texturenofocus", "font", "selected", "textcolor", "disabledcolor", "selectedcolor",
                        "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
-                       # special cases: label
-        allowed_text = [["align", ["left", "center", "right", "justify"]],
-                        ["aspectratio", ["keep", "scale", "stretch", "center"]],
-                        ["aligny", ["top", "center", "bottom"]],
-                        ["orientation", ["horizontal", "vertical"]],
-                        ["subtype", ["page", "int", "float", "text"]],
-                        ["action", ["volume", "seek"]],
-                        ["scroll", ["false", "true", "yes", "no"]],
-                        ["randomize", ["false", "true", "yes", "no"]],
-                        ["scrollout", ["false", "true", "yes", "no"]],
-                        ["pulseonselect", ["false", "true", "yes", "no"]],
-                        ["reverse", ["false", "true", "yes", "no"]],
-                        ["usecontrolcoords", ["false", "true", "yes", "no"]]]
+        # special cases: label
+        allowed_text = [[["align"], ["left", "center", "right", "justify"]],
+                        [["aspectratio"], ["keep", "scale", "stretch", "center"]],
+                        [["aligny"], ["top", "center", "bottom"]],
+                        [["orientation"], ["horizontal", "vertical"]],
+                        [["subtype"], ["page", "int", "float", "text"]],
+                        [["action"], ["volume", "seek"]],
+                        [["scroll", "randomize", "scrollout", "pulseonselect", "reverse", "usecontrolcoords"], ["false", "true", "yes", "no"]]]
         allowed_attr = [[".//[(@align)]", ["left", "center", "right", "justify"]],
                         [".//[(@aligny)]", ["top", "center", "bottom"]],
                         [".//[(@flipy)] | .//[(@flipx)]", ["true", "false"]]]
@@ -324,7 +302,8 @@ class InfoProvider():
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
-                    for node in root.xpath(".//%s" % check[0]):
+                    xpath = ".//" + " | .//".join(check[0])
+                    for node in root.xpath(".//%s" % xpath):
                         for attr in node.attrib:
                             if attr not in check[1]:
                                 item = {"line": node.sourceline,
@@ -358,20 +337,21 @@ class InfoProvider():
                                 "message": "Use 'noop' for empty calls in %s:%i <%s>" % (xml_file, node.sourceline, node.tag),
                                 "file": path}
                         listitems.append(item)
-                for check in double_tags:
-                    for node in root.xpath(".//" + check):
-                        if not node.getchildren():
-                            xpath = tree.getpath(node)
-                            if xpath.endswith("]"):
-                                item = {"line": node.sourceline,
-                                        "type": node.tag,
-                                        "filename": xml_file,
-                                        "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
-                                        "file": path}
-                                listitems.append(item)
+                xpath = ".//" + " | .//".join(double_tags)
+                for node in root.xpath(xpath):
+                    if not node.getchildren():
+                        xpath = tree.getpath(node)
+                        if xpath.endswith("]"):
+                            item = {"line": node.sourceline,
+                                    "type": node.tag,
+                                    "filename": xml_file,
+                                    "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "file": path}
+                            listitems.append(item)
                 for check in allowed_text:
-                    for node in root.xpath(".//" + check[0]):
-                        if node.text not in check[1]:
+                    xpath = ".//" + " | .//".join(check[0])
+                    for node in root.xpath(xpath):
+                        if node.text.lower() not in check[1]:
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
