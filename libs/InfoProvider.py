@@ -242,7 +242,9 @@ class InfoProvider():
         return undefined_vars, unused_vars
 
     def check_values(self):
+        # available for all controls
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
+        # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//control[@type='button']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
                       [".//control[@type='radiobutton']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus", "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
                       [".//control[@type='togglebutton']/*", common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "label", "altlabel", "usealttexture", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
@@ -255,6 +257,7 @@ class InfoProvider():
                       [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
                       [".//content/*", ["item", "include"]],
                       [".//variable/*", ["value"]]]
+        # allowed attributes for some specific nodes
         att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
                       [["texture"], ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
                       [["label"], ["fallback"]],
@@ -269,12 +272,16 @@ class InfoProvider():
                       [["control"], ["id", "type"]],
                       [["animation"], ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       [["effect"], ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
+        # check correct parantheses for some nodes
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
+        # check some nodes to use noop instead of "-" / empty
         noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
+        # check that some nodes only exist once on each level
+        # todo: special cases: label for fadelabel
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
                        "colordiffuse", "texturefocus", "texturenofocus", "font", "selected", "textcolor", "disabledcolor", "selectedcolor",
                        "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
-        # special cases: label
+        # check that some nodes only contain specific text
         allowed_text = [[["align"], ["left", "center", "right", "justify"]],
                         [["aspectratio"], ["keep", "scale", "stretch", "center"]],
                         [["aligny"], ["top", "center", "bottom"]],
@@ -282,6 +289,7 @@ class InfoProvider():
                         [["subtype"], ["page", "int", "float", "text"]],
                         [["action"], ["volume", "seek"]],
                         [["scroll", "randomize", "scrollout", "pulseonselect", "reverse", "usecontrolcoords"], ["false", "true", "yes", "no"]]]
+        # check that some attributes may only contain specific values
         allowed_attr = [["align", ["left", "center", "right", "justify"]],
                         ["aligny", ["top", "center", "bottom"]],
                         ["flipx", ["true", "false"]],
