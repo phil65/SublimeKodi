@@ -282,9 +282,10 @@ class InfoProvider():
                         [["subtype"], ["page", "int", "float", "text"]],
                         [["action"], ["volume", "seek"]],
                         [["scroll", "randomize", "scrollout", "pulseonselect", "reverse", "usecontrolcoords"], ["false", "true", "yes", "no"]]]
-        allowed_attr = [[".//[(@align)]", ["left", "center", "right", "justify"]],
-                        [".//[(@aligny)]", ["top", "center", "bottom"]],
-                        [".//[(@flipy)] | .//[(@flipx)]", ["true", "false"]]]
+        allowed_attr = [["align", ["left", "center", "right", "justify"]],
+                        ["aligny", ["top", "center", "bottom"]],
+                        ["flipx", ["true", "false"]],
+                        ["flipy", ["true", "false"]]]
 
         listitems = []
         for folder in self.xml_folders:
@@ -358,13 +359,15 @@ class InfoProvider():
                                     "message": "invalid value for %s in %s:%i: %s" % (node.tag, xml_file, node.sourceline, node.text),
                                     "file": path}
                             listitems.append(item)
-                # for check in allowed_attr:
-                #     for node in root.xpath(check[0]):
-                #         if node.text not in check[1]:
-                #             item = {"line": node.sourceline,
-                #                     "type": node.tag,
-                #                     "filename": xml_file,
-                #                     "message": "invalid value for %s in %s:%i: %s" % (node.tag, xml_file, node.sourceline, node.text),
-                #                     "file": path}
-                #             listitems.append(item)
+                for check in allowed_attr:
+                    xpath = ".//*[(@%s)]" % check[0]
+                    log(xpath)
+                    for node in root.xpath(xpath):
+                        if node.attrib[check[0]] not in check[1]:
+                            item = {"line": node.sourceline,
+                                    "type": node.tag,
+                                    "filename": xml_file,
+                                    "message": "invalid value for %s attribute in %s:%i: %s" % (check[0], xml_file, node.sourceline, node.attrib[check[0]]),
+                                    "file": path}
+                            listitems.append(item)
         return listitems
