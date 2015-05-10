@@ -255,6 +255,7 @@ class InfoProvider():
                       [".//control[@type='multiimage']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
                       [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
                       [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
+                      [".//control[@type='list']/*", common + ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype"]],
                       [".//content/*", ["item", "include"]],
                       [".//variable/*", ["value"]]]
         # allowed attributes for some specific nodes
@@ -325,11 +326,11 @@ class InfoProvider():
                                 listitems.append(item)
                 xpath = ".//" + " | .//".join(bracket_tags)
                 for node in root.xpath(xpath):
-                    if not check_brackets(node.text):
+                    if not node.text or not check_brackets(node.text):
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.text),
+                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, str(node.text)),
                                 "file": path}
                         listitems.append(item)
                 for node in root.xpath(".//*[@condition]"):
@@ -387,7 +388,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "invalid value for font in %s:%i: %s" % (xml_file, node.sourceline, node.text),
+                                "message": "invalid font in %s:%i: %s" % (xml_file, node.sourceline, node.text),
                                 "file": path}
                         listitems.append(item)
         return listitems
