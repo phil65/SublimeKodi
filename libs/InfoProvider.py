@@ -275,7 +275,7 @@ class InfoProvider():
         # check correct parantheses for some nodes
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         # check some nodes to use noop instead of "-" / empty
-        noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
+        noop_tags = ["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]
         # check that some nodes only exist once on each level
         # todo: special cases: label for fadelabel
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
@@ -338,7 +338,8 @@ class InfoProvider():
                                 "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.attrib["condition"]),
                                 "file": path}
                         listitems.append(item)
-                for node in root.xpath(noop_tags):
+                xpath = ".//" + " | .//".join(noop_tags)
+                for node in root.xpath(xpath):
                     if node.text == "-" or not node.text:
                         item = {"line": node.sourceline,
                                 "type": node.tag,
