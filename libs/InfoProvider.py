@@ -299,7 +299,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "invalid value in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "message": "invalid tag in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
@@ -310,18 +310,18 @@ class InfoProvider():
                                 item = {"line": node.sourceline,
                                         "type": node.tag,
                                         "filename": xml_file,
-                                        "message": "invalid value in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                        "message": "invalid attribute in %s:%i: %s" % (xml_file, node.sourceline, attr),
                                         "file": path}
                                 listitems.append(item)
-                for tag in bracket_tags:
-                    for node in root.xpath(tag):
-                        if not check_brackets(node.text):
-                            item = {"line": node.sourceline,
-                                    "type": node.tag,
-                                    "filename": xml_file,
-                                    "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.text),
-                                    "file": path}
-                            listitems.append(item)
+                xpath = ".//" + " | .//".join(bracket_tags)
+                for node in root.xpath(xpath):
+                    if not check_brackets(node.text):
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "filename": xml_file,
+                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.text),
+                                "file": path}
+                        listitems.append(item)
                 for node in root.xpath(".//*[@condition]"):
                     if not check_brackets(node.attrib["condition"]):
                         item = {"line": node.sourceline,
