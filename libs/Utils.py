@@ -127,9 +127,8 @@ def get_xml_file_paths(xml_path):
     if os.path.exists(xml_path):
             for xml_file in os.listdir(xml_path):
                 if xml_file.endswith(".xml"):
-                    if xml_file.lower().endswith("script-skinshortcuts-includes.xml"):
-                        break
-                    xml_files.append(xml_file)
+                    if not xml_file.lower().endswith("script-skinshortcuts-includes.xml"):
+                        xml_files.append(xml_file)
             log("File List: %i files found." % len(xml_files))
             return xml_files
     else:
