@@ -261,6 +261,8 @@ class InfoProvider():
         att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
                       [["texture"], ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
                       [["label"], ["fallback"]],
+                      [["defaultcontrol"], ["always"]],
+                      [["visible"], ["allowhiddenfocus"]],
                       [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], []],
                       [["height", "width"], ["min", "max"]],
                       [["camera"], ["x", "y"]],
