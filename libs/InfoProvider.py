@@ -289,8 +289,25 @@ class InfoProvider():
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         noop_tags = ".//" + " | .//".join(["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"])
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
-                       "colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor",
+                       "colordiffuse", "texturefocus", "texturenofocus", "font", "selected", "textcolor", "disabledcolor", "selectedcolor",
                        "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
+                       # special cases: label
+        allowed_text = [["align", ["left", "center", "right", "justify"]],
+                        ["aspectratio", ["keep", "scale", "stretch", "center"]],
+                        ["aligny", ["top", "center", "bottom"]],
+                        ["orientation", ["horizontal", "vertical"]],
+                        ["subtype", ["page", "int", "float", "text"]],
+                        ["action", ["volume", "seek"]],
+                        ["scroll", ["false", "true", "yes", "no"]],
+                        ["randomize", ["false", "true", "yes", "no"]],
+                        ["scrollout", ["false", "true", "yes", "no"]],
+                        ["pulseonselect", ["false", "true", "yes", "no"]],
+                        ["reverse", ["false", "true", "yes", "no"]],
+                        ["usecontrolcoords", ["false", "true", "yes", "no"]]]
+        allowed_attr = [[".//[(@align)]", ["left", "center", "right", "justify"]],
+                        [".//[(@aligny)]", ["top", "center", "bottom"]],
+                        [".//[(@flipy)] | .//[(@flipx)]", ["true", "false"]]]
+
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
@@ -298,7 +315,7 @@ class InfoProvider():
                 root = get_root_from_file(path)
                 tree = ET.ElementTree(root)
                 for check in tag_checks:
-                    for node in root.findall(check[0]):
+                    for node in root.xpath(check[0]):
                         if node.tag not in check[1]:
                             item = {"line": node.sourceline,
                                     "type": node.tag,
@@ -307,7 +324,7 @@ class InfoProvider():
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
-                    for node in root.findall(".//%s" % check[0]):
+                    for node in root.xpath(".//%s" % check[0]):
                         for attr in node.attrib:
                             if attr not in check[1]:
                                 item = {"line": node.sourceline,
@@ -317,7 +334,7 @@ class InfoProvider():
                                         "file": path}
                                 listitems.append(item)
                 for tag in bracket_tags:
-                    for node in root.findall(tag):
+                    for node in root.xpath(tag):
                         if not check_brackets(node.text):
                             item = {"line": node.sourceline,
                                     "type": node.tag,
@@ -325,7 +342,7 @@ class InfoProvider():
                                     "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.text),
                                     "file": path}
                             listitems.append(item)
-                for node in root.findall(".//*[@condition]"):
+                for node in root.xpath(".//*[@condition]"):
                     if not check_brackets(node.attrib["condition"]):
                         item = {"line": node.sourceline,
                                 "type": node.tag,
@@ -343,12 +360,31 @@ class InfoProvider():
                         listitems.append(item)
                 for check in double_tags:
                     for node in root.xpath(".//" + check):
-                        xpath = tree.getpath(node)
-                        if xpath.endswith("]"):
+                        if not node.getchildren():
+                            xpath = tree.getpath(node)
+                            if xpath.endswith("]"):
+                                item = {"line": node.sourceline,
+                                        "type": node.tag,
+                                        "filename": xml_file,
+                                        "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                        "file": path}
+                                listitems.append(item)
+                for check in allowed_text:
+                    for node in root.xpath(".//" + check[0]):
+                        if node.text not in check[1]:
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "message": "invalid value for %s in %s:%i: %s" % (node.tag, xml_file, node.sourceline, node.text),
                                     "file": path}
                             listitems.append(item)
+                # for check in allowed_attr:
+                #     for node in root.xpath(check[0]):
+                #         if node.text not in check[1]:
+                #             item = {"line": node.sourceline,
+                #                     "type": node.tag,
+                #                     "filename": xml_file,
+                #                     "message": "invalid value for %s in %s:%i: %s" % (node.tag, xml_file, node.sourceline, node.text),
+                #                     "file": path}
+                #             listitems.append(item)
         return listitems
