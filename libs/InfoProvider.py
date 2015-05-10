@@ -368,7 +368,7 @@ class InfoProvider():
                                     "message": "invalid value for %s attribute in %s:%i: %s" % (check[0], xml_file, node.sourceline, node.attrib[check[0]]),
                                     "file": path}
                             listitems.append(item)
-                fontlist = []
+                fontlist = ["-"]
                 for item in self.fonts:
                     fontlist.append(item["name"])
                 for node in root.xpath(".//font"):
