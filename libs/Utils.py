@@ -4,8 +4,24 @@ import sublime
 import base64
 import json
 import threading
+import colorsys
 from urllib.request import Request, urlopen
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
+
+
+def tohex(r, g, b, a=None):
+    if a is None:
+        a = 255
+    return "#%02X%02X%02X%02X" % (r, g, b, a)
+
+
+def get_cont_col(col):
+    (h, l, s) = colorsys.rgb_to_hls(int(col[1:3], 16)/255.0, int(col[3:5], 16)/255.0, int(col[5:7], 16)/255.0)
+    l1 = 1 - l
+    if abs(l1 - l) < .15:
+        l1 = .15
+    (r, g, b) = colorsys.hls_to_rgb(h, l1, s)
+    return tohex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
 def checkPaths(paths):
@@ -111,6 +127,8 @@ def get_xml_file_paths(xml_path):
     if os.path.exists(xml_path):
             for xml_file in os.listdir(xml_path):
                 if xml_file.endswith(".xml"):
+                    if xml_file.lower().endswith("script-skinshortcuts-includes.xml"):
+                        break
                     xml_files.append(xml_file)
             log("File List: %i files found." % len(xml_files))
             return xml_files

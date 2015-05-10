@@ -368,4 +368,15 @@ class InfoProvider():
                                     "message": "invalid value for %s attribute in %s:%i: %s" % (check[0], xml_file, node.sourceline, node.attrib[check[0]]),
                                     "file": path}
                             listitems.append(item)
+                fontlist = []
+                for item in self.fonts:
+                    fontlist.append(item["name"])
+                for node in root.xpath(".//font"):
+                    if not node.getchildren() and node.text not in fontlist:
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "filename": xml_file,
+                                "message": "invalid value for font in %s:%i: %s" % (xml_file, node.sourceline, node.text),
+                                "file": path}
+                        listitems.append(item)
         return listitems

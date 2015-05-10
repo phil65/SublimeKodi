@@ -3,9 +3,7 @@ import sublime
 import re
 import os
 import sys
-import json
 import cgi
-import colorsys
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -27,21 +25,6 @@ elif sublime.platform() == "windows":
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
-
-
-def tohex(r, g, b, a=None):
-    if a is None:
-        a = 255
-    return "#%02X%02X%02X%02X" % (r, g, b, a)
-
-
-def get_cont_col(col):
-    (h, l, s) = colorsys.rgb_to_hls(int(col[1:3], 16)/255.0, int(col[3:5], 16)/255.0, int(col[5:7], 16)/255.0)
-    l1 = 1 - l
-    if abs(l1 - l) < .15:
-        l1 = .15
-    (r, g, b) = colorsys.hls_to_rgb(h, l1, s)
-    return tohex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
 class SublimeKodi(sublime_plugin.EventListener):
