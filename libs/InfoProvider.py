@@ -266,7 +266,7 @@ class InfoProvider():
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 new_items = self.check_file(path)
-                listitems.append(new_items)
+                listitems.extend(new_items)
         return listitems
 
     def check_file(self, path):
