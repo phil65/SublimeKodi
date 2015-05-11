@@ -79,12 +79,28 @@ class InfoProvider():
         self.include_list = {}
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
-            self.include_file_list[path] = get_include_file_paths(xml_folder)
+            self.include_file_list[path] = []
             self.include_list[path] = []
-            for xml_file in self.include_file_list[path]:
-                sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
-                self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
-            # log("%s: %i nodes" % (path, len(self.include_list)))
+            if xml_folder:
+                paths = [os.path.join(xml_folder, "Includes.xml"),
+                         os.path.join(xml_folder, "includes.xml")]
+                include_file = checkPaths(paths)
+
+                if include_file:
+                    log("found include file: " + include_file)
+                    root = get_root_from_file(include_file)
+                    self.include_file_list[path] = [include_file]
+                    self.include_list[path] += get_tags_from_file(include_file, ["include", "variable", "constant"])
+                    for node in root.findall("include"):
+                        if "file" in node.attrib:
+                            xml_file = os.path.join(xml_folder, node.attrib["file"])
+                            self.include_file_list[path].append(xml_file)
+                            sublime.status_message("SublimeKodi: Updating Includes from " + node.attrib["file"])
+                            self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
+                    log("File List: %i files found." % len(self.include_file_list[path]))
+                else:
+                    log("Could not find include file")
+                    log(paths)
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[path]), path))
 
     def update_xml_files(self):
