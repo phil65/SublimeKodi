@@ -250,7 +250,10 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
 
     def run(self, tag_type):
         INFOS.update_xml_files()
-        self.undefined_vars, self.unused_vars = INFOS.check_variables(tag_type)
+        if tag_type == "variable":
+            self.undefined_vars, self.unused_vars = INFOS.check_variables()
+        elif tag_type == "include":
+            self.undefined_vars, self.unused_vars = INFOS.check_includes()
         listitems = []
         self.nodes = self.unused_vars + self.undefined_vars
         for item in self.unused_vars:

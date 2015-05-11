@@ -226,11 +226,8 @@ class InfoProvider():
         sublime.status_message("")
         log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
 
-    def check_variables(self, tag_type):
-        if tag_type == "variable":
-            var_regex = "\$VAR\[(.*?)\]"
-        else:
-            var_regex = "<include.*>(.*?)<\/include>"
+    def check_variables(self):
+        var_regex = "\$VAR\[(.*?)\]"
         var_refs = []
         unused_vars = []
         undefined_vars = []
@@ -241,19 +238,52 @@ class InfoProvider():
                     for i, line in enumerate(f.readlines()):
                         for match in re.finditer(var_regex, line):
                             item = {"line": i + 1,
-                                    "type": tag_type,
+                                    "type": "variable",
                                     "file": path,
                                     "name": match.group(1).split(",")[0]}
                             var_refs.append(item)
             for ref in var_refs:
                 for node in self.include_list[folder]:
-                    if node["type"] == tag_type and node["name"] == ref["name"]:
+                    if node["type"] == "variable" and node["name"] == ref["name"]:
                         break
                 else:
                     undefined_vars.append(ref)
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
-                if node["type"] == tag_type and node["name"] not in ref_list:
+                if node["type"] == "variable" and node["name"] not in ref_list:
+                    unused_vars.append(node)
+        return undefined_vars, unused_vars
+
+    def check_includes(self):
+        var_refs = []
+        unused_vars = []
+        undefined_vars = []
+        for folder in self.xml_folders:
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                root = get_root_from_file(path)
+                # tree = ET.ElementTree(root)
+                for node in root.xpath(".//include"):
+                        if node.text:
+                            name = node.text
+                        elif node.find("./param") is not None:
+                            name = node.attrib["name"]
+                        else:
+                            continue
+                        item = {"line": node.sourceline,
+                                "type": node.tag,
+                                "file": path,
+                                "name": name}
+                        var_refs.append(item)
+            for ref in var_refs:
+                for node in self.include_list[folder]:
+                    if node["type"] == "include" and node["name"] == ref["name"]:
+                        break
+                else:
+                    undefined_vars.append(ref)
+            ref_list = [d['name'] for d in var_refs]
+            for node in self.include_list[folder]:
+                if node["type"] == "include" and node["name"] not in ref_list:
                     unused_vars.append(node)
         return undefined_vars, unused_vars
 
