@@ -100,7 +100,6 @@ class InfoProvider():
                 if "file" in node.attrib:
                     xml_file = os.path.join(xml_folder, node.attrib["file"])
                     self.update_includes(path, xml_file)
-            log("File List: %i files found." % len(self.include_file_list[path]))
         else:
             log("Could not find include file " + xml_file)
 
