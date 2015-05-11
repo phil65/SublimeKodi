@@ -18,6 +18,7 @@ class InfoProvider():
         self.window_file_list = {}
         self.color_list = []
         self.font_file = ""
+        self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
         self.xml_path = ""
@@ -43,37 +44,39 @@ class InfoProvider():
                 self.xml_path = ""
 
     def get_colors(self):
-        if self.project_path:
-            paths = [os.path.join(self.project_path, "colors", "defaults.xml")]
-            self.color_file = checkPaths(paths)
-            if self.color_file:
-                log("found color file: " + self.color_file)
-                root = get_root_from_file(self.color_file)
-                self.color_list = []
-                for node in root.findall("color"):
-                    color_dict = {"name": node.attrib["name"],
-                                  "line": node.sourceline,
-                                  "content": node.text,
-                                  "filename": self.color_file}
-                    self.color_list.append(color_dict)
-                log("color list: %i colors found" % len(self.color_list))
+        if not self.addon_xml_file:
+            return False
+        color_path = os.path.join(self.project_path, "colors")
+        for path in os.listdir(color_path):
+            log("found color file: " + path)
+            file_path = os.path.join(color_path, path)
+            root = get_root_from_file(file_path)
+            self.color_list = []
+            for node in root.findall("color"):
+                color_dict = {"name": node.attrib["name"],
+                              "line": node.sourceline,
+                              "content": node.text,
+                              "filename": file_path}
+                self.color_list.append(color_dict)
+            log("color list: %i colors found" % len(self.color_list))
 
     def get_fonts(self):
-        if self.xml_folders:
-            sublime.status_message("SublimeKodi: Updating fonts...")
-            paths = [os.path.join(self.xml_path, "Font.xml"),
-                     os.path.join(self.xml_path, "font.xml")]
-            self.font_file = checkPaths(paths)
-            if self.font_file:
-                root = get_root_from_file(self.font_file)
-                self.fonts = []
-                for node in root.find("fontset").findall("font"):
-                    string_dict = {"name": node.find("name").text,
-                                   "size": node.find("size").text,
-                                   "line": node.sourceline,
-                                   "content": ET.tostring(node, pretty_print=True),
-                                   "filename": node.find("filename").text}
-                    self.fonts.append(string_dict)
+        if not self.addon_xml_file:
+            return False
+        sublime.status_message("SublimeKodi: Updating fonts...")
+        paths = [os.path.join(self.xml_path, "Font.xml"),
+                 os.path.join(self.xml_path, "font.xml")]
+        self.font_file = checkPaths(paths)
+        if self.font_file:
+            root = get_root_from_file(self.font_file)
+            self.fonts = []
+            for node in root.find("fontset").findall("font"):
+                string_dict = {"name": node.find("name").text,
+                               "size": node.find("size").text,
+                               "line": node.sourceline,
+                               "content": ET.tostring(node, pretty_print=True),
+                               "filename": node.find("filename").text}
+                self.fonts.append(string_dict)
 
     def update_include_list(self):
         self.include_list = {}
@@ -132,7 +135,7 @@ class InfoProvider():
                         return True
                 for node in self.color_list:
                     if node["name"] == keyword:
-                        sublime.active_window().open_file("%s:%s" % (self.color_file, node["line"]), sublime.ENCODED_POSITION)
+                        sublime.active_window().open_file("%s:%s" % (node["filename"], node["line"]), sublime.ENCODED_POSITION)
                         return True
                 log("no node with name %s found" % keyword)
 
