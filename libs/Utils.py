@@ -143,7 +143,10 @@ class json_request_thread(threading.Thread):
         json_data = json.dumps(json.loads(self.data))
         post_data = json_data.encode('utf-8')
         request = Request(address + "/jsonrpc", post_data, headers)
-        result = urlopen(request).read()
+        try:
+            result = urlopen(request).read()
+        except:
+            log("Could not connect to Kodi")
         result = json.loads(result.decode("utf-8"))
         log(result)
         self.result = result

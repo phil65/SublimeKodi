@@ -38,14 +38,18 @@ class SublimeKodi(sublime_plugin.EventListener):
         history = sublime.load_settings(SETTINGS_FILE)
         if len(view.sel()) > 1:
             return None
-        if view.sel() and view.sel()[0] == self.prev_selection:
+        try:
+            region = view.sel()[0]
+        except:
+            log("on_selection_modified_async: view.sel() empty")
+            return None
+        if region == self.prev_selection:
             return None
         elif not INFOS.project_path:
             return None
         # inside_bracket = False
         popup_label = None
         identifier = ""
-        region = view.sel()[0]
         self.prev_selection = region
         view.hide_popup()
         scope_name = view.scope_name(region.b)
