@@ -74,17 +74,17 @@ def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
         root = get_root_from_file(path)
-        for node_tag in node_tags:
-            for node in root.findall(node_tag):
-                if "name" in node.attrib:
-                    include = {"name": node.attrib["name"],
-                               "file": path,
-                               "type": node.tag,
-                               "content": ET.tostring(node, pretty_print=True),
-                               "line": node.sourceline}
-                    if node.getnext() is not None:
-                        include["length"] = node.getnext().sourceline - node.sourceline
-                    nodes.append(include)
+        xpath = ".//" + " | .//".join(node_tags)
+        for node in root.xpath(xpath):
+            if "name" in node.attrib:
+                include = {"name": node.attrib["name"],
+                           "file": path,
+                           "type": node.tag,
+                           "content": ET.tostring(node, pretty_print=True),
+                           "line": node.sourceline}
+                if node.getnext() is not None:
+                    include["length"] = node.getnext().sourceline - node.sourceline
+                nodes.append(include)
     else:
         log("%s does not exist" % path)
     return nodes
