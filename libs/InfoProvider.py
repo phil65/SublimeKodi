@@ -33,13 +33,19 @@ class InfoProvider():
         self.xml_folders = []
         if self.addon_xml_file:
             root = get_root_from_file(self.addon_xml_file)
-            for node in root.findall('.//res'):
-                self.xml_folders.append(node.attrib["folder"])
+            if root.find(".//import[@addon='xbmc.python']") is None:
+                for node in root.findall('.//res'):
+                    self.xml_folders.append(node.attrib["folder"])
+            else:
+                paths = [os.path.join(self.project_path, "resources", "skins", "Default", "720p"),
+                         os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
+                folder = checkPaths(paths)
+                self.xml_folders.append(folder)
 
     def get_colors(self):
-        if not self.addon_xml_file:
-            return False
         color_path = os.path.join(self.project_path, "colors")
+        if not self.addon_xml_file or not os.path.exists(color_path):
+            return False
         self.color_list = []
         for path in os.listdir(color_path):
             log("found color file: " + path)
@@ -431,14 +437,15 @@ class InfoProvider():
                     listitems.append(item)
         fontlist = ["-"]
         folder = path.split(os.sep)[-2]
-        for item in self.fonts[folder]:
-            fontlist.append(item["name"])
-        for node in root.xpath(".//font"):
-            if not node.getchildren() and node.text not in fontlist:
-                item = {"line": node.sourceline,
-                        "type": node.tag,
-                        "filename": xml_file,
-                        "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
-                        "file": path}
-                listitems.append(item)
+        if folder in self.fonts:
+            for item in self.fonts[folder]:
+                fontlist.append(item["name"])
+            for node in root.xpath(".//font"):
+                if not node.getchildren() and node.text not in fontlist:
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
+                            "file": path}
+                    listitems.append(item)
         return listitems
