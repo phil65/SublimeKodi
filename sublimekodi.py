@@ -15,6 +15,7 @@ from PIL import Image
 from InfoProvider import InfoProvider
 from Utils import *
 import webbrowser
+import string
 INFOS = InfoProvider()
 # sublime.log_commands(True)
 APP_NAME = "kodi"
@@ -104,6 +105,11 @@ class SublimeKodi(sublime_plugin.EventListener):
                             color_hex = "#" + item["content"][2:]
                             cont_color = get_cont_col(color_hex)
                             popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a><br>' % (os.path.basename(item["filename"]), color_hex + item["content"][0:2], cont_color, item["content"])
+                    if not popup_label:
+                            if all(c in string.hexdigits for c in selection) and len(selection) == 8:
+                                color_hex = "#" + selection[2:]
+                                cont_color = get_cont_col(color_hex)
+                                popup_label += '<a style="background-color:%s;color:%s">%s</a>' % (color_hex + selection[0:2], cont_color, selection)
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
@@ -646,5 +652,5 @@ class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
         path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
         sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION)
 
-def plugin_loaded():
-    INFOS.check_project_change()
+# def plugin_loaded():
+#     INFOS.check_project_change()
