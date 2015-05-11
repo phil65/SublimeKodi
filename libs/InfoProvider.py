@@ -317,7 +317,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "invalid tag in %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "message": ["invalid tag on line %i: %s" % (node.sourceline, node.tag), xml_file],
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
@@ -328,7 +328,7 @@ class InfoProvider():
                                 item = {"line": node.sourceline,
                                         "type": node.tag,
                                         "filename": xml_file,
-                                        "message": "invalid attribute in %s:%i: %s" % (xml_file, node.sourceline, attr),
+                                        "message": ["invalid attribute in line %i: %s" % (node.sourceline, attr), xml_file],
                                         "file": path}
                                 listitems.append(item)
                 xpath = ".//" + " | .//".join(bracket_tags)
@@ -337,7 +337,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, str(node.text)),
+                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, str(node.text)), xml_file],
                                 "file": path}
                         listitems.append(item)
                 for node in root.xpath(".//*[@condition]"):
@@ -345,7 +345,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "Brackets do not match in %s:%i: %s" % (xml_file, node.sourceline, node.attrib["condition"]),
+                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, node.attrib["condition"]), xml_file],
                                 "file": path}
                         listitems.append(item)
                 xpath = ".//" + " | .//".join(noop_tags)
@@ -354,18 +354,19 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "Use 'noop' for empty calls in %s:%i <%s>" % (xml_file, node.sourceline, node.tag),
+                                "message": ["Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag), xml_file],
                                 "file": path}
                         listitems.append(item)
                 xpath = ".//" + " | .//".join(double_tags)
                 for node in root.xpath(xpath):
                     if not node.getchildren():
                         xpath = tree.getpath(node)
-                        if xpath.endswith("]"):
+                        if xpath.endswith("]") and not xpath.endswith("[1]"):
+
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "Double tags for %s:%i: %s" % (xml_file, node.sourceline, node.tag),
+                                    "message": ["Invalid multiple tags in line %i: %s" % (node.sourceline, node.tag), xml_file],
                                     "file": path}
                             listitems.append(item)
                 for check in allowed_text:
@@ -375,7 +376,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "invalid value for %s in %s:%i: %s" % (node.tag, xml_file, node.sourceline, node.text),
+                                    "message": ["invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text), xml_file],
                                     "file": path}
                             listitems.append(item)
                 for check in allowed_attr:
@@ -384,7 +385,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": "invalid value for %s attribute in %s:%i: %s" % (check[0], xml_file, node.sourceline, node.attrib[check[0]]),
+                                    "message": ["invalid value for %s attribute in line %i: %s" % (check[0], node.sourceline, node.attrib[check[0]]), xml_file],
                                     "file": path}
                             listitems.append(item)
                 fontlist = ["-"]
@@ -395,7 +396,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "invalid font in %s:%i: %s" % (xml_file, node.sourceline, node.text),
+                                "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
                                 "file": path}
                         listitems.append(item)
         return listitems
