@@ -385,14 +385,19 @@ class InfoProvider():
                         listitems.append(item)
         xpath = ".//" + " | .//".join(bracket_tags)
         for node in root.xpath(xpath):
-            if not node.text or not check_brackets(node.text):
+            if not node.text:
+                message = "Empty condition in line %i: %s" % (node.sourceline, node.tag)
+            elif not check_brackets(node.text):
                 condition = str(node.text).replace("  ", "").replace("\t", "")
-                item = {"line": node.sourceline,
-                        "type": node.tag,
-                        "filename": xml_file,
-                        "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
-                        "file": path}
-                listitems.append(item)
+                message = "Brackets do not match in line %i: %s" % (node.sourceline, condition)
+            else:
+                continue
+            item = {"line": node.sourceline,
+                    "type": node.tag,
+                    "filename": xml_file,
+                    "message": [message, xml_file],
+                    "file": path}
+            listitems.append(item)
         for node in root.xpath(".//*[@condition]"):
             if not check_brackets(node.attrib["condition"]):
                 condition = str(node.attrib["condition"]).replace("  ", "").replace("\t", "")
