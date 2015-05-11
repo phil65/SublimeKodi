@@ -134,7 +134,7 @@ class InfoProvider():
                         sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
                 for node in self.color_list:
-                    if node["name"] == keyword:
+                    if node["name"] == keyword and node["filename"].endswith("defaults.xml"):
                         sublime.active_window().open_file("%s:%s" % (node["filename"], node["line"]), sublime.ENCODED_POSITION)
                         return True
                 log("no node with name %s found" % keyword)
