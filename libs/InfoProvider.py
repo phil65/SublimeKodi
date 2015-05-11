@@ -32,9 +32,9 @@ class InfoProvider():
     def init_addon(self, path):
         self.project_path = path
         addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
+        self.xml_folders = []
         if addon_xml_file:
             root = get_root_from_file(addon_xml_file)
-            self.xml_folders = []
             for node in root.findall('.//res'):
                 self.xml_folders.append(node.attrib["folder"])
             if self.xml_folders:
@@ -59,7 +59,7 @@ class InfoProvider():
                 log("color list: %i colors found" % len(self.color_list))
 
     def get_fonts(self):
-        if self.xml_path:
+        if self.xml_folders:
             sublime.status_message("SublimeKodi: Updating fonts...")
             paths = [os.path.join(self.xml_path, "Font.xml"),
                      os.path.join(self.xml_path, "font.xml")]
