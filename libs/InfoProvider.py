@@ -96,7 +96,7 @@ class InfoProvider():
             self.include_file_list[path].append(xml_file)
             self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
             for node in root.findall("include"):
-                if "file" in node.attrib:
+                if "file" in node.attrib and node.attrib["file"] != "script-skinshortcuts-includes.xml":
                     xml_file = os.path.join(xml_folder, node.attrib["file"])
                     self.update_includes(path, xml_file)
         else:
@@ -264,7 +264,7 @@ class InfoProvider():
                 root = get_root_from_file(path)
                 # tree = ET.ElementTree(root)
                 for node in root.xpath(".//include"):
-                        if node.text:
+                        if node.text and not node.text.startswith("skinshortcuts-"):
                             name = node.text
                         elif node.find("./param") is not None:
                             name = node.attrib["name"]
