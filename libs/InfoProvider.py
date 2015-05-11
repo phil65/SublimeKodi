@@ -88,6 +88,7 @@ class InfoProvider():
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[path]), path))
 
     def update_includes(self, path, xml_file):
+        # recursive, walks through include files and updates include list and include file list
         if os.path.exists(xml_file):
             sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
             xml_folder = os.path.join(self.project_path, path)
@@ -260,6 +261,16 @@ class InfoProvider():
 
     def check_values(self):
         # available for all controls
+        listitems = []
+        for folder in self.xml_folders:
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                new_items = self.check_file(path)
+                listitems.append(new_items)
+        return listitems
+
+    def check_file(self, path):
+        xml_file = os.path.basename(path)
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         # allowed child nodes for different control types (+ some other nodes)
@@ -321,101 +332,97 @@ class InfoProvider():
                         ["aligny", ["top", "center", "bottom"]],
                         ["flipx", ["true", "false"]],
                         ["flipy", ["true", "false"]]]
-
+        root = get_root_from_file(path)
+        tree = ET.ElementTree(root)
         listitems = []
-        for folder in self.xml_folders:
-            for xml_file in self.window_file_list[folder]:
-                path = os.path.join(self.project_path, folder, xml_file)
-                root = get_root_from_file(path)
-                tree = ET.ElementTree(root)
-                for check in tag_checks:
-                    for node in root.xpath(check[0]):
-                        if node.tag not in check[1]:
-                            item = {"line": node.sourceline,
-                                    "type": node.tag,
-                                    "filename": xml_file,
-                                    "message": ["invalid tag in line %i: %s" % (node.sourceline, node.tag), xml_file],
-                                    "file": path}
-                            listitems.append(item)
-                for check in att_checks:
-                    xpath = ".//" + " | .//".join(check[0])
-                    for node in root.xpath(".//%s" % xpath):
-                        for attr in node.attrib:
-                            if attr not in check[1]:
-                                item = {"line": node.sourceline,
-                                        "type": node.tag,
-                                        "filename": xml_file,
-                                        "message": ["invalid attribute in line %i: %s" % (node.sourceline, attr), xml_file],
-                                        "file": path}
-                                listitems.append(item)
-                xpath = ".//" + " | .//".join(bracket_tags)
-                for node in root.xpath(xpath):
-                    if not node.text or not check_brackets(node.text):
-                        condition = str(node.text).replace("  ", "").replace("\t", "")
+        for check in tag_checks:
+            for node in root.xpath(check[0]):
+                if node.tag not in check[1]:
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "message": ["invalid tag in line %i: %s" % (node.sourceline, node.tag), xml_file],
+                            "file": path}
+                    listitems.append(item)
+        for check in att_checks:
+            xpath = ".//" + " | .//".join(check[0])
+            for node in root.xpath(".//%s" % xpath):
+                for attr in node.attrib:
+                    if attr not in check[1]:
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
+                                "message": ["invalid attribute in line %i: %s" % (node.sourceline, attr), xml_file],
                                 "file": path}
                         listitems.append(item)
-                for node in root.xpath(".//*[@condition]"):
-                    if not check_brackets(node.attrib["condition"]):
-                        condition = str(node.attrib["condition"]).replace("  ", "").replace("\t", "")
-                        item = {"line": node.sourceline,
-                                "type": node.tag,
-                                "filename": xml_file,
-                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
-                                "file": path}
-                        listitems.append(item)
-                xpath = ".//" + " | .//".join(noop_tags)
-                for node in root.xpath(xpath):
-                    if node.text == "-" or not node.text:
-                        item = {"line": node.sourceline,
-                                "type": node.tag,
-                                "filename": xml_file,
-                                "message": ["Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag), xml_file],
-                                "file": path}
-                        listitems.append(item)
-                xpath = ".//" + " | .//".join(double_tags)
-                for node in root.xpath(xpath):
-                    if not node.getchildren():
-                        xpath = tree.getpath(node)
-                        if xpath.endswith("]") and not xpath.endswith("[1]"):
+        xpath = ".//" + " | .//".join(bracket_tags)
+        for node in root.xpath(xpath):
+            if not node.text or not check_brackets(node.text):
+                condition = str(node.text).replace("  ", "").replace("\t", "")
+                item = {"line": node.sourceline,
+                        "type": node.tag,
+                        "filename": xml_file,
+                        "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
+                        "file": path}
+                listitems.append(item)
+        for node in root.xpath(".//*[@condition]"):
+            if not check_brackets(node.attrib["condition"]):
+                condition = str(node.attrib["condition"]).replace("  ", "").replace("\t", "")
+                item = {"line": node.sourceline,
+                        "type": node.tag,
+                        "filename": xml_file,
+                        "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
+                        "file": path}
+                listitems.append(item)
+        xpath = ".//" + " | .//".join(noop_tags)
+        for node in root.xpath(xpath):
+            if node.text == "-" or not node.text:
+                item = {"line": node.sourceline,
+                        "type": node.tag,
+                        "filename": xml_file,
+                        "message": ["Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag), xml_file],
+                        "file": path}
+                listitems.append(item)
+        xpath = ".//" + " | .//".join(double_tags)
+        for node in root.xpath(xpath):
+            if not node.getchildren():
+                xpath = tree.getpath(node)
+                if xpath.endswith("]") and not xpath.endswith("[1]"):
 
-                            item = {"line": node.sourceline,
-                                    "type": node.tag,
-                                    "filename": xml_file,
-                                    "message": ["Invalid multiple tags in line %i: %s" % (node.sourceline, node.tag), xml_file],
-                                    "file": path}
-                            listitems.append(item)
-                for check in allowed_text:
-                    xpath = ".//" + " | .//".join(check[0])
-                    for node in root.xpath(xpath):
-                        if node.text.lower() not in check[1]:
-                            item = {"line": node.sourceline,
-                                    "type": node.tag,
-                                    "filename": xml_file,
-                                    "message": ["invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text), xml_file],
-                                    "file": path}
-                            listitems.append(item)
-                for check in allowed_attr:
-                    for node in root.xpath(".//*[(@%s)]" % check[0]):
-                        if node.attrib[check[0]] not in check[1]:
-                            item = {"line": node.sourceline,
-                                    "type": node.tag,
-                                    "filename": xml_file,
-                                    "message": ["invalid value for %s attribute in line %i: %s" % (check[0], node.sourceline, node.attrib[check[0]]), xml_file],
-                                    "file": path}
-                            listitems.append(item)
-                fontlist = ["-"]
-                for item in self.fonts:
-                    fontlist.append(item["name"])
-                for node in root.xpath(".//font"):
-                    if not node.getchildren() and node.text not in fontlist:
-                        item = {"line": node.sourceline,
-                                "type": node.tag,
-                                "filename": xml_file,
-                                "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
-                                "file": path}
-                        listitems.append(item)
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "message": ["Invalid multiple tags in line %i: %s" % (node.sourceline, node.tag), xml_file],
+                            "file": path}
+                    listitems.append(item)
+        for check in allowed_text:
+            xpath = ".//" + " | .//".join(check[0])
+            for node in root.xpath(xpath):
+                if node.text.lower() not in check[1]:
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "message": ["invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text), xml_file],
+                            "file": path}
+                    listitems.append(item)
+        for check in allowed_attr:
+            for node in root.xpath(".//*[(@%s)]" % check[0]):
+                if node.attrib[check[0]] not in check[1]:
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "message": ["invalid value for %s attribute in line %i: %s" % (check[0], node.sourceline, node.attrib[check[0]]), xml_file],
+                            "file": path}
+                    listitems.append(item)
+        fontlist = ["-"]
+        for item in self.fonts:
+            fontlist.append(item["name"])
+        for node in root.xpath(".//font"):
+            if not node.getchildren() and node.text not in fontlist:
+                item = {"line": node.sourceline,
+                        "type": node.tag,
+                        "filename": xml_file,
+                        "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
+                        "file": path}
+                listitems.append(item)
         return listitems

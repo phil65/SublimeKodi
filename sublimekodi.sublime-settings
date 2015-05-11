@@ -85,5 +85,13 @@
      *
      */
     "tooltip_delay": 0,
+    /*
+     * Auto-Check XML
+     *
+     * Automatically check the xml for non-valid skin code on saving
+     *
+     *
+     */
+    "auto_skin_check": true,
 
 }

@@ -154,8 +154,21 @@ class SublimeKodi(sublime_plugin.EventListener):
                     INFOS.get_colors()
                 if view.file_name().endswith("ont.xml"):
                     INFOS.get_fonts()
+                if history.get("auto_skin_check", True):
+                    self.nodes = INFOS.check_file(view.file_name())
+                    listitems = []
+                    for item in self.nodes:
+                        listitems.append(item["message"])
+                    if listitems:
+                        sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         if view.file_name().endswith(".po"):
             INFOS.update_labels()
+
+    def on_done(self, index):
+        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
+
+    def show_preview(self, index):
+        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
