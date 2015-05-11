@@ -97,7 +97,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                 popup_label = INFOS.return_label(view, selection)
-            if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents:
+            if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents or "<value" in line_contents:
                 if not popup_label:
                     for item in INFOS.color_list:
                         if item["name"] == selection:
