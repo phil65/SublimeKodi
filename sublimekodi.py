@@ -75,14 +75,14 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
-            # elif identifier.startswith("INFO"):
-            #     data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
-            #     result = kodi_json_request(data)
-            #     result = json.loads(result.decode("utf-8"))
-            #     log(result)
-            #     key, value = result["result"].popitem()
-            #     if value:
-            #         popup_label = str(value)
+            elif identifier.startswith("INFO"):
+                data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
+                result = kodi_json_request(data, True)
+                log(result)
+                if result:
+                    key, value = result["result"].popitem()
+                    if value:
+                        popup_label = str(value)
             elif "<include" in line_contents and "name=" not in line_contents:
                 node_content = str(INFOS.return_node_content(findWord(view)))
                 ind1 = node_content.find('\\n')
