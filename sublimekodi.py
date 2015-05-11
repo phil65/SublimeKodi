@@ -80,7 +80,6 @@ class SublimeKodi(sublime_plugin.EventListener):
                 data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
                 result = kodi_json_request(data, True)
                 if result:
-                    log(result)
                     key, value = result["result"].popitem()
                     if value:
                         popup_label = str(value)
@@ -232,6 +231,13 @@ class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
         sublime.active_window().run_command("execute_builtin", {"builtin": builtin})
 
 
+class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
+
+    def run(self, builtin):
+        data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
+        kodi_json_request(data)
+
+
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
@@ -283,20 +289,22 @@ class CheckValuesCommand(sublime_plugin.WindowCommand):
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
-class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
+class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 
-    def run(self, builtin):
-        data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
-        kodi_json_request(data)
+    def run(self):
+        self.history = sublime.load_settings(SETTINGS_FILE)
+        sublime.active_window().show_input_panel("Get InfoLabels (comma-separated)", self.history.get("prev_infolabel", ""), self.show_info_label, None, None)
 
-
-class GetInfoLabelsCommand(sublime_plugin.WindowCommand):
-
-    def run(self, label_string):
+    def show_info_label(self, label_string):
+        self.history.set("prev_infolabel", label_string)
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
-        kodi_json_request(data)
+        log(data)
+        result = send_json_request(data)
+        if result:
+            key, value = result["result"].popitem()
+            sublime.message_dialog(str(value))
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):

@@ -10,4 +10,5 @@
     {"caption": "SublimeKodi: Check for invalid nodes / attributes", "command": "check_values"},
     {"caption": "SublimeKodi: JSON-RPC: Reload Skin", "command": "execute_builtin", "args": { "builtin": "ReloadSkin()" }},
     {"caption": "SublimeKodi: JSON-RPC: Execute Builtin", "command": "execute_builtin_prompt"},
+    {"caption": "SublimeKodi: JSON-RPC: Display InfoLabels", "command": "get_info_labels_prompt"}
 ]

@@ -117,7 +117,7 @@ def kodi_json_request(data, wait=False):
     request_thread = json_request_thread(data)
     request_thread.start()
     if wait:
-        request_thread.join()
+        request_thread.join(1)
         return request_thread.result
     else:
         return True
@@ -131,24 +131,28 @@ class json_request_thread(threading.Thread):
         self.result = None
 
     def run(self):
-        history = sublime.load_settings(SETTINGS_FILE)
-        address = history.get("kodi_address", "http://localhost:8080")
-        if not address:
-            self.result = ""
-            return None
-        credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
-        encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
-        authorization = b'Basic ' + encoded_credentials
-        headers = {'Content-Type': 'application/json', 'Authorization': authorization}
-        json_data = json.dumps(json.loads(self.data))
-        post_data = json_data.encode('utf-8')
-        request = Request(address + "/jsonrpc", post_data, headers)
-        try:
-            result = urlopen(request).read()
-        except:
-            log("Could not connect to Kodi")
-            return None
+        self.result = send_json_request(self.data)
+        return True
+
+
+def send_json_request(data):
+    history = sublime.load_settings(SETTINGS_FILE)
+    address = history.get("kodi_address", "http://localhost:8080")
+    if not address:
+        return None
+    credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
+    encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
+    authorization = b'Basic ' + encoded_credentials
+    headers = {'Content-Type': 'application/json', 'Authorization': authorization}
+    json_data = json.dumps(json.loads(data))
+    post_data = json_data.encode('utf-8')
+    request = Request(address + "/jsonrpc", post_data, headers)
+    try:
+        result = urlopen(request).read()
         result = json.loads(result.decode("utf-8"))
         log(result)
-        self.result = result
         return result
+    except:
+        log("Could not connect to Kodi")
+        return None
+
