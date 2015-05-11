@@ -146,13 +146,15 @@ class InfoProvider():
         if keyword:
             view = sublime.active_window().active_view()
             folder = view.file_name().split(os.sep)[-2]
-            for node in self.fonts[folder]:
-                if node["name"] == keyword:
-                    return node[return_entry]
-            for node in self.include_list[folder]:
-                if node["name"] == keyword:
-                    return node[return_entry]
-            # log("no node with name %s found" % keyword)
+            if folder in self.fonts:
+                for node in self.fonts[folder]:
+                    if node["name"] == keyword:
+                        return node[return_entry]
+            if folder in self.include_list:
+                for node in self.include_list[folder]:
+                    if node["name"] == keyword:
+                        return node[return_entry]
+                # log("no node with name %s found" % keyword)
 
     def return_label(self, view, selection):
         if selection.isdigit():
