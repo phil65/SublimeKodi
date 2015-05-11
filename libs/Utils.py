@@ -147,6 +147,7 @@ class json_request_thread(threading.Thread):
             result = urlopen(request).read()
         except:
             log("Could not connect to Kodi")
+            return None
         result = json.loads(result.decode("utf-8"))
         log(result)
         self.result = result
