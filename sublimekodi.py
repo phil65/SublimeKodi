@@ -454,7 +454,8 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         self.font_entries = []
-        for node in INFOS.fonts:
+        folder = self.view.file_name().split(os.sep)[-2]
+        for node in INFOS.fonts[folder]:
             string_array = [node["name"], node["size"] + "  -  " + node["filename"]]
             self.font_entries.append(string_array)
         sublime.active_window().show_quick_panel(self.font_entries, lambda s: self.on_done(s), selected_index=0)

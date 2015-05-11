@@ -21,9 +21,8 @@ class InfoProvider():
         self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
-        self.xml_path = ""
         self.builtin_list = []
-        self.fonts = []
+        self.fonts = {}
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
@@ -38,10 +37,6 @@ class InfoProvider():
             root = get_root_from_file(self.addon_xml_file)
             for node in root.findall('.//res'):
                 self.xml_folders.append(node.attrib["folder"])
-            if self.xml_folders:
-                self.xml_path = os.path.join(path, self.xml_folders[0])
-            else:
-                self.xml_path = ""
 
     def get_colors(self):
         if not self.addon_xml_file:
@@ -61,22 +56,24 @@ class InfoProvider():
             log("color list: %i colors found" % len(self.color_list))
 
     def get_fonts(self):
-        if not self.addon_xml_file:
+        if not self.addon_xml_file or not self.xml_folders:
             return False
-        sublime.status_message("SublimeKodi: Updating fonts...")
-        paths = [os.path.join(self.xml_path, "Font.xml"),
-                 os.path.join(self.xml_path, "font.xml")]
-        self.font_file = checkPaths(paths)
-        if self.font_file:
-            root = get_root_from_file(self.font_file)
-            self.fonts = []
-            for node in root.find("fontset").findall("font"):
-                string_dict = {"name": node.find("name").text,
-                               "size": node.find("size").text,
-                               "line": node.sourceline,
-                               "content": ET.tostring(node, pretty_print=True),
-                               "filename": node.find("filename").text}
-                self.fonts.append(string_dict)
+        self.fonts = {}
+        for folder in self.xml_folders:
+            self.fonts[folder] = []
+            paths = [os.path.join(self.project_path, folder, "Font.xml"),
+                     os.path.join(self.project_path, folder, "font.xml")]
+            font_file = checkPaths(paths)
+            if font_file:
+                sublime.status_message("SublimeKodi: Updating fonts...")
+                root = get_root_from_file(font_file)
+                for node in root.find("fontset").findall("font"):
+                    string_dict = {"name": node.find("name").text,
+                                   "size": node.find("size").text,
+                                   "line": node.sourceline,
+                                   "content": ET.tostring(node, pretty_print=True),
+                                   "filename": node.find("filename").text}
+                    self.fonts[folder].append(string_dict)
 
     def update_include_list(self):
         self.include_list = {}
@@ -125,11 +122,12 @@ class InfoProvider():
                         sublime.active_window().open_file("%s:%s" % (file_path, node["line"]), sublime.ENCODED_POSITION)
                         return True
             else:
-                for node in self.include_list[view.file_name().split(os.sep)[-2]]:
+                folder = view.file_name().split(os.sep)[-2]
+                for node in self.include_list[folder]:
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
                         return True
-                for node in self.fonts:
+                for node in self.fonts[folder]:
                     if node["name"] == keyword:
                         sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
                         return True
@@ -141,11 +139,12 @@ class InfoProvider():
 
     def return_node_content(self, keyword=None, return_entry="content"):
         if keyword:
-            for node in self.fonts:
+            view = sublime.active_window().active_view()
+            folder = view.file_name().split(os.sep)[-2]
+            for node in self.fonts[folder]:
                 if node["name"] == keyword:
                     return node[return_entry]
-            view = sublime.active_window().active_view()
-            for node in self.include_list[view.file_name().split(os.sep)[-2]]:
+            for node in self.include_list[folder]:
                 if node["name"] == keyword:
                     return node[return_entry]
             # log("no node with name %s found" % keyword)
@@ -414,7 +413,8 @@ class InfoProvider():
                             "file": path}
                     listitems.append(item)
         fontlist = ["-"]
-        for item in self.fonts:
+        folder = path.split(os.sep)[-2]
+        for item in self.fonts[folder]:
             fontlist.append(item["name"])
         for node in root.xpath(".//font"):
             if not node.getchildren() and node.text not in fontlist:
