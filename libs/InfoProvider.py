@@ -278,6 +278,8 @@ class InfoProvider():
                       [["focusedlayout", "itemlayout"], ["height", "width", "condition"]],
                       [["item"], ["id"]],
                       [["control"], ["id", "type"]],
+                      [["variable"], ["name"]],
+                      [["include"], ["name", "condition", "file"]],
                       [["animation"], ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       [["effect"], ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         # check correct parantheses for some nodes
