@@ -124,8 +124,10 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if rel_image_path.startswith("special://skin/"):
                     imagepath = os.path.join(INFOS.project_path, rel_image_path.replace("special://skin/", ""))
                 else:
-                    imagepath = os.path.join(INFOS.project_path, "media", rel_image_path)
-                if os.path.exists(imagepath) and not os.path.isdir(imagepath):
+                    paths = [os.path.join(INFOS.project_path, "media", rel_image_path),
+                             os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", rel_image_path)]
+                    imagepath = checkPaths(paths)
+                if imagepath and not os.path.isdir(imagepath):
                     im = Image.open(imagepath)
                     file_size = os.path.getsize(imagepath) / 1024
                     popup_label = "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
@@ -389,7 +391,9 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             rel_image_path = rel_image_path.replace("special://skin/", "")
             imagepath = os.path.join(INFOS.project_path, rel_image_path)
         else:
-            imagepath = os.path.join(INFOS.project_path, "media", rel_image_path)
+            paths = [os.path.join(INFOS.project_path, "media", rel_image_path),
+                     os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", rel_image_path)]
+            imagepath = checkPaths(paths)
         if os.path.exists(imagepath):
             if os.path.isdir(imagepath):
                 self.files = []
