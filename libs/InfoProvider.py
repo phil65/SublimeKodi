@@ -102,8 +102,7 @@ class InfoProvider():
                     self.update_includes(path, xml_file)
             log("File List: %i files found." % len(self.include_file_list[path]))
         else:
-            log("Could not find include file")
-            log(paths)
+            log("Could not find include file " + xml_file)
 
     def update_xml_files(self):
         self.include_ref_list = {}
