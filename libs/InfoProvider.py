@@ -210,10 +210,10 @@ class InfoProvider():
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"
-        var_refs = []
         unused_vars = []
         undefined_vars = []
         for folder in self.xml_folders:
+            var_refs = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 with open(path, encoding="utf8") as f:
@@ -237,10 +237,10 @@ class InfoProvider():
         return undefined_vars, unused_vars
 
     def check_includes(self):
-        var_refs = []
         unused_vars = []
         undefined_vars = []
         for folder in self.xml_folders:
+            var_refs = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
