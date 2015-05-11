@@ -17,7 +17,6 @@ class InfoProvider():
         self.include_file_list = {}
         self.window_file_list = {}
         self.color_list = []
-        self.font_file = ""
         self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
@@ -129,7 +128,8 @@ class InfoProvider():
                         return True
                 for node in self.fonts[folder]:
                     if node["name"] == keyword:
-                        sublime.active_window().open_file("%s:%s" % (self.font_file, node["line"]), sublime.ENCODED_POSITION)
+                        path = os.path.join(self.project_path, folder, "Font.xml")
+                        sublime.active_window().open_file("%s:%s" % (path, node["line"]), sublime.ENCODED_POSITION)
                         return True
                 for node in self.color_list:
                     if node["name"] == keyword and node["filename"].endswith("defaults.xml"):
