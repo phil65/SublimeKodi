@@ -645,6 +645,6 @@ class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
     def on_done(self, index):
         path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
         sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION)
-# def plugin_loaded():
-#     view = sublime.active_window().active_view()
-#     INFOS.update_include_list()
+
+def plugin_loaded():
+    INFOS.check_project_change()
