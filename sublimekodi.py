@@ -78,8 +78,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif identifier.startswith("INFO"):
                 data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
                 result = kodi_json_request(data, True)
-                log(result)
                 if result:
+                    log(result)
                     key, value = result["result"].popitem()
                     if value:
                         popup_label = str(value)
