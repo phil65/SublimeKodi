@@ -31,10 +31,10 @@ class InfoProvider():
 
     def init_addon(self, path):
         self.project_path = path
-        addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
+        self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
-        if addon_xml_file:
-            root = get_root_from_file(addon_xml_file)
+        if self.addon_xml_file:
+            root = get_root_from_file(self.addon_xml_file)
             for node in root.findall('.//res'):
                 self.xml_folders.append(node.attrib["folder"])
             if self.xml_folders:
@@ -172,6 +172,8 @@ class InfoProvider():
         self.settings_loaded = True
 
     def get_addon_lang_file(self, path):
+        if not self.addon_xml_file:
+            return False
         paths = [os.path.join(path, "resources", "language", self.language_folder, "strings.po"),
                  os.path.join(path, "language", self.language_folder, "strings.po")]
         self.addon_lang_path = checkPaths(paths)
@@ -182,20 +184,12 @@ class InfoProvider():
             log(paths)
             return ""
 
-    def get_kodi_lang_file(self):
+    def get_builtin_label(self):
         paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
                  os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
         self.kodi_lang_path = checkPaths(paths)
         if self.kodi_lang_path:
-            return codecs.open(self.kodi_lang_path, "r", "utf-8").read()
-        else:
-            log("Could not find kodi language file")
-            log(paths)
-            return ""
-
-    def get_builtin_label(self):
-        kodi_lang_file = self.get_kodi_lang_file()
-        if kodi_lang_file:
+            kodi_lang_file = codecs.open(self.kodi_lang_path, "r", "utf-8").read()
             po = polib.pofile(kodi_lang_file)
             self.builtin_list = []
             for entry in po:
@@ -207,24 +201,28 @@ class InfoProvider():
                 self.builtin_list.append(string)
             self.labels_loaded = True
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
+        else:
+            log("Could not find kodi language file")
+            return ""
 
     def update_labels(self):
-        if self.project_path:
-            sublime.status_message("SublimeKodi: Updating Labels...")
-            lang_file = self.get_addon_lang_file(self.project_path)
-            po = polib.pofile(lang_file)
-            log("Update labels for: %s" % self.project_path)
-            self.addon_string_list = []
-            for entry in po:
-                string = {"id": entry.msgctxt,
-                          "line": entry.linenum,
-                          "string": entry.msgid,
-                          # "file": self.addon_lang_path,
-                          "native_string": entry.msgstr}
-                self.addon_string_list.append(string)
-            self.string_list = self.builtin_list + self.addon_string_list
-            sublime.status_message("")
-            log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
+        if not self.addon_xml_file:
+            return False
+        sublime.status_message("SublimeKodi: Updating Labels...")
+        lang_file = self.get_addon_lang_file(self.project_path)
+        po = polib.pofile(lang_file)
+        log("Update labels for: %s" % self.project_path)
+        self.addon_string_list = []
+        for entry in po:
+            string = {"id": entry.msgctxt,
+                      "line": entry.linenum,
+                      "string": entry.msgid,
+                      # "file": self.addon_lang_path,
+                      "native_string": entry.msgstr}
+            self.addon_string_list.append(string)
+        self.string_list = self.builtin_list + self.addon_string_list
+        sublime.status_message("")
+        log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
 
     def check_variables(self, tag_type):
         if tag_type == "variable":
