@@ -97,12 +97,13 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                 popup_label = INFOS.return_label(view, selection)
-            elif "<color" in line_contents or "color>" in line_contents:
-                for item in INFOS.color_list:
-                    if item["name"] == selection:
-                        color_hex = "#" + item["content"][2:]
-                        cont_color = get_cont_col(color_hex)
-                        popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a><br>' % (os.path.basename(item["filename"]),color_hex + item["content"][0:2], cont_color, item["content"])
+            if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents:
+                if not popup_label:
+                    for item in INFOS.color_list:
+                        if item["name"] == selection:
+                            color_hex = "#" + item["content"][2:]
+                            cont_color = get_cont_col(color_hex)
+                            popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a><br>' % (os.path.basename(item["filename"]), color_hex + item["content"][0:2], cont_color, item["content"])
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
