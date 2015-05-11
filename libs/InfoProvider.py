@@ -79,29 +79,30 @@ class InfoProvider():
         self.include_list = {}
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
+            paths = [os.path.join(xml_folder, "Includes.xml"),
+                     os.path.join(xml_folder, "includes.xml")]
             self.include_file_list[path] = []
             self.include_list[path] = []
-            if xml_folder:
-                paths = [os.path.join(xml_folder, "Includes.xml"),
-                         os.path.join(xml_folder, "includes.xml")]
-                include_file = checkPaths(paths)
-
-                if include_file:
-                    log("found include file: " + include_file)
-                    root = get_root_from_file(include_file)
-                    self.include_file_list[path] = [include_file]
-                    self.include_list[path] += get_tags_from_file(include_file, ["include", "variable", "constant"])
-                    for node in root.findall("include"):
-                        if "file" in node.attrib:
-                            xml_file = os.path.join(xml_folder, node.attrib["file"])
-                            self.include_file_list[path].append(xml_file)
-                            sublime.status_message("SublimeKodi: Updating Includes from " + node.attrib["file"])
-                            self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
-                    log("File List: %i files found." % len(self.include_file_list[path]))
-                else:
-                    log("Could not find include file")
-                    log(paths)
+            include_file = checkPaths(paths)
+            self.update_includes(path, include_file)
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[path]), path))
+
+    def update_includes(self, path, xml_file):
+        if os.path.exists(xml_file):
+            sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
+            xml_folder = os.path.join(self.project_path, path)
+            log("found include file: " + xml_file)
+            root = get_root_from_file(xml_file)
+            self.include_file_list[path].append(xml_file)
+            self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
+            for node in root.findall("include"):
+                if "file" in node.attrib:
+                    xml_file = os.path.join(xml_folder, node.attrib["file"])
+                    self.update_includes(path, xml_file)
+            log("File List: %i files found." % len(self.include_file_list[path]))
+        else:
+            log("Could not find include file")
+            log(paths)
 
     def update_xml_files(self):
         self.include_ref_list = {}
