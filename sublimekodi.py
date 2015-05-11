@@ -48,7 +48,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         elif not INFOS.project_path:
             return None
         # inside_bracket = False
-        popup_label = None
+        popup_label = ""
         identifier = ""
         self.prev_selection = region
         view.hide_popup()
@@ -102,8 +102,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     if item["name"] == selection:
                         color_hex = "#" + item["content"][2:]
                         cont_color = get_cont_col(color_hex)
-                        popup_label = '<a style="background-color:%s;color:%s">%s</a>' % (color_hex+item["content"][0:2], cont_color, item["content"])
-                        break
+                        popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a><br>' % (os.path.basename(item["filename"]),color_hex + item["content"][0:2], cont_color, item["content"])
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:

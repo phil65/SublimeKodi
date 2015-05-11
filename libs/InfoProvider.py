@@ -47,11 +47,11 @@ class InfoProvider():
         if not self.addon_xml_file:
             return False
         color_path = os.path.join(self.project_path, "colors")
+        self.color_list = []
         for path in os.listdir(color_path):
             log("found color file: " + path)
             file_path = os.path.join(color_path, path)
             root = get_root_from_file(file_path)
-            self.color_list = []
             for node in root.findall("color"):
                 color_dict = {"name": node.attrib["name"],
                               "line": node.sourceline,
