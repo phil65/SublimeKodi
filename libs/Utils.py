@@ -5,6 +5,7 @@ import base64
 import json
 import threading
 import colorsys
+from polib import polib
 from urllib.request import Request, urlopen
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
@@ -90,6 +91,18 @@ def get_tags_from_file(path, node_tags):
     else:
         log("%s does not exist" % path)
     return nodes
+
+
+def get_label_list(po_file_path):
+    listitems = []
+    po = polib.pofile(po_file_path)
+    for entry in po:
+        string = {"id": entry.msgctxt,
+                  "line": entry.linenum,
+                  "string": entry.msgid,
+                  "native_string": entry.msgstr}
+        listitems.append(string)
+    return listitems
 
 
 def get_root_from_file(xml_file):

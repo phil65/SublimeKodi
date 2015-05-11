@@ -2,7 +2,6 @@ import os
 from Utils import *
 import sublime
 import codecs
-from polib import polib
 import re
 
 
@@ -192,15 +191,7 @@ class InfoProvider():
         self.kodi_lang_path = checkPaths(paths)
         if self.kodi_lang_path:
             kodi_lang_file = codecs.open(self.kodi_lang_path, "r", "utf-8").read()
-            po = polib.pofile(kodi_lang_file)
-            self.builtin_list = []
-            for entry in po:
-                string = {"id": entry.msgctxt,
-                          "line": entry.linenum,
-                          "string": entry.msgid,
-                          # "file": self.kodi_lang_path,
-                          "native_string": entry.msgstr}
-                self.builtin_list.append(string)
+            self.builtin_list = get_label_list(kodi_lang_file)
             self.labels_loaded = True
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
         else:
@@ -212,16 +203,7 @@ class InfoProvider():
             return False
         sublime.status_message("SublimeKodi: Updating Labels...")
         lang_file = self.get_addon_lang_file(self.project_path)
-        po = polib.pofile(lang_file)
-        log("Update labels for: %s" % self.project_path)
-        self.addon_string_list = []
-        for entry in po:
-            string = {"id": entry.msgctxt,
-                      "line": entry.linenum,
-                      "string": entry.msgid,
-                      # "file": self.addon_lang_path,
-                      "native_string": entry.msgstr}
-            self.addon_string_list.append(string)
+        self.addon_string_list = get_label_list(lang_file)
         self.string_list = self.builtin_list + self.addon_string_list
         sublime.status_message("")
         log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
