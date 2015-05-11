@@ -317,7 +317,7 @@ class InfoProvider():
                             item = {"line": node.sourceline,
                                     "type": node.tag,
                                     "filename": xml_file,
-                                    "message": ["invalid tag on line %i: %s" % (node.sourceline, node.tag), xml_file],
+                                    "message": ["invalid tag in line %i: %s" % (node.sourceline, node.tag), xml_file],
                                     "file": path}
                             listitems.append(item)
                 for check in att_checks:
@@ -334,18 +334,20 @@ class InfoProvider():
                 xpath = ".//" + " | .//".join(bracket_tags)
                 for node in root.xpath(xpath):
                     if not node.text or not check_brackets(node.text):
+                        condition = str(node.text).replace("  ", "").replace("\t", "")
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, str(node.text)), xml_file],
+                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
                                 "file": path}
                         listitems.append(item)
                 for node in root.xpath(".//*[@condition]"):
                     if not check_brackets(node.attrib["condition"]):
+                        condition = str(node.attrib["condition"]).replace("  ", "").replace("\t", "")
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, node.attrib["condition"]), xml_file],
+                                "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
                                 "file": path}
                         listitems.append(item)
                 xpath = ".//" + " | .//".join(noop_tags)
