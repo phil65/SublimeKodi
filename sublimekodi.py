@@ -110,8 +110,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                                 color_hex = "#" + selection[2:]
                                 cont_color = get_cont_col(color_hex)
                                 int_alpha = int(selection[:2], 16)
-                                alpha_percent = int_alpha / (16 * 16) * 100
-                                popup_label += '<a style="background-color:%s;color:%s">%.2f %% alpha</a>' % (color_hex + selection[0:2], cont_color, alpha_percent)
+                                alpha_percent = round(int_alpha / (16 * 16) * 100)
+                                popup_label += '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex + selection[0:2], cont_color, alpha_percent)
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
