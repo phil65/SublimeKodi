@@ -161,8 +161,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                     self.is_modified = False
                     sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
                 folder = view.file_name().split(os.sep)[-2]
-                if view.file_name() in INFOS.include_file_list[folder]:
-                    INFOS.update_include_list()
+                if folder in INFOS.include_file_list:
+                    if view.file_name() in INFOS.include_file_list[folder]:
+                        INFOS.update_include_list()
                 if view.file_name().endswith("colors/defaults.xml"):
                     INFOS.get_colors()
                 if view.file_name().endswith("ont.xml"):
