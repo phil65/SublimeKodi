@@ -257,6 +257,8 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
             self.undefined_vars, self.unused_vars = INFOS.check_variables()
         elif tag_type == "include":
             self.undefined_vars, self.unused_vars = INFOS.check_includes()
+        elif tag_type == "font":
+            self.undefined_vars, self.unused_vars = INFOS.check_fonts()
         listitems = []
         self.nodes = self.unused_vars + self.undefined_vars
         for item in self.unused_vars:

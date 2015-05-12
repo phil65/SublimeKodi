@@ -7,6 +7,7 @@
     {"caption": "SublimeKodi: Search for font", "command": "search_for_font"},
     {"caption": "SublimeKodi: Check Variables", "command": "check_variables", "args": { "tag_type": "variable"}},
     {"caption": "SublimeKodi: Check Includes", "command": "check_variables", "args": { "tag_type": "include"}},
+    {"caption": "SublimeKodi: Check Fonts", "command": "check_variables", "args": { "tag_type": "font"}},
     {"caption": "SublimeKodi: Check for invalid nodes / attributes", "command": "check_values"},
     {"caption": "SublimeKodi: JSON-RPC: Reload Skin", "command": "execute_builtin", "args": { "builtin": "ReloadSkin()" }},
     {"caption": "SublimeKodi: JSON-RPC: Execute Builtin", "command": "execute_builtin_prompt"},
