@@ -189,7 +189,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         if view and view.window():
             if not INFOS.settings_loaded:
                 INFOS.get_settings()
-            if not INFOS.labels_loaded:
+            if not INFOS.builtin_list:
                 INFOS.get_builtin_label()
             if view.window():
                 variables = view.window().extract_variables()
@@ -316,9 +316,10 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
-        view = self.window.active_view()
-        scope_name = view.scope_name(view.sel()[0].b)
-        return "source.python" in scope_name or "text.xml" in scope_name
+        if INFOS.string_list:
+            return True
+        else:
+            return False
 
     def run(self):
         label_list = []

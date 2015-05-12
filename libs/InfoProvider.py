@@ -24,7 +24,6 @@ class InfoProvider():
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
-        self.labels_loaded = False
         self.settings_loaded = False
 
     def init_addon(self, path):
@@ -201,7 +200,6 @@ class InfoProvider():
         if self.kodi_lang_path:
             kodi_lang_file = codecs.open(self.kodi_lang_path, "r", "utf-8").read()
             self.builtin_list = get_label_list(kodi_lang_file)
-            self.labels_loaded = True
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
         else:
             log("Could not find kodi language file")
