@@ -310,7 +310,7 @@ class InfoProvider():
                       [".//control[@type='fixedlist']/*", common + list_common + ["movement", "focusposition"]],
                       [".//content/*", ["item", "include"]],
                       ["/includes/*", ["include", "default", "constant", "variable"]],
-                      ["/window/*", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
+                      ["/window/*", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset", "backgroundcolor"]],
                       ["/fonts/*", ["fontset"]],
                       [".//variable/*", ["value"]]]
         # allowed attributes for some specific nodes
