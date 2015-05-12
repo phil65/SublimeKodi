@@ -410,7 +410,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["invalid tag in line %i: %s" % (node.sourceline, node.tag), xml_file],
+                            "message": ["invalid tag for <%s> in line %i: <%s>" % (node.getparent().tag, node.sourceline, node.tag), xml_file],
                             "file": path}
                     listitems.append(item)
         for check in att_checks:
