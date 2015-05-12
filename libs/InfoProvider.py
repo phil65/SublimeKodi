@@ -20,6 +20,7 @@ class InfoProvider():
         self.color_file = ""
         self.project_path = ""
         self.addon_type = ""
+        self.addon_name = ""
         self.builtin_list = []
         self.fonts = {}
         self.string_list = []
@@ -29,12 +30,16 @@ class InfoProvider():
 
     def init_addon(self, path):
         self.addon_type = ""
+        self.addon_name = ""
         self.project_path = path
         self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
         self.fonts = []
         if self.addon_xml_file:
             root = get_root_from_file(self.addon_xml_file)
+            for item in root.xpath("/addon[@id]"):
+                self.addon_name = item.attrib["id"]
+                break
             if root.find(".//import[@addon='xbmc.python']") is None:
                 self.addon_type = "skin"
                 for node in root.findall('.//res'):
