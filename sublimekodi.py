@@ -473,8 +473,10 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
 class SearchForFontCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        scope_name = self.view.scope_name(self.view.sel()[0].b)
-        return "text.xml" in scope_name
+        if INFOS.fonts:
+            return True
+        else:
+            return False
 
     def run(self, edit):
         self.font_entries = []

@@ -31,6 +31,7 @@ class InfoProvider():
         self.project_path = path
         self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
+        self.fonts = []
         if self.addon_xml_file:
             root = get_root_from_file(self.addon_xml_file)
             if root.find(".//import[@addon='xbmc.python']") is None:
@@ -64,11 +65,11 @@ class InfoProvider():
             return False
         self.fonts = {}
         for folder in self.xml_folders:
-            self.fonts[folder] = []
             paths = [os.path.join(self.project_path, folder, "Font.xml"),
                      os.path.join(self.project_path, folder, "font.xml")]
             font_file = checkPaths(paths)
             if font_file:
+                self.fonts[folder] = []
                 sublime.status_message("SublimeKodi: Updating fonts...")
                 root = get_root_from_file(font_file)
                 for node in root.find("fontset").findall("font"):
