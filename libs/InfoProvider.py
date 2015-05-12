@@ -466,7 +466,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["Invalid multiple tags in line %i: %s" % (node.sourceline, node.tag), xml_file],
+                            "message": ["Invalid multiple tags in line %i: <%s>" % (node.sourceline, node.tag), xml_file],
                             "file": path}
                     listitems.append(item)
         for check in allowed_text:
