@@ -119,8 +119,9 @@ def get_xml_file_paths(xml_path):
     xml_files = []
     if os.path.exists(xml_path):
             for xml_file in os.listdir(xml_path):
-                if xml_file.endswith(".xml"):
-                    if not xml_file.lower().endswith("script-skinshortcuts-includes.xml"):
+                filename = os.path.basename(xml_file)
+                if filename.endswith(".xml"):
+                    if filename.lower() not in ["script-skinshortcuts-includes.xml", "font.xml"]:
                         xml_files.append(xml_file)
             log("File List: %i files found." % len(xml_files))
             return xml_files
