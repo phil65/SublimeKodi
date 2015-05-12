@@ -303,11 +303,15 @@ class InfoProvider():
                       [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
                       [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
                       [".//control[@type='videowindow']/*", common],
+                      [".//control[@type='visualisation']/*", common],
                       [".//control[@type='list']/*", common + list_common],
                       [".//control[@type='wraplist']/*", common + list_common + ["focusposition"]],
                       [".//control[@type='panel']/*", common + list_common],
                       [".//control[@type='fixedlist']/*", common + list_common + ["movement", "focusposition"]],
                       [".//content/*", ["item", "include"]],
+                      # ["includes", ["include", "default", "constant", "variable"]],
+                      # ["window", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
+                      ["*", ["default", "constant", "variable", "include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
                       [".//variable/*", ["value"]]]
         # allowed attributes for some specific nodes
         att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
@@ -351,6 +355,8 @@ class InfoProvider():
                         ["flipx", ["true", "false"]],
                         ["flipy", ["true", "false"]]]
         root = get_root_from_file(path)
+        # for element in root.getchildren():
+        #     log(element.tag)
         tree = ET.ElementTree(root)
         listitems = []
         for check in tag_checks:
