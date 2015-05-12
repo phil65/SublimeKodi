@@ -309,6 +309,7 @@ class InfoProvider():
                       [".//control[@type='panel']/*", common + list_common],
                       [".//control[@type='fixedlist']/*", common + list_common + ["movement", "focusposition"]],
                       [".//content/*", ["item", "include"]],
+                      [".//itemlayout/* | .//focusedlayout/*", ["control", "include"]],
                       ["/includes/*", ["include", "default", "constant", "variable"]],
                       ["/window/*", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset", "backgroundcolor"]],
                       ["/fonts/*", ["fontset"]],
