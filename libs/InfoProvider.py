@@ -302,6 +302,7 @@ class InfoProvider():
                       [".//control[@type='multiimage']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
                       [".//control[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
                       [".//control[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
+                      [".//control[@type='videowindow']/*", common],
                       [".//control[@type='list']/*", common + list_common],
                       [".//control[@type='wraplist']/*", common + list_common + ["focusposition"]],
                       [".//control[@type='panel']/*", common + list_common],
