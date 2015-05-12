@@ -586,10 +586,12 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
     def create_new_label(self, word):
         region = self.view.sel()[0]
         scope_name = self.view.scope_name(region.b)
-        if "text.xml" in scope_name:
+        if INFOS.addon_type == "skin":
             start_id = 31000
+            index_offset = 0
         else:
             start_id = 32000
+            index_offset = 2
         po = polib.pofile(INFOS.addon_lang_path)
         string_ids = []
         for i, entry in enumerate(po):
@@ -603,7 +605,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
                 break
         msgstr = "#" + str(label_id)
         new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-        po_index = int(label_id) - start_id
+        po_index = int(label_id) - start_id + index_offset
         po.insert(po_index, new_entry)
         po.save(INFOS.addon_lang_path)
         INFOS.update_labels()

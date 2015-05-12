@@ -19,6 +19,7 @@ class InfoProvider():
         self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
+        self.addon_type = ""
         self.builtin_list = []
         self.fonts = {}
         self.string_list = []
@@ -27,6 +28,7 @@ class InfoProvider():
         self.settings_loaded = False
 
     def init_addon(self, path):
+        self.addon_type = ""
         self.project_path = path
         self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
@@ -34,9 +36,11 @@ class InfoProvider():
         if self.addon_xml_file:
             root = get_root_from_file(self.addon_xml_file)
             if root.find(".//import[@addon='xbmc.python']") is None:
+                self.addon_type = "skin"
                 for node in root.findall('.//res'):
                     self.xml_folders.append(node.attrib["folder"])
             else:
+                self.addon_type = "python"
                 paths = [os.path.join(self.project_path, "resources", "skins", "Default", "720p"),
                          os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
                 folder = checkPaths(paths)
