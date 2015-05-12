@@ -309,9 +309,9 @@ class InfoProvider():
                       [".//control[@type='panel']/*", common + list_common],
                       [".//control[@type='fixedlist']/*", common + list_common + ["movement", "focusposition"]],
                       [".//content/*", ["item", "include"]],
-                      # ["includes", ["include", "default", "constant", "variable"]],
-                      # ["window", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
-                      ["*", ["default", "constant", "variable", "include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
+                      ["/includes/*", ["include", "default", "constant", "variable"]],
+                      ["/window/*", ["include", "defaultcontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset"]],
+                      ["/fonts/*", ["fontset"]],
                       [".//variable/*", ["value"]]]
         # allowed attributes for some specific nodes
         att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
