@@ -64,10 +64,14 @@ def findWord(view):
 
 def get_node_content(view):
     for region in view.sel():
-        line = view.line(region)
-        line_contents = view.substr(line)
-        root = ET.fromstring(line_contents)
-        return root.text
+        try:
+            line = view.line(region)
+            line_contents = view.substr(line)
+            root = ET.fromstring(line_contents)
+            return root.text
+        except:
+            log("Could not get node content")
+            return ""
 
 
 def jump_to_label_declaration(view, label_id):
