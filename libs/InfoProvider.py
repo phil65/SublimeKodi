@@ -98,21 +98,22 @@ class InfoProvider():
             self.include_file_list[folder] = []
             self.include_list[folder] = []
             include_file = checkPaths(paths)
-            self.update_includes(folder, include_file)
+            self.update_includes(include_file)
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[folder]), folder))
 
-    def update_includes(self, path, xml_file):
+    def update_includes(self, xml_file):
         # recursive, walks through include files and updates include list and include file list
         if os.path.exists(xml_file):
+            folder = xml_file.split(os.sep)[-2]
             sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
             log("found include file: " + xml_file)
-            self.include_file_list[path].append(xml_file)
-            self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
+            self.include_file_list[folder].append(xml_file)
+            self.include_list[folder] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
             root = get_root_from_file(xml_file)
             for node in root.findall("include"):
                 if "file" in node.attrib and node.attrib["file"] != "script-skinshortcuts-includes.xml":
-                    xml_file = os.path.join(self.project_path, path, node.attrib["file"])
-                    self.update_includes(path, xml_file)
+                    xml_file = os.path.join(self.project_path, folder, node.attrib["file"])
+                    self.update_includes(xml_file)
         else:
             log("Could not find include file " + xml_file)
 
