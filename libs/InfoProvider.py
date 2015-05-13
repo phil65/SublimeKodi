@@ -91,15 +91,15 @@ class InfoProvider():
 
     def update_include_list(self):
         self.include_list = {}
-        for path in self.xml_folders:
-            xml_folder = os.path.join(self.project_path, path)
+        for folder in self.xml_folders:
+            xml_folder = os.path.join(self.project_path, folder)
             paths = [os.path.join(xml_folder, "Includes.xml"),
                      os.path.join(xml_folder, "includes.xml")]
-            self.include_file_list[path] = []
-            self.include_list[path] = []
+            self.include_file_list[folder] = []
+            self.include_list[folder] = []
             include_file = checkPaths(paths)
-            self.update_includes(path, include_file)
-            log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[path]), path))
+            self.update_includes(folder, include_file)
+            log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[folder]), folder))
 
     def update_includes(self, path, xml_file):
         # recursive, walks through include files and updates include list and include file list
