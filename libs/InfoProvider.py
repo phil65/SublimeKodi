@@ -1,7 +1,6 @@
 import os
 from Utils import *
 import sublime
-import codecs
 import re
 
 
@@ -195,10 +194,10 @@ class InfoProvider():
                  os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
         self.kodi_lang_path = checkPaths(paths)
         if self.kodi_lang_path:
-            kodi_lang_file = codecs.open(self.kodi_lang_path, "r", "utf-8").read()
-            self.builtin_list = get_label_list(kodi_lang_file)
+            self.builtin_list = get_label_list(self.kodi_lang_path)
             log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
         else:
+            self.builtin_list = []
             log("Could not find kodi language file")
             return ""
 
@@ -210,15 +209,13 @@ class InfoProvider():
                  os.path.join(self.project_path, "language", self.language_folder, "strings.po")]
         self.addon_lang_path = checkPaths(paths)
         if self.addon_lang_path:
-            lang_file = codecs.open(self.addon_lang_path, "r", "utf-8").read()
+            self.addon_string_list = get_label_list(self.addon_lang_path)
+            log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
         else:
-            log("Could not find addon language file")
-            log(paths)
-            lang_file = ""
-        self.addon_string_list = get_label_list(lang_file)
+            self.addon_string_list = []
+            log("Could not find add-on language file")
         self.string_list = self.builtin_list + self.addon_string_list
         sublime.status_message("")
-        log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"

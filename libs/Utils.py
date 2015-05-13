@@ -5,6 +5,7 @@ import base64
 import json
 import threading
 import colorsys
+import codecs
 from polib import polib
 from urllib.request import Request, urlopen
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
@@ -108,7 +109,8 @@ def get_tags_from_file(path, node_tags):
 def get_label_list(po_file_path):
     listitems = []
     try:
-        po = polib.pofile(po_file_path)
+        po_file_content = codecs.open(po_file_path, "r", "utf-8").read()
+        po = polib.pofile(po_file_content)
         for entry in po:
             string = {"id": entry.msgctxt,
                       "line": entry.linenum,
