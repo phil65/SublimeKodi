@@ -190,19 +190,6 @@ class InfoProvider():
             log("use default language: English")
         self.settings_loaded = True
 
-    def get_addon_lang_file(self, path):
-        if not self.addon_xml_file:
-            return False
-        paths = [os.path.join(path, "resources", "language", self.language_folder, "strings.po"),
-                 os.path.join(path, "language", self.language_folder, "strings.po")]
-        self.addon_lang_path = checkPaths(paths)
-        if self.addon_lang_path:
-            return codecs.open(self.addon_lang_path, "r", "utf-8").read()
-        else:
-            log("Could not find addon language file")
-            log(paths)
-            return ""
-
     def get_builtin_label(self):
         paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
                  os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
@@ -219,7 +206,15 @@ class InfoProvider():
         if not self.addon_xml_file:
             return False
         sublime.status_message("SublimeKodi: Updating Labels...")
-        lang_file = self.get_addon_lang_file(self.project_path)
+        paths = [os.path.join(self.project_path, "resources", "language", self.language_folder, "strings.po"),
+                 os.path.join(self.project_path, "language", self.language_folder, "strings.po")]
+        self.addon_lang_path = checkPaths(paths)
+        if self.addon_lang_path:
+            lang_file = codecs.open(self.addon_lang_path, "r", "utf-8").read()
+        else:
+            log("Could not find addon language file")
+            log(paths)
+            lang_file = ""
         self.addon_string_list = get_label_list(lang_file)
         self.string_list = self.builtin_list + self.addon_string_list
         sublime.status_message("")
