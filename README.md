@@ -74,7 +74,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 ### Context menu:
 
-- Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCAIZE[])
+- Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCALIZE[foo])
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
 
 
