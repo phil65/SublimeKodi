@@ -124,7 +124,7 @@ class InfoProvider():
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
 
     def go_to_tag(self, view):
-        keyword = findWord(view)
+        keyword = get_node_content(view)
         if keyword:
             if keyword.isdigit():
                 for node in self.string_list:

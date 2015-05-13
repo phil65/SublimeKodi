@@ -90,7 +90,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<font" in line_contents:
-                node_content = str(INFOS.return_node_content(findWord(view)))
+                node_content = str(INFOS.return_node_content(get_node_content(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-12]).replace("\\n", "<br>")
                 if popup_label:
