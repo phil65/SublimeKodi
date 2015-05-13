@@ -86,7 +86,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<include" in line_contents and "name=" not in line_contents:
                 node_content = str(INFOS.return_node_content(get_node_content(view)))
                 ind1 = node_content.find('\\n')
-                popup_label = cgi.escape(node_content[ind1 + 2:-16]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
+                popup_label = cgi.escape(node_content[ind1 + 2:-15]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<font" in line_contents:
@@ -179,6 +179,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             INFOS.update_labels()
 
     def on_done(self, index):
+        if index == -1:
+            return None
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
 
     def show_preview(self, index):
@@ -213,7 +215,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        sublime.active_window().show_input_panel("Set Kodi folder", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
+        self.window.show_input_panel("Set Kodi folder", KODI_PRESET_PATH, self.set_kodi_folder, None, None)
 
     def set_kodi_folder(self, path):
         if os.path.exists(path):
@@ -227,11 +229,11 @@ class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         self.history = sublime.load_settings(SETTINGS_FILE)
-        sublime.active_window().show_input_panel("Execute builtin", self.history.get("prev_json_builtin", ""), self.execute_builtin, None, None)
+        self.window.show_input_panel("Execute builtin", self.history.get("prev_json_builtin", ""), self.execute_builtin, None, None)
 
     def execute_builtin(self, builtin):
         self.history.set("prev_json_builtin", builtin)
-        sublime.active_window().run_command("execute_builtin", {"builtin": builtin})
+        self.window.run_command("execute_builtin", {"builtin": builtin})
 
 
 class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
@@ -271,6 +273,8 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog("No unused or undefined %ss found" % tag_type)
 
     def on_done(self, index):
+        if index == -1:
+            return None
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
 
     def show_preview(self, index):
@@ -291,6 +295,8 @@ class CheckValuesCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog("No errors detected")
 
     def on_done(self, index):
+        if index == -1:
+            return None
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
 
     def show_preview(self, index):
@@ -327,20 +333,21 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
         label_list = []
         for item in INFOS.string_list:
             label_list.append("%s (%s)" % (item["string"], item["id"]))
-        sublime.active_window().show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
+        self.window.show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
     def label_search_ondone_action(self, index):
-        if not index == -1:
-            view = self.window.active_view()
-            scope_name = view.scope_name(view.sel()[0].b)
-            label_id = int(INFOS.string_list[index]["id"][1:])
-            if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
-                lang_string = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
-            elif "text.xml" in scope_name:
-                lang_string = "$LOCALIZE[%i]" % label_id
-            else:
-                lang_string = label_id
-            view.run_command("insert", {"characters": lang_string})
+        if index == -1:
+            return None
+        view = self.window.active_view()
+        scope_name = view.scope_name(view.sel()[0].b)
+        label_id = int(INFOS.string_list[index]["id"][1:])
+        if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
+            lang_string = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
+        elif "text.xml" in scope_name:
+            lang_string = "$LOCALIZE[%i]" % label_id
+        else:
+            lang_string = label_id
+        view.run_command("insert", {"characters": lang_string})
 
 
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
@@ -354,7 +361,7 @@ class OpenKodiLogCommand(sublime_plugin.WindowCommand):
                 self.log_file = os.path.join(history.get("kodi_path"), "portable_data", "%s.log" % APP_NAME)
             else:
                 self.log_file = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
-        sublime.active_window().open_file(self.log_file)
+        self.window.open_file(self.log_file)
 
 
 class OpenSourceFromLog(sublime_plugin.TextCommand):
@@ -576,6 +583,8 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             self.view.run_command("replace_text", {"label_id": label_id})
 
     def on_done(self, index, region):
+        if index == -1:
+            return None
         if self.labels[index] == "Create new label":
             label_id = self.create_new_label(self.view.substr(region))
         else:
@@ -672,6 +681,8 @@ class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
         # sublime.active_window().focus_view(self.view)
 
     def on_done(self, index):
+        if index == -1:
+            return None
         path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
         sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION)
 
