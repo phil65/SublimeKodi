@@ -10,14 +10,14 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 ### Feature list:
 
-#### Kodi Log:
+##### Kodi Log:
 
 - Open log from command palette
 - Added syntax highlighting
 - Jump to code where exception ocurred by pressing shift+enter when line with path is selected
 
 
-#### Tooltips:
+##### Tooltips:
 
 - Show english translation when label id is selected
 - Show additional translation of choice when label id is selected
@@ -30,7 +30,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Show infos for selected image (image dimensions and file size)
 
 
-#### JSON-RPC: (newest script.toolbox version needed)
+##### JSON-RPC: (newest script.toolbox version needed)
 
 - Auto-reload skin after saving xml
 - Execute builtins from command palette
@@ -38,7 +38,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Display Kodi InfoLabel
 
 
-#### Shortcuts:
+##### Shortcuts:
 
 - Jump to include (shift+enter)
 - Jump to variable (shift+enter)
@@ -50,14 +50,14 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Switch xml folder (ctrl+shift+enter)
 
 
-#### Fuzzy searches:
+##### Fuzzy searches:
 
 - Search through all skin labels
 - Search through all textures including preview
 - Search though all available fonts
 
 
-#### Sanity checks:
+##### Sanity checks:
 
 - Check for unused includes / invalid include references
 - Check for unused variables / invalid variable references
@@ -72,13 +72,13 @@ Also, don´t forget to set up your SublimeKodi settings!
   - check "empty" action calls
 
 
-#### Context menu:
+##### Context menu:
 
 - Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCALIZE[foo])
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
 
 
-#### Misc:
+##### Misc:
 
 - Auto-check skin file on saving
 - Create element row (and insert ascending number) for quickly multiplying listitems / buttons
