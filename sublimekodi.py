@@ -265,7 +265,7 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 class ShowFontRefsCommand(QuickPanelCommand):
 
     def run(self):
-        self.listitems = []
+        listitems = []
         self.nodes = []
         view = self.window.active_view()
         INFOS.update_xml_files()
@@ -273,10 +273,12 @@ class ShowFontRefsCommand(QuickPanelCommand):
         self.folder = view.file_name().split(os.sep)[-2]
         for ref in font_refs[self.folder]:
             if ref["name"] == "Font_Reg28":
-                self.listitems.append(ref["name"])
+                listitems.append(ref["name"])
                 self.nodes.append(ref)
-        if self.listitems:
-            sublime.active_window().show_quick_panel(self.listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        if listitems:
+            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        else:
+            sublime.message_dialog("No references found")
 
 
 class CheckVariablesCommand(QuickPanelCommand):
