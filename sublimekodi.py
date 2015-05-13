@@ -84,7 +84,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     if value:
                         popup_label = str(value)
             elif "<include" in line_contents and "name=" not in line_contents:
-                node_content = str(INFOS.return_node_content(findWord(view)))
+                node_content = str(INFOS.return_node_content(get_node_content(view)))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 2:-16]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
                 if popup_label:
@@ -112,7 +112,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                                 alpha_percent = round(int(selection[:2], 16) / (16 * 16) * 100)
                                 popup_label += '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
             elif "<fadetime" in line_contents:
-                popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
+                popup_label = str(INFOS.return_node_content(get_node_content(view)))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
                 line_contents = view.substr(line)
                 if "string.quoted.double.xml" in scope_name:
