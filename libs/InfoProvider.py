@@ -105,14 +105,13 @@ class InfoProvider():
         # recursive, walks through include files and updates include list and include file list
         if os.path.exists(xml_file):
             sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
-            xml_folder = os.path.join(self.project_path, path)
             log("found include file: " + xml_file)
-            root = get_root_from_file(xml_file)
             self.include_file_list[path].append(xml_file)
             self.include_list[path] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
+            root = get_root_from_file(xml_file)
             for node in root.findall("include"):
                 if "file" in node.attrib and node.attrib["file"] != "script-skinshortcuts-includes.xml":
-                    xml_file = os.path.join(xml_folder, node.attrib["file"])
+                    xml_file = os.path.join(self.project_path, path, node.attrib["file"])
                     self.update_includes(path, xml_file)
         else:
             log("Could not find include file " + xml_file)
