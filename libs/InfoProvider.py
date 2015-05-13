@@ -278,12 +278,10 @@ class InfoProvider():
                     unused_vars.append(node)
         return undefined_vars, unused_vars
 
-    def check_fonts(self):
-        unused_fonts = []
-        undefined_fonts = []
-        var_refs = []
+    def get_font_refs(self):
+        font_refs = {}
         for folder in self.xml_folders:
-            var_refs = []
+            font_refs[folder] = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
@@ -297,16 +295,23 @@ class InfoProvider():
                                     "filename": xml_file,
                                     "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
                                     "file": path}
-                            var_refs.append(item)
+                            font_refs[folder].append(item)
+        return font_refs
+
+    def check_fonts(self):
+        unused_fonts = []
+        undefined_fonts = []
+        font_refs = self.get_font_refs()
+        for folder in self.xml_folders:
             fontlist = ["-"]
             for item in self.fonts[folder]:
                 fontlist.append(item["name"])
-            for ref in var_refs:
+            for ref in font_refs[folder]:
                 if ref["name"] in fontlist:
                         pass
                 else:
                     undefined_fonts.append(ref)
-            ref_list = [d['name'] for d in var_refs]
+            ref_list = [d['name'] for d in font_refs[folder]]
             for node in self.fonts[folder]:
                 if node["name"] not in ref_list:
                     unused_fonts.append(node)
