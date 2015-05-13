@@ -107,14 +107,18 @@ def get_tags_from_file(path, node_tags):
 
 def get_label_list(po_file_path):
     listitems = []
-    po = polib.pofile(po_file_path)
-    for entry in po:
-        string = {"id": entry.msgctxt,
-                  "line": entry.linenum,
-                  "string": entry.msgid,
-                  "native_string": entry.msgstr}
-        listitems.append(string)
-    return listitems
+    try:
+        po = polib.pofile(po_file_path)
+        for entry in po:
+            string = {"id": entry.msgctxt,
+                      "line": entry.linenum,
+                      "string": entry.msgid,
+                      "native_string": entry.msgstr}
+            listitems.append(string)
+        return listitems
+    except Exception as e:
+        sublime.message_dialog("Error:\n %s" % (e))
+        return []
 
 
 def get_root_from_file(xml_file):
