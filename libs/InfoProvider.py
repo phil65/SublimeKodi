@@ -117,7 +117,7 @@ class InfoProvider():
             log("Could not find include file " + xml_file)
 
     def update_xml_files(self):
-        self.include_ref_list = {}
+        self.window_file_list = {}
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
