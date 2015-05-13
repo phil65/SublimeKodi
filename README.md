@@ -17,31 +17,33 @@ Tooltips:
 
 - Show english translation when label id is selected
 - Show additional translation of choice when label id is selected
-- show color hex value for color names
-- show variable content
-- show include content
-- show font tag
-- show constant value
-- show value of selected Kodi InfoLabel in tooltip (by using JSON-RPC)
-- show infos for selected image (image dimensions and file size)
+- Show actual color / color hex / alpha % for all color themes when color is selected
+- Show variable content
+- Show include content
+- Show font tag
+- Show constant value
+- Show value of selected Kodi InfoLabel in tooltip (by using JSON-RPC)
+- Show infos for selected image (image dimensions and file size)
 
 
 JSON-RPC: (newest script.toolbox version needed)
 
-- auto-reload skin after saving xml
+- Auto-reload skin after saving xml
 - Execute builtins from command palette
+- Reload skin
+- Display Kodi InfoLabel
 
 
 Shortcuts:
 
-- jump to include (shift+enter)
-- jump to variable (shift+enter)
-- jump to constant (shift+enter)
-- jump to font (shift+enter)
-- jump to label definition (shift+enter)
-- jump to color definition (shift+enter)
-- preview skin image (ctrl+enter)
-- switch xml folder (ctrl+shift+enter)
+- Jump to include (shift+enter)
+- Jump to variable (shift+enter)
+- Jump to constant (shift+enter)
+- Jump to font (shift+enter)
+- Jump to label definition (shift+enter)
+- Jump to color definition (shift+enter)
+- Preview skin image (ctrl+enter)
+- Switch xml folder (ctrl+shift+enter)
 
 
 Fuzzy searches:
@@ -51,7 +53,28 @@ Fuzzy searches:
 - Search though all available fonts
 
 
+Sanity checks:
+
+- Check for unused includes / invalid include references
+- Check for unused variables / invalid variable references
+- Check for unused fonts / invalid include font references
+- Check for invalid values / structure:
+  - invalid nodes
+  - invalid attributes
+  - invalid attribute values
+  - invalid node values
+  - invalid multiple nodes
+  - check for correct parantheses
+  - check "empty" action calls
+
+
 Context menu:
 
-- move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCAIZE[])
-- go to Kodi online wiki (opens corresponding online help page, only for control types atm)
+- Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCAIZE[])
+- Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
+
+
+Misc:
+
+- Auto-check skin file on saving
+- Create element row (and insert ascending number) for quickly multiplying listitems / buttons
