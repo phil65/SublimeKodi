@@ -333,10 +333,13 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
         if not index == -1:
             view = self.window.active_view()
             scope_name = view.scope_name(view.sel()[0].b)
-            if "text.xml" in scope_name:
-                lang_string = "$LOCALIZE[%s]" % INFOS.id_list[index][1:]
+            label_id = int(INFOS.string_list[index]["id"][1:])
+            if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
+                lang_string = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
+            elif "text.xml" in scope_name:
+                lang_string = "$LOCALIZE[%i]" % label_id
             else:
-                lang_string = INFOS.id_list[index][1:]
+                lang_string = label_id
             view.run_command("insert", {"characters": lang_string})
 
 
@@ -586,8 +589,6 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         self.view.run_command("replace_text", {"label_id": label_id})
 
     def create_new_label(self, word):
-        region = self.view.sel()[0]
-        scope_name = self.view.scope_name(region.b)
         if INFOS.addon_type == "skin":
             start_id = 31000
             index_offset = 0
@@ -619,11 +620,14 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
     def run(self, edit, label_id):
         for region in self.view.sel():
             scope_name = self.view.scope_name(region.b)
-            if "text.xml" in scope_name:
-                template = "$LOCALIZE[%s]"
+            label_id = int(label_id)
+            if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
+                new = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
+            elif "text.xml" in scope_name:
+                new = "$LOCALIZE[%i]" % label_id
             else:
-                template = "%s"
-            self.view.replace(edit, region, template % str(label_id))
+                new = str(label_id)
+            self.view.replace(edit, region, new)
 
 
 class CreateElementRowCommand(sublime_plugin.WindowCommand):
