@@ -65,10 +65,10 @@ def findWord(view):
 def get_node_content(view):
     for region in view.sel():
         try:
-            line = view.line(region)
-            line_contents = view.substr(line)
-            root = ET.fromstring(line_contents)
-            return root.text
+            flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+            bracket_region = view.expand_by_class(region, flags, '<>"')
+            log(view.substr(bracket_region))
+            return view.substr(bracket_region)
         except:
             log("Could not get node content")
             return ""
