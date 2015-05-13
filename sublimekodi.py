@@ -421,13 +421,7 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
-class GoToVariableCommand(sublime_plugin.TextCommand):
-
-    def run(self, edit):
-        INFOS.go_to_tag(view=self.view)
-
-
-class GoToIncludeCommand(sublime_plugin.TextCommand):
+class GoToTagCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         INFOS.go_to_tag(view=self.view)

@@ -14,7 +14,7 @@
     { "keys": ["ctrl+shift+w"], "command": "go_to_online_help",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
-    { "keys": ["shift+enter"], "command": "go_to_variable",
+    { "keys": ["shift+enter"], "command": "go_to_tag",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
     { "keys": ["shift+ctrl+enter"], "command": "switch_xml_folder",
