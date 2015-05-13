@@ -251,20 +251,7 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
         INFOS.update_labels()
 
 
-class ShowFontRefsCommand(sublime_plugin.TextCommand):
-
-    def run(self, edit):
-        self.listitems = []
-        self.nodes = []
-        INFOS.update_xml_files()
-        font_refs = INFOS.get_font_refs()
-        self.folder = self.view.file_name().split(os.sep)[-2]
-        for ref in font_refs[self.folder]:
-            if ref["name"] == "Font_Reg28":
-                self.listitems.append(ref["name"])
-                self.nodes.append(ref)
-        if self.listitems:
-            sublime.active_window().show_quick_panel(self.listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+class QuickPanelCommand(sublime_plugin.WindowCommand):
 
     def on_done(self, index):
         if index == -1:
@@ -275,7 +262,24 @@ class ShowFontRefsCommand(sublime_plugin.TextCommand):
         sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
-class CheckVariablesCommand(sublime_plugin.WindowCommand):
+class ShowFontRefsCommand(QuickPanelCommand):
+
+    def run(self):
+        self.listitems = []
+        self.nodes = []
+        view = self.window.active_view()
+        INFOS.update_xml_files()
+        font_refs = INFOS.get_font_refs()
+        self.folder = view.file_name().split(os.sep)[-2]
+        for ref in font_refs[self.folder]:
+            if ref["name"] == "Font_Reg28":
+                self.listitems.append(ref["name"])
+                self.nodes.append(ref)
+        if self.listitems:
+            sublime.active_window().show_quick_panel(self.listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+
+
+class CheckVariablesCommand(QuickPanelCommand):
 
     def run(self, tag_type):
         INFOS.update_xml_files()
@@ -296,16 +300,8 @@ class CheckVariablesCommand(sublime_plugin.WindowCommand):
         else:
             sublime.message_dialog("No unused or undefined %ss found" % tag_type)
 
-    def on_done(self, index):
-        if index == -1:
-            return None
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
 
-    def show_preview(self, index):
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
-
-
-class CheckValuesCommand(sublime_plugin.WindowCommand):
+class CheckValuesCommand(QuickPanelCommand):
 
     def run(self):
         INFOS.update_xml_files()
@@ -317,14 +313,6 @@ class CheckValuesCommand(sublime_plugin.WindowCommand):
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:
             sublime.message_dialog("No errors detected")
-
-    def on_done(self, index):
-        if index == -1:
-            return None
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
-
-    def show_preview(self, index):
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
 class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
