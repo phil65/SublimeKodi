@@ -285,7 +285,6 @@ class InfoProvider():
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
-                folder = path.split(os.sep)[-2]
                 if folder in self.fonts:
                     for node in root.xpath(".//font"):
                         if not node.getchildren():
@@ -293,7 +292,7 @@ class InfoProvider():
                                     "type": node.tag,
                                     "name": node.text,
                                     "filename": xml_file,
-                                    "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
+                                    # "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
                                     "file": path}
                             font_refs[folder].append(item)
         return font_refs
