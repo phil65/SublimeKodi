@@ -36,7 +36,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.is_modified = False
 
     def on_selection_modified_async(self, view):
-        history = sublime.load_settings(SETTINGS_FILE)
+        settings = sublime.load_settings(SETTINGS_FILE)
         if len(view.sel()) > 1:
             return None
         try:
@@ -78,7 +78,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "&nbsp;" + popup_label
             elif identifier.startswith("INFO"):
                 data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
-                result = kodi_json_request(data, True)
+                result = kodi_json_request(data, True, settings)
                 if result:
                     key, value = result["result"].popitem()
                     if value:
@@ -134,13 +134,13 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
-        if popup_label and history.get("tooltip_delay", 0) > -1:
-            sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), history.get("tooltip_delay", 0))
+        if popup_label and settings.get("tooltip_delay", 0) > -1:
+            sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), settings.get("tooltip_delay", 0))
 
     def show_tooltip(self, view, tooltip_label):
-        history = sublime.load_settings(SETTINGS_FILE)
+        settings = sublime.load_settings(SETTINGS_FILE)
         view.show_popup(tooltip_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                        location=-1, max_width=history.get("tooltip_width", 1000), max_height=history.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+                        location=-1, max_width=settings.get("tooltip_width", 1000), max_height=settings.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
@@ -155,9 +155,9 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_post_save_async(self, view):
         log("saved " + view.file_name())
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
-            history = sublime.load_settings(SETTINGS_FILE)
+            settings = sublime.load_settings(SETTINGS_FILE)
             if self.is_modified:
-                if history.get("auto_reload_skin", True):
+                if settings.get("auto_reload_skin", True):
                     self.is_modified = False
                     sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
                 folder = view.file_name().split(os.sep)[-2]
@@ -168,7 +168,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     INFOS.get_colors()
                 if view.file_name().endswith("ont.xml"):
                     INFOS.get_fonts()
-                if history.get("auto_skin_check", True):
+                if settings.get("auto_skin_check", True):
                     self.nodes = INFOS.check_file(view.file_name())
                     listitems = []
                     for item in self.nodes:
@@ -228,19 +228,20 @@ class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 class ExecuteBuiltinPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        self.history = sublime.load_settings(SETTINGS_FILE)
-        self.window.show_input_panel("Execute builtin", self.history.get("prev_json_builtin", ""), self.execute_builtin, None, None)
+        self.settings = sublime.load_settings(SETTINGS_FILE)
+        self.window.show_input_panel("Execute builtin", self.settings.get("prev_json_builtin", ""), self.execute_builtin, None, None)
 
     def execute_builtin(self, builtin):
-        self.history.set("prev_json_builtin", builtin)
+        self.settings.set("prev_json_builtin", builtin)
         self.window.run_command("execute_builtin", {"builtin": builtin})
 
 
 class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self, builtin):
+        settings = sublime.load_settings(SETTINGS_FILE)
         data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
-        kodi_json_request(data)
+        kodi_json_request(data, settings=settings)
 
 
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
@@ -348,16 +349,16 @@ class CheckValuesCommand(QuickPanelCommand):
 class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        self.history = sublime.load_settings(SETTINGS_FILE)
-        sublime.active_window().show_input_panel("Get InfoLabels (comma-separated)", self.history.get("prev_infolabel", ""), self.show_info_label, None, None)
+        self.settings = sublime.load_settings(SETTINGS_FILE)
+        sublime.active_window().show_input_panel("Get InfoLabels (comma-separated)", self.settings.get("prev_infolabel", ""), self.show_info_label, None, None)
 
     def show_info_label(self, label_string):
-        self.history.set("prev_infolabel", label_string)
+        self.settings.set("prev_infolabel", label_string)
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
         log(data)
-        result = send_json_request(data)
+        result = send_json_request(data, self.settings)
         if result:
             key, value = result["result"].popitem()
             sublime.message_dialog(str(value))
@@ -395,12 +396,12 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        history = sublime.load_settings(SETTINGS_FILE)
+        settings = sublime.load_settings(SETTINGS_FILE)
         if sublime.platform() == "linux":
             self.log_file = os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME, "temp", "%s.log" % APP_NAME)
         elif sublime.platform() == "windows":
-            if history.get("portable_mode"):
-                self.log_file = os.path.join(history.get("kodi_path"), "portable_data", "%s.log" % APP_NAME)
+            if settings.get("portable_mode"):
+                self.log_file = os.path.join(settings.get("kodi_path"), "portable_data", "%s.log" % APP_NAME)
             else:
                 self.log_file = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
         self.window.open_file(self.log_file)

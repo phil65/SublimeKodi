@@ -8,7 +8,6 @@ import colorsys
 import codecs
 from polib import polib
 from urllib.request import Request, urlopen
-SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
 
 def tohex(r, g, b, a=None):
@@ -148,8 +147,8 @@ def get_xml_file_paths(xml_path):
         return []
 
 
-def kodi_json_request(data, wait=False):
-    request_thread = json_request_thread(data)
+def kodi_json_request(data, wait=False, settings=None):
+    request_thread = json_request_thread(data, settings)
     request_thread.start()
     if wait:
         request_thread.join(1)
@@ -160,22 +159,22 @@ def kodi_json_request(data, wait=False):
 
 class json_request_thread(threading.Thread):
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, settings=None):
         threading.Thread.__init__(self)
         self.data = data
         self.result = None
+        self.settings = settings
 
     def run(self):
-        self.result = send_json_request(self.data)
+        self.result = send_json_request(self.data, self.settings)
         return True
 
 
-def send_json_request(data):
-    history = sublime.load_settings(SETTINGS_FILE)
-    address = history.get("kodi_address", "http://localhost:8080")
+def send_json_request(data, settings):
+    address = settings.get("kodi_address", "http://localhost:8080")
     if not address:
         return None
-    credentials = '%s:%s' % (history.get("kodi_username", "kodi"), history.get("kodi_password", ""))
+    credentials = '%s:%s' % (settings.get("kodi_username", "kodi"), settings.get("kodi_password", ""))
     encoded_credentials = base64.b64encode(credentials.encode('UTF-8'))
     authorization = b'Basic ' + encoded_credentials
     headers = {'Content-Type': 'application/json', 'Authorization': authorization}
