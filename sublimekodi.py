@@ -516,8 +516,10 @@ class SearchForFontCommand(sublime_plugin.TextCommand):
 class GoToOnlineHelpCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        scope_name = self.view.scope_name(self.view.sel()[0].b)
-        return "text.xml" in scope_name
+        region = self.view.sel()[0]
+        line_contents = self.view.substr(self.view.line(region))
+        scope_name = self.view.scope_name(region.b)
+        return "text.xml" in scope_name and "<control " in line_contents
 
     def run(self, edit):
         controls = {"group": "http://kodi.wiki/view/Group_Control",
@@ -554,15 +556,9 @@ class GoToOnlineHelpCommand(sublime_plugin.TextCommand):
         try:
             root = ET.fromstring(line_contents + "</control>")
             control_type = root.attrib["type"]
-            # log(controls[control_type])
             webbrowser.open_new(controls[control_type])
         except:
             log("error when trying to open from %s" % line_contents)
-
-    def on_done(self, index):
-        if index >= 0:
-            self.view.run_command("insert", {"characters": self.font_entries[index][0]})
-        sublime.active_window().focus_view(self.view)
 
 
 class MoveToLanguageFile(sublime_plugin.TextCommand):
