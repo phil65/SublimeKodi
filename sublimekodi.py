@@ -190,7 +190,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         view = sublime.active_window().active_view()
         if view and view.window():
             if not INFOS.settings_loaded:
-                INFOS.get_settings()
+                INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
             if not INFOS.builtin_list:
                 INFOS.get_builtin_label()
             if view.window():
@@ -246,7 +246,7 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        INFOS.get_settings()
+        INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
         INFOS.get_builtin_label()
         INFOS.update_labels()
 

@@ -1,10 +1,7 @@
 import os
 from Utils import *
-import sublime
 import re
 
-
-SETTINGS_FILE = 'sublimekodi.sublime-settings'
 DEFAULT_LANGUAGE_FOLDER = "English"
 
 
@@ -167,13 +164,12 @@ class InfoProvider():
                     return tooltips
         return ""
 
-    def get_settings(self):
-        history = sublime.load_settings(SETTINGS_FILE)
-        self.kodi_path = history.get("kodi_path")
+    def get_settings(self, settings):
+        self.kodi_path = settings.get("kodi_path")
         log("kodi path: " + self.kodi_path)
-        self.use_native = history.get("use_native_language")
+        self.use_native = settings.get("use_native_language")
         if self.use_native:
-            self.language_folder = history.get("native_language")
+            self.language_folder = settings.get("native_language")
             log("use native language: " + self.language_folder)
         else:
             self.language_folder = DEFAULT_LANGUAGE_FOLDER
