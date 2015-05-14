@@ -284,24 +284,7 @@ class InfoProvider():
             font_refs[folder] = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
-                font_refs[folder].extend(self.get_font_refs_from_file(path))
-        return font_refs
-
-    def get_font_refs_from_file(self, path):
-        font_refs = []
-        xml_file = os.path.basename(path)
-        folder = path.split(os.sep)[-2]
-        root = get_root_from_file(path)
-        if folder in self.fonts:
-            for node in root.xpath(".//font"):
-                if not node.getchildren():
-                    item = {"line": node.sourceline,
-                            "type": node.tag,
-                            "name": node.text,
-                            "filename": xml_file,
-                            # "message": ["invalid font in line %i: %s" % (node.sourceline, node.text), xml_file],
-                            "file": path}
-                    font_refs.append(item)
+                font_refs[folder].extend(get_refs_from_file(path, ".//font"))
         return font_refs
 
     def check_fonts(self):

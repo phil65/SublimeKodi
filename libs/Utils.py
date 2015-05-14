@@ -190,3 +190,18 @@ def send_json_request(data):
         log("Could not connect to Kodi")
         return None
 
+
+def get_refs_from_file(path, xpath):
+    font_refs = []
+    xml_file = os.path.basename(path)
+    root = get_root_from_file(path)
+    if root is not None:
+        for node in root.xpath(xpath):
+            if not node.getchildren():
+                item = {"line": node.sourceline,
+                        "type": node.tag,
+                        "name": node.text,
+                        "filename": xml_file,
+                        "file": path}
+                font_refs.append(item)
+    return font_refs
