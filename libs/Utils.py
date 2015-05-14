@@ -119,6 +119,8 @@ def get_label_list(po_file_path):
             listitems.append(string)
         return listitems
     except Exception as e:
+        log(po_file_path)
+        log(e)
         sublime.message_dialog("Error:\n %s" % (e))
         return []
 
