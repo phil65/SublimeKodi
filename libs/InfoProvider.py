@@ -448,7 +448,6 @@ class InfoProvider():
             if not node.getchildren():
                 xpath = tree.getpath(node)
                 if xpath.endswith("]") and not xpath.endswith("[1]"):
-
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
