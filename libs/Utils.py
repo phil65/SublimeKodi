@@ -63,10 +63,9 @@ def findWord(view):
             return ""
 
 
-def get_node_content(view):
+def get_node_content(view, flags):
     for region in view.sel():
         try:
-            flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
             bracket_region = view.expand_by_class(region, flags, '<>"')
             log(view.substr(bracket_region))
             return view.substr(bracket_region)
