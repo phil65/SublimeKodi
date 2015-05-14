@@ -286,7 +286,7 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
     def run(self):
         listitems = []
         self.nodes = []
-        regex = r"\$LOCALIZE\[([0-9].*?)\]"
+        regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"(?:label|property|altlabel|label2)>([0-9].*?)<"]
         view = self.window.active_view()
         path = view.file_name()
         labels = [s["string"] for s in INFOS.string_list]
@@ -294,14 +294,15 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
         # view.substr(sublime.Region(0, view.size()))
         with open(path, encoding="utf8") as f:
             for i, line in enumerate(f.readlines()):
-                for match in re.finditer(regex, line):
-                    label_id = "#" + match.group(1)
-                    if label_id in label_ids:
-                        index = label_ids.index(label_id)
-                        listitems.append("%s (%s)" % (labels[index], label_id))
-                    node = {"file": path,
-                            "line": i + 1}
-                    self.nodes.append(node)
+                for regex in regexs:
+                    for match in re.finditer(regex, line):
+                        label_id = "#" + match.group(1)
+                        if label_id in label_ids:
+                            index = label_ids.index(label_id)
+                            listitems.append("%s (%s)" % (labels[index], label_id))
+                        node = {"file": path,
+                                "line": i + 1}
+                        self.nodes.append(node)
         if listitems:
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:
