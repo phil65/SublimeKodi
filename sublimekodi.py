@@ -41,8 +41,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             return None
         try:
             region = view.sel()[0]
+            folder = view.file_name().split(os.sep)[-2]
         except:
-            log("on_selection_modified_async: view.sel() empty")
             return None
         if region == self.prev_selection:
             return None
@@ -66,12 +66,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             # log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                popup_label = INFOS.return_label(view, selection)
+                popup_label = INFOS.return_label(selection)
             # elif popup_label and popup_label > 30000:
-            #     popup_label = INFOS.return_label(view, selection)
+            #     popup_label = INFOS.return_label(selection)
         elif "text.xml" in scope_name:
             if identifier.startswith("VAR"):
-                node_content = str(INFOS.return_node_content(identifier[4:]))
+                node_content = str(INFOS.return_node_content(identifier[4:], folder=folder))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
                 if popup_label:
@@ -84,19 +84,19 @@ class SublimeKodi(sublime_plugin.EventListener):
                     if value:
                         popup_label = str(value)
             elif "<include" in line_contents and "name=" not in line_contents:
-                node_content = str(INFOS.return_node_content(get_node_content(view)))
+                node_content = str(INFOS.return_node_content(get_node_content(view), folder=folder))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 2:-15]).replace("\\n", "<br>"). replace(" ", "&nbsp;")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<font" in line_contents:
-                node_content = str(INFOS.return_node_content(get_node_content(view)))
+                node_content = str(INFOS.return_node_content(get_node_content(view), folder=folder))
                 ind1 = node_content.find('\\n')
                 popup_label = cgi.escape(node_content[ind1 + 4:-12]).replace("\\n", "<br>")
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                popup_label = INFOS.return_label(view, selection)
+                popup_label = INFOS.return_label(selection)
             if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents or "<value" in line_contents:
                 if not popup_label:
                     for item in INFOS.color_list:
@@ -112,7 +112,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                                 alpha_percent = round(int(selection[:2], 16) / (16 * 16) * 100)
                                 popup_label += '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
             elif "<fadetime" in line_contents:
-                popup_label = str(INFOS.return_node_content(get_node_content(view)))[2:-3]
+                popup_label = str(INFOS.return_node_content(get_node_content(view), folder=folder))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
                 line_contents = view.substr(line)
                 if "string.quoted.double.xml" in scope_name:
@@ -133,7 +133,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
-                popup_label = str(INFOS.return_node_content(findWord(view)))[2:-3]
+                popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
         if popup_label and history.get("tooltip_delay", 0) > -1:
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), history.get("tooltip_delay", 0))
 
@@ -470,10 +470,15 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             sublime.active_window().open_file(file_path, sublime.TRANSIENT)
 
 
-class GoToTagCommand(sublime_plugin.TextCommand):
+class GoToTagCommand(sublime_plugin.WindowCommand):
 
-    def run(self, edit):
-        INFOS.go_to_tag(view=self.view)
+    def run(self):
+        view = self.window.active_view()
+        keyword = get_node_content(view)
+        folder = view.file_name().split(os.sep)[-2]
+        position = INFOS.go_to_tag(keyword, folder)
+        if position:
+            self.window.open_file(position, sublime.ENCODED_POSITION)
 
 
 class SearchForImageCommand(sublime_plugin.TextCommand):

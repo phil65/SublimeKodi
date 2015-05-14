@@ -77,7 +77,6 @@ class InfoProvider():
             font_file = checkPaths(paths)
             if font_file:
                 self.fonts[folder] = []
-                sublime.status_message("SublimeKodi: Updating fonts...")
                 root = get_root_from_file(font_file)
                 for node in root.find("fontset").findall("font"):
                     string_dict = {"name": node.find("name").text,
@@ -104,7 +103,6 @@ class InfoProvider():
         # recursive, walks through include files and updates include list and include file list
         if os.path.exists(xml_file):
             folder = xml_file.split(os.sep)[-2]
-            sublime.status_message("SublimeKodi: Updating Includes from " + xml_file)
             log("found include file: " + xml_file)
             self.include_file_list[folder].append(xml_file)
             self.include_list[folder] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
@@ -122,8 +120,7 @@ class InfoProvider():
             xml_folder = os.path.join(self.project_path, path)
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
 
-    def go_to_tag(self, view):
-        keyword = get_node_content(view)
+    def go_to_tag(self, keyword, folder):
         if keyword:
             if keyword.isdigit():
                 for node in self.string_list:
@@ -132,29 +129,23 @@ class InfoProvider():
                             file_path = self.addon_lang_path
                         else:
                             file_path = self.kodi_lang_path
-                        sublime.active_window().open_file("%s:%s" % (file_path, node["line"]), sublime.ENCODED_POSITION)
-                        return True
+                        return "%s:%s" % (file_path, node["line"])
             else:
-                folder = view.file_name().split(os.sep)[-2]
                 for node in self.include_list[folder]:
                     if node["name"] == keyword:
-                        sublime.active_window().open_file("%s:%s" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
-                        return True
+                        return "%s:%s" % (node["file"], node["line"])
                 for node in self.fonts[folder]:
                     if node["name"] == keyword:
                         path = os.path.join(self.project_path, folder, "Font.xml")
-                        sublime.active_window().open_file("%s:%s" % (path, node["line"]), sublime.ENCODED_POSITION)
-                        return True
+                        return "%s:%s" % (path, node["line"])
                 for node in self.color_list:
                     if node["name"] == keyword and node["filename"].endswith("defaults.xml"):
-                        sublime.active_window().open_file("%s:%s" % (node["filename"], node["line"]), sublime.ENCODED_POSITION)
-                        return True
+                        return "%s:%s" % (node["filename"], node["line"])
                 log("no node with name %s found" % keyword)
+        return False
 
-    def return_node_content(self, keyword=None, return_entry="content"):
-        if keyword:
-            view = sublime.active_window().active_view()
-            folder = view.file_name().split(os.sep)[-2]
+    def return_node_content(self, keyword=None, return_entry="content", folder=False):
+        if keyword and folder:
             if folder in self.fonts:
                 for node in self.fonts[folder]:
                     if node["name"] == keyword:
@@ -165,7 +156,7 @@ class InfoProvider():
                         return node[return_entry]
                 # log("no node with name %s found" % keyword)
 
-    def return_label(self, view, selection):
+    def return_label(self, selection):
         if selection.isdigit():
             id_string = "#" + selection
             for item in self.string_list:
@@ -204,7 +195,6 @@ class InfoProvider():
     def update_labels(self):
         if not self.addon_xml_file:
             return False
-        sublime.status_message("SublimeKodi: Updating Labels...")
         paths = [os.path.join(self.project_path, "resources", "language", self.language_folder, "strings.po"),
                  os.path.join(self.project_path, "language", self.language_folder, "strings.po")]
         self.addon_lang_path = checkPaths(paths)
@@ -215,7 +205,6 @@ class InfoProvider():
             self.addon_string_list = []
             log("Could not find add-on language file")
         self.string_list = self.builtin_list + self.addon_string_list
-        sublime.status_message("")
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"
