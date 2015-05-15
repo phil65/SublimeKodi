@@ -314,8 +314,10 @@ class InfoProvider():
         undefined_labels = []
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
-        labels = [s["string"] for s in self.string_list]
-        label_ids = [s["id"] for s in self.string_list]
+        # labels = [s["string"] for s in self.string_list]
+        checks = [[".//viewtype[(@label)]", "label"],
+                  [".//fontset[(@idloc)]", "idloc"],
+                  [".//*[(@fallback)]", "fallback"]]
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
@@ -330,25 +332,27 @@ class InfoProvider():
                                     "file": path,
                                     "line": element.sourceline}
                             refs.append(item)
-                            log(item)
-                            if "#" + match.group(1) not in label_ids:
-                                undefined_labels.append(item)
-                for element in root.xpath(".//label | .//altlabel | .//label2"):
-                    if not element.text:
-                        continue
-                    for regex in regexs:
-                        for match in re.finditer(regex, element.text):
-                            pass
-                    if "$INFO[" not in element.text and "$VAR[" not in element.text:
-                        log(element.text)
-
-                # with open(path, encoding="utf8") as f:
-                #     for i, line in enumerate(f.readlines()):
-                #         for regex in regexs:
-                #             for match in re.finditer(regex, line):
-                #                 item = {"name": match.group(1),
-                #                         "line": i + 1}
-                #                 refs.append(item)
+                for check in checks:
+                    for element in root.xpath(check[0]):
+                        for regex in regexs:
+                            for match in re.finditer(regex, element.attrib[check[1]]):
+                                item = {"name": match.group(1),
+                                        "type": element.tag,
+                                        "file": path,
+                                        "line": element.sourceline}
+                                refs.append(item)
+                # for element in root.xpath(".//label | .//altlabel | .//label2"):
+                #     if not element.text:
+                #         continue
+                #     for regex in regexs:
+                #         for match in re.finditer(regex, element.text):
+                #             pass
+                #     if "$INFO[" not in element.text and "$VAR[" not in element.text:
+                #         log(element.text)
+        label_ids = [s["id"] for s in self.string_list]
+        for ref in refs:
+            if "#" + ref["name"] not in label_ids:
+                undefined_labels.append(ref)
         return undefined_labels, unused_labels
 
     def check_values(self):
