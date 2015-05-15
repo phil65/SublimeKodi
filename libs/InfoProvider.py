@@ -317,7 +317,7 @@ class InfoProvider():
         # labels = [s["string"] for s in self.string_list]
         checks = [[".//viewtype[(@label)]", "label"],
                   [".//fontset[(@idloc)]", "idloc"],
-                  [".//*[(@fallback)]", "fallback"]]
+                  [".//label[(@fallback)]", "fallback"]]
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
@@ -332,15 +332,31 @@ class InfoProvider():
                                     "file": path,
                                     "line": element.sourceline}
                             refs.append(item)
+                for element in root.xpath(".//label | .//altlabel | .//label2"):
+                    if not element.text:
+                        continue
+                    if "$" not in element.text and not element.text.isdigit() and not element.text == "-":
+                        item = {"name": element.text,
+                                "type": element.tag,
+                                "file": path,
+                                "line": element.sourceline}
+                        unused_labels.append(item)
                 for check in checks:
                     for element in root.xpath(check[0]):
+                        attr = element.attrib[check[1]]
                         for regex in regexs:
-                            for match in re.finditer(regex, element.attrib[check[1]]):
+                            for match in re.finditer(regex, attr):
                                 item = {"name": match.group(1),
                                         "type": element.tag,
                                         "file": path,
                                         "line": element.sourceline}
                                 refs.append(item)
+                        if "$" not in attr and not attr.isdigit() and not attr == "-":
+                            item = {"name": attr,
+                                    "type": element.tag,
+                                    "file": path,
+                                    "line": element.sourceline}
+                            unused_labels.append(item)
                 # for element in root.xpath(".//label | .//altlabel | .//label2"):
                 #     if not element.text:
                 #         continue
