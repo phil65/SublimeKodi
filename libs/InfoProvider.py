@@ -357,14 +357,6 @@ class InfoProvider():
                                     "file": path,
                                     "line": element.sourceline}
                             unused_labels.append(item)
-                # for element in root.xpath(".//label | .//altlabel | .//label2"):
-                #     if not element.text:
-                #         continue
-                #     for regex in regexs:
-                #         for match in re.finditer(regex, element.text):
-                #             pass
-                #     if "$INFO[" not in element.text and "$VAR[" not in element.text:
-                #         log(element.text)
         label_ids = [s["id"] for s in self.string_list]
         for ref in refs:
             if "#" + ref["name"] not in label_ids:
