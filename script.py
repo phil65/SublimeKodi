@@ -26,6 +26,8 @@ def check_tags(tag_type):
         undefined_refs, unused_defs = INFOS.check_includes()
     elif tag_type == "font":
         undefined_refs, unused_defs = INFOS.check_fonts()
+    elif tag_type == "label":
+        undefined_refs, unused_defs = INFOS.check_labels()
     for e in undefined_refs:
         print("Undefined %s reference: %s" % (tag_type, e["name"]))
         print(e["file"] + ": " + str(e["line"]))
@@ -48,6 +50,7 @@ if __name__ == "__main__":
         check_tags("include")
         check_tags("variable")
         check_tags("font")
+        check_tags("label")
         listitems = INFOS.check_values()
         for e in listitems:
             print(e["message"][0])

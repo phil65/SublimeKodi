@@ -309,6 +309,48 @@ class InfoProvider():
                     unused_fonts.append(node)
         return undefined_fonts, unused_fonts
 
+    def check_labels(self):
+        unused_labels = []
+        undefined_labels = []
+        refs = []
+        regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
+        labels = [s["string"] for s in self.string_list]
+        label_ids = [s["id"] for s in self.string_list]
+        for folder in self.xml_folders:
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                root = get_root_from_file(path)
+                for element in root.xpath(".//label | .//altlabel | .//label2 | .//value | .//onclick | .//property"):
+                    if not element.text:
+                        continue
+                    for regex in regexs:
+                        for match in re.finditer(regex, element.text):
+                            item = {"name": match.group(1),
+                                    "type": element.tag,
+                                    "file": path,
+                                    "line": element.sourceline}
+                            refs.append(item)
+                            log(item)
+                            if "#" + match.group(1) not in label_ids:
+                                undefined_labels.append(item)
+                for element in root.xpath(".//label | .//altlabel | .//label2"):
+                    if not element.text:
+                        continue
+                    for regex in regexs:
+                        for match in re.finditer(regex, element.text):
+                            pass
+                    if "$INFO[" not in element.text and "$VAR[" not in element.text:
+                        log(element.text)
+
+                # with open(path, encoding="utf8") as f:
+                #     for i, line in enumerate(f.readlines()):
+                #         for regex in regexs:
+                #             for match in re.finditer(regex, line):
+                #                 item = {"name": match.group(1),
+                #                         "line": i + 1}
+                #                 refs.append(item)
+        return undefined_labels, unused_labels
+
     def check_values(self):
         # available for all controls
         listitems = []
