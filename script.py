@@ -12,21 +12,10 @@ from Utils import *
 import json
 from InfoProvider import InfoProvider
 INFOS = InfoProvider()
-project_folder = "C:\\Kodi\\portable_data\\addons\\skin.xperience1080"
+
 settings = """{
     "kodi_path": "C:/Kodi",
-    "portable_mode": true,
-    "use_native_language": false,
-    "native_language": "Chinese (Simple)",
-    "kodi_address": "http://localhost:8080",
-    "kodi_username": "kodi",
-    "kodi_password": "",
-    "auto_reload_skin": true,
-    "tooltip_height": 300,
-    "tooltip_width": 1000,
-    "tooltip_delay": 0,
-    "auto_skin_check": true
-
+    "portable_mode": true
 }"""
 
 
@@ -47,6 +36,10 @@ def check_tags(tag_type):
         print("")
 
 if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        project_folder = sys.argv[1]
+    else:
+        project_folder = input("Enter Path to skin: ")
     INFOS.get_settings(json.loads(settings))
     INFOS.get_builtin_label()
     INFOS.init_addon(project_folder)
