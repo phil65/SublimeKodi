@@ -60,6 +60,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         label_region = view.expand_by_class(region, flags, '$],')
         bracket_region = view.expand_by_class(region, flags, '<>')
+        selected_content = view.substr(bracket_region)
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             # inside_bracket = True
             identifier = view.substr(label_region)
@@ -114,18 +115,11 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
-                line_contents = view.substr(line)
-                if "string.quoted.double.xml" in scope_name:
-                    scope_area = view.extract_scope(region.a)
-                    rel_image_path = view.substr(scope_area).replace('"', '')
+                if selected_content.startswith("special://skin/"):
+                    imagepath = os.path.join(INFOS.project_path, selected_content.replace("special://skin/", ""))
                 else:
-                    root = ET.fromstring(line_contents)
-                    rel_image_path = root.text
-                if rel_image_path.startswith("special://skin/"):
-                    imagepath = os.path.join(INFOS.project_path, rel_image_path.replace("special://skin/", ""))
-                else:
-                    paths = [os.path.join(INFOS.project_path, "media", rel_image_path),
-                             os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", rel_image_path)]
+                    paths = [os.path.join(INFOS.project_path, "media", selected_content),
+                             os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", selected_content)]
                     imagepath = checkPaths(paths)
                 if imagepath and not os.path.isdir(imagepath):
                     im = Image.open(imagepath)
