@@ -134,8 +134,8 @@ def get_root_from_file(xml_file):
         parser = ET.XMLParser(remove_blank_text=True)
         tree = ET.parse(xml_file, parser)
         return tree.getroot()
-    except:
-        message_dialog("Error when parsing %s" % xml_file)
+    except Exception as e:
+        message_dialog("Error when parsing %s\n%s" % (xml_file, e))
         return None
 
 
