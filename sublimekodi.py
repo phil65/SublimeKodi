@@ -591,6 +591,8 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
     def run(self, edit):
         available_ids = []
+        self.labels = []
+        self.label_ids = []
         region = self.view.sel()[0]
         if region.begin() == region.end():
             sublime.message_dialog("Please select the complete label")
@@ -599,12 +601,9 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         for label in INFOS.string_list:
             if label["string"].lower() == word.lower():
                 available_ids.append(label)
+                self.labels.append("%s %s" % (label["string"], label["id"]))
+                self.label_ids.append(label["id"])
         if available_ids:
-            self.labels = []
-            self.label_ids = []
-            for item in available_ids:
-                self.labels.append("%s %s" % (item["string"], item["id"]))
-                self.label_ids.append(item["id"])
             self.labels.append("Create new label")
             sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
         else:
