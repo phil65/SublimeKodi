@@ -60,7 +60,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         label_region = view.expand_by_class(region, flags, '$],')
         bracket_region = view.expand_by_class(region, flags, '<>')
-        selected_content = view.substr(bracket_region)
+        selected_content = view.substr(view.expand_by_class(region, flags, '<>"'))
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             # inside_bracket = True
             identifier = view.substr(label_region)
