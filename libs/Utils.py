@@ -1,6 +1,5 @@
 import os
 from lxml import etree as ET
-import sublime
 import base64
 import json
 import threading
@@ -81,6 +80,13 @@ def jump_to_label_declaration(view, label_id):
 def log(string):
     print("SublimeKodi: " + str(string))
 
+def message_dialog(string):
+    try:
+        import sublime
+        sublime.message_dialog(string)
+    except:
+        log(string)
+
 
 def get_tags_from_file(path, node_tags):
     nodes = []
@@ -119,7 +125,7 @@ def get_label_list(po_file_path):
     except Exception as e:
         log(po_file_path)
         log(e)
-        sublime.message_dialog("Error:\n %s" % (e))
+        message_dialog("Error:\n %s" % (e))
         return []
 
 
@@ -129,7 +135,7 @@ def get_root_from_file(xml_file):
         tree = ET.parse(xml_file, parser)
         return tree.getroot()
     except:
-        sublime.message_dialog("Error when parsing %s" % xml_file)
+        message_dialog("Error when parsing %s" % xml_file)
         return None
 
 
