@@ -77,7 +77,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 - Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCALIZE[foo])
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
-
+- Preview skin image
 
 ##### Misc:
 
@@ -88,5 +88,5 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 ___
 
-**Note:** *Sublime Text 2 is not supported.  Also, SublimeKodi takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build.*
+**Note:** *Sublime Text 2 is not supported.  Also, SublimeKodi takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build. Minimum required version is build 3072.*
 
