@@ -92,6 +92,16 @@ class InfoProvider():
                                    "filename": node.find("filename").text}
                     self.fonts[folder].append(string_dict)
 
+    def reload_skin_after_save(self, path):
+        folder = path.split(os.sep)[-2]
+        if folder in self.include_file_list:
+            if path in self.include_file_list[folder]:
+                self.update_include_list()
+        if path.endswith("colors/defaults.xml"):
+            self.get_colors()
+        if path.endswith("ont.xml"):
+            self.get_fonts()
+
     def update_include_list(self):
         self.include_list = {}
         for folder in self.xml_folders:

@@ -153,21 +153,13 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.check_project_change()
 
     def on_post_save_async(self, view):
-        log("saved " + view.file_name())
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
             settings = sublime.load_settings(SETTINGS_FILE)
             if self.is_modified:
                 if settings.get("auto_reload_skin", True):
                     self.is_modified = False
                     sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
-                folder = view.file_name().split(os.sep)[-2]
-                if folder in INFOS.include_file_list:
-                    if view.file_name() in INFOS.include_file_list[folder]:
-                        INFOS.update_include_list()
-                if view.file_name().endswith("colors/defaults.xml"):
-                    INFOS.get_colors()
-                if view.file_name().endswith("ont.xml"):
-                    INFOS.get_fonts()
+                INFOS.reload_skin_after_save(view.file_name())
                 if settings.get("auto_skin_check", True):
                     self.nodes = INFOS.check_file(view.file_name())
                     listitems = []
@@ -193,16 +185,15 @@ class SublimeKodi(sublime_plugin.EventListener):
                 INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
             if not INFOS.builtin_list:
                 INFOS.get_builtin_label()
-            if view.window():
-                variables = view.window().extract_variables()
-                if "folder" in variables:
-                    project_folder = variables["folder"]
-                    if project_folder and project_folder != self.actual_project:
-                        self.actual_project = project_folder
-                        log("project change detected: " + project_folder)
-                        INFOS.init_addon(project_folder)
-                else:
-                    log("Could not find folder path in project file")
+            variables = view.window().extract_variables()
+            if "folder" in variables:
+                project_folder = variables["folder"]
+                if project_folder and project_folder != self.actual_project:
+                    self.actual_project = project_folder
+                    log("project change detected: " + project_folder)
+                    INFOS.init_addon(project_folder)
+            else:
+                log("Could not find folder path in project file")
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
