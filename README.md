@@ -54,14 +54,15 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 - Search through all skin labels
 - Search through all textures including preview
-- Search though all available fonts
-
+- Search through all available fonts
+- Search through all translated strings ($LOCALIZE[id]) of currently open file
 
 ##### Sanity checks:
 
 - Check for unused includes / invalid include references
 - Check for unused variables / invalid variable references
 - Check for unused fonts / invalid include font references
+- Check for unused labels / invalid label references
 - Check for invalid values / structure:
   - invalid nodes
   - invalid attributes
@@ -82,6 +83,8 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 - Auto-check skin file on saving
 - Create element row (and insert ascending number) for quickly multiplying listitems / buttons
+- SkinCheck can also be used from command line with "python script.py PATH_TO_ADDON"
+  - requires Python 3.3 interpreter
 
 ___
 
