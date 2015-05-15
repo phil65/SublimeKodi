@@ -201,13 +201,6 @@ class SublimeKodi(sublime_plugin.EventListener):
                         self.actual_project = project_folder
                         log("project change detected: " + project_folder)
                         INFOS.init_addon(project_folder)
-                        INFOS.update_labels()
-                        if INFOS.xml_folders:
-                            log("Kodi project detected: " + project_folder)
-                            INFOS.update_include_list()
-                            INFOS.get_colors()
-                            INFOS.get_fonts()
-                            sublime.status_message("SublimeKodi: successfully loaded addon")
                 else:
                     log("Could not find folder path in project file")
 

@@ -46,6 +46,14 @@ class InfoProvider():
                          os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
                 folder = checkPaths(paths)
                 self.xml_folders.append(folder)
+        self.update_labels()
+        if self.xml_folders:
+            log("Kodi project detected: " + path)
+            self.update_include_list()
+            self.get_colors()
+            self.get_fonts()
+            # sublime.status_message("SublimeKodi: successfully loaded addon")
+
 
     def get_colors(self):
         color_path = os.path.join(self.project_path, "colors")
