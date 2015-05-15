@@ -36,7 +36,6 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.is_modified = False
 
     def on_selection_modified_async(self, view):
-        settings = sublime.load_settings(SETTINGS_FILE)
         if len(view.sel()) > 1:
             return None
         try:
@@ -48,28 +47,23 @@ class SublimeKodi(sublime_plugin.EventListener):
             return None
         elif not INFOS.project_path:
             return None
-        # inside_bracket = False
+        settings = sublime.load_settings(SETTINGS_FILE)
+        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         popup_label = ""
         identifier = ""
         self.prev_selection = region
         view.hide_popup()
         scope_name = view.scope_name(region.b)
-        selection = view.substr(view.word(region))
         line = view.line(region)
         line_contents = view.substr(line).lower()
-        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         label_region = view.expand_by_class(region, flags, '$],')
         bracket_region = view.expand_by_class(region, flags, '<>')
-        selected_content = view.substr(view.expand_by_class(region, flags, '<>"'))
+        selected_content = view.substr(view.expand_by_class(region, flags, '<>"[]'))
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
-            # inside_bracket = True
             identifier = view.substr(label_region)
-            # log(identifier)
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                popup_label = INFOS.return_label(selection)
-            # elif popup_label and popup_label > 30000:
-            #     popup_label = INFOS.return_label(selection)
+                popup_label = INFOS.return_label(selected_content)
         elif "text.xml" in scope_name:
             if identifier.startswith("VAR"):
                 node_content = str(INFOS.return_node_content(identifier[4:], folder=folder))
@@ -97,20 +91,20 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if popup_label:
                     popup_label = "&nbsp;" + popup_label
             elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                popup_label = INFOS.return_label(selection)
+                popup_label = INFOS.return_label(selected_content)
             if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents or "<value" in line_contents:
                 if not popup_label:
                     for item in INFOS.color_list:
-                        if item["name"] == selection:
+                        if item["name"] == selected_content:
                             color_hex = "#" + item["content"][2:]
                             cont_color = get_cont_col(color_hex)
                             alpha_percent = round(int(item["content"][:2], 16) / (16 * 16) * 100)
                             popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a> %d %% alpha<br>' % (os.path.basename(item["filename"]), color_hex, cont_color, item["content"], alpha_percent)
                     if not popup_label:
-                            if all(c in string.hexdigits for c in selection) and len(selection) == 8:
-                                color_hex = "#" + selection[2:]
+                            if all(c in string.hexdigits for c in selected_content) and len(selected_content) == 8:
+                                color_hex = "#" + selected_content[2:]
                                 cont_color = get_cont_col(color_hex)
-                                alpha_percent = round(int(selection[:2], 16) / (16 * 16) * 100)
+                                alpha_percent = round(int(selected_content[:2], 16) / (16 * 16) * 100)
                                 popup_label += '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
