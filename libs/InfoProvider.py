@@ -42,6 +42,7 @@ class InfoProvider():
                     self.xml_folders.append(node.attrib["folder"])
             else:
                 self.addon_type = "python"
+                # TODO: parse all python skin folders correctly
                 paths = [os.path.join(self.project_path, "resources", "skins", "Default", "720p"),
                          os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
                 folder = checkPaths(paths)
@@ -54,12 +55,16 @@ class InfoProvider():
             self.get_fonts()
             # sublime.status_message("SublimeKodi: successfully loaded addon")
 
+    def media_path(self):
+        paths = [os.path.join(self.project_path, "media"),
+                 os.path.join(self.project_path, "resources", "skins", "Default", "media")]
+        return checkPaths(paths)
 
     def get_colors(self):
+        self.color_list = []
         color_path = os.path.join(self.project_path, "colors")
         if not self.addon_xml_file or not os.path.exists(color_path):
             return False
-        self.color_list = []
         for path in os.listdir(color_path):
             log("found color file: " + path)
             file_path = os.path.join(color_path, path)

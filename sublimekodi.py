@@ -112,10 +112,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if selected_content.startswith("special://skin/"):
                     imagepath = os.path.join(INFOS.project_path, selected_content.replace("special://skin/", ""))
                 else:
-                    paths = [os.path.join(INFOS.project_path, "media", selected_content),
-                             os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", selected_content)]
-                    imagepath = checkPaths(paths)
-                if imagepath and not os.path.isdir(imagepath):
+                    imagepath = os.path.join(INFOS.media_path(), selected_content)
+                if os.path.exists(imagepath) and not os.path.isdir(imagepath):
                     im = Image.open(imagepath)
                     file_size = os.path.getsize(imagepath) / 1024
                     popup_label = "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
@@ -413,23 +411,13 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
 class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        region = self.view.sel()[0]
-        line = self.view.line(region)
-        line_contents = self.view.substr(line)
-        scope_name = self.view.scope_name(region.begin())
-        if "string.quoted.double.xml" in scope_name:
-            scope_area = self.view.extract_scope(region.a)
-            rel_image_path = self.view.substr(scope_area).replace('"', '')
-        else:
-            root = ET.fromstring(line_contents)
-            rel_image_path = root.text
+        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+        rel_image_path = get_node_content(self.view, flags)
         if rel_image_path.startswith("special://skin/"):
             rel_image_path = rel_image_path.replace("special://skin/", "")
             imagepath = os.path.join(INFOS.project_path, rel_image_path)
         else:
-            paths = [os.path.join(INFOS.project_path, "media", rel_image_path),
-                     os.path.join(INFOS.project_path, "resources", "skins", "Default", "media", rel_image_path)]
-            imagepath = checkPaths(paths)
+            imagepath = os.path.join(INFOS.media_path(), rel_image_path)
         if os.path.exists(imagepath):
             if os.path.isdir(imagepath):
                 self.files = []
@@ -470,9 +458,8 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
-        self.imagepath = os.path.join(path, "..", "media")
-        # self.pos = self.view.sel()
-        if not os.path.exists(self.imagepath):
+        self.imagepath = INFOS.media_path()
+        if not self.imagepath:
             log("Could not find file " + self.imagepath)
         self.files = []
         for path, subdirs, files in os.walk(self.imagepath):
