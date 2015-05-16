@@ -256,6 +256,8 @@ class InfoProvider():
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
+                if root is None:
+                    continue
                 # tree = ET.ElementTree(root)
                 for node in root.xpath(".//include"):
                         if node.text and not node.text.startswith("skinshortcuts-"):
@@ -322,6 +324,8 @@ class InfoProvider():
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
+                if root is None:
+                    continue
                 for element in root.xpath(".//label | .//altlabel | .//label2 | .//value | .//onclick | .//property"):
                     if not element.text:
                         continue
@@ -443,8 +447,8 @@ class InfoProvider():
                         ["flipx", ["true", "false"]],
                         ["flipy", ["true", "false"]]]
         root = get_root_from_file(path)
-        # for element in root.getchildren():
-        #     log(element.tag)
+        if root is None:
+            return []
         tree = ET.ElementTree(root)
         listitems = []
         for check in tag_checks:
