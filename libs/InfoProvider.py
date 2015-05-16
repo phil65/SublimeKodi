@@ -135,12 +135,15 @@ class InfoProvider():
             log("Could not find include file " + xml_file)
 
     def update_xml_files(self):
+        # update list of all include and window xmls
         self.window_file_list = {}
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
 
     def go_to_tag(self, keyword, folder):
+        # jumps to the definition of ref named keyword
+        # TODO: need to add param with ref type
         if keyword:
             if keyword.isdigit():
                 for node in self.string_list:
@@ -319,6 +322,7 @@ class InfoProvider():
         undefined_labels = []
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
+        label_regex = r"[A-Za-z0-9]+"
         # labels = [s["string"] for s in self.string_list]
         checks = [[".//viewtype[(@label)]", "label"],
                   [".//fontset[(@idloc)]", "idloc"],
@@ -344,7 +348,7 @@ class InfoProvider():
                 for element in root.xpath(".//label | .//altlabel | .//label2"):
                     if not element.text:
                         continue
-                    if "$" not in element.text and not element.text.isdigit() and element.text not in ["-", "<", ">", "--"]:
+                    if "$" not in element.text and not element.text.isdigit() and re.match(label_regex, element.text):
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
@@ -363,7 +367,7 @@ class InfoProvider():
                                         "line": element.sourceline}
                                 refs.append(item)
                         # find some more untranslated strings
-                        if "$" not in attr and not attr.isdigit() and attr not in ["-", "<", ">", "--"]:
+                        if "$" not in attr and not attr.isdigit() and re.match(label_regex, attr):
                             item = {"name": attr,
                                     "type": element.tag,
                                     "file": path,
