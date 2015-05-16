@@ -31,13 +31,11 @@ def check_tags(tag_type):
     for e in undefined_refs:
         content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print("Undefined %s reference: %s" % (tag_type, content))
-        print(e["file"] + ": " + str(e["line"]))
-        print("")
+        print("%s: line %s \n" % (e["file"], str(e["line"])))
     for e in unused_defs:
         content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print("Unused %s definition: %s" % (tag_type, content))
-        print(e["file"] + ": line " + str(e["line"]))
-        print("")
+        print("%s: line %s\n" % (e["file"], str(e["line"])))
 
 
 if __name__ == "__main__":
@@ -54,13 +52,15 @@ if __name__ == "__main__":
             for xml_file in INFOS.window_file_list[folder]:
                 path = os.path.join(INFOS.project_path, folder, xml_file)
                 check_bom(path)
+        print("\n\nINCLUDE CHECK\n\n")
         check_tags("include")
+        print("\n\nVARIABLE CHECK\n\n")
         check_tags("variable")
+        print("\n\nFONT CHECK\n\n")
         check_tags("font")
+        print("\n\nLABEL CHECK\n\n")
         check_tags("label")
         listitems = INFOS.check_values()
         for e in listitems:
             print(e["message"][0])
-            print(e["message"][1])
-            print("")
-
+            print(e["message"][1]+ "\n")
