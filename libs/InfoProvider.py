@@ -301,9 +301,7 @@ class InfoProvider():
             for item in self.fonts[folder]:
                 fontlist.append(item["name"])
             for ref in font_refs[folder]:
-                if ref["name"] in fontlist:
-                        pass
-                else:
+                if ref["name"] not in fontlist:
                     undefined_fonts.append(ref)
             ref_list = [d['name'] for d in font_refs[folder]]
             for node in self.fonts[folder]:
@@ -326,6 +324,7 @@ class InfoProvider():
                 root = get_root_from_file(path)
                 if root is None:
                     continue
+                # find all referenced label ids (in element content)
                 for element in root.xpath(".//label | .//altlabel | .//label2 | .//value | .//onclick | .//property"):
                     if not element.text:
                         continue
@@ -336,6 +335,7 @@ class InfoProvider():
                                     "file": path,
                                     "line": element.sourceline}
                             refs.append(item)
+                # check for untranslated strings...
                 for element in root.xpath(".//label | .//altlabel | .//label2"):
                     if not element.text:
                         continue
@@ -343,8 +343,10 @@ class InfoProvider():
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
+                                "message": "Label in tag not translated: %s" % element.text,
                                 "line": element.sourceline}
                         unused_labels.append(item)
+                # find some more references (in attribute values this time)....
                 for check in checks:
                     for element in root.xpath(check[0]):
                         attr = element.attrib[check[1]]
@@ -355,20 +357,23 @@ class InfoProvider():
                                         "file": path,
                                         "line": element.sourceline}
                                 refs.append(item)
+                        # find some more untranslated strings
                         if "$" not in attr and not attr.isdigit() and attr not in ["-", "<", ">", "--"]:
                             item = {"name": attr,
                                     "type": element.tag,
                                     "file": path,
+                                    "message": "Label in attribute not translated: %s" % attr,
                                     "line": element.sourceline}
                             unused_labels.append(item)
+        # check if refs are defined in po files
         label_ids = [s["id"] for s in self.string_list]
         for ref in refs:
             if "#" + ref["name"] not in label_ids:
+                ref["message"] = "Label not defined: %s" % ref["name"]
                 undefined_labels.append(ref)
         return undefined_labels, unused_labels
 
     def check_values(self):
-        # available for all controls
         listitems = []
         for folder in self.xml_folders:
             for xml_file in self.window_file_list[folder]:
@@ -379,7 +384,9 @@ class InfoProvider():
 
     def check_file(self, path):
         xml_file = os.path.basename(path)
+        # tags allowed for all controls
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
+        # tags allowed for containers
         list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//control[@type='button']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
@@ -451,6 +458,7 @@ class InfoProvider():
             return []
         tree = ET.ElementTree(root)
         listitems = []
+        # find invalid tags
         for check in tag_checks:
             for node in root.xpath(check[0]):
                 if node.tag not in check[1]:
@@ -460,6 +468,7 @@ class InfoProvider():
                             "message": ["invalid tag for <%s> in line %i: <%s>" % (node.getparent().tag, node.sourceline, node.tag), xml_file],
                             "file": path}
                     listitems.append(item)
+        # find invalid attributes
         for check in att_checks:
             xpath = ".//" + " | .//".join(check[0])
             for node in root.xpath(".//%s" % xpath):
@@ -471,6 +480,7 @@ class InfoProvider():
                                 "message": ["invalid attribute in line %i: %s" % (node.sourceline, attr), xml_file],
                                 "file": path}
                         listitems.append(item)
+        # check conditions in element content
         xpath = ".//" + " | .//".join(bracket_tags)
         for node in root.xpath(xpath):
             if not node.text:
@@ -486,6 +496,7 @@ class InfoProvider():
                     "message": [message, xml_file],
                     "file": path}
             listitems.append(item)
+        # check conditions in attribute values
         for node in root.xpath(".//*[@condition]"):
             if not check_brackets(node.attrib["condition"]):
                 condition = str(node.attrib["condition"]).replace("  ", "").replace("\t", "")
@@ -495,6 +506,7 @@ class InfoProvider():
                         "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
                         "file": path}
                 listitems.append(item)
+        # check for noop as empty action
         xpath = ".//" + " | .//".join(noop_tags)
         for node in root.xpath(xpath):
             if node.text == "-" or not node.text:
@@ -504,6 +516,7 @@ class InfoProvider():
                         "message": ["Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag), xml_file],
                         "file": path}
                 listitems.append(item)
+        # check for not-allowed siblings for some tags
         xpath = ".//" + " | .//".join(double_tags)
         for node in root.xpath(xpath):
             if not node.getchildren():
@@ -515,6 +528,7 @@ class InfoProvider():
                             "message": ["Invalid multiple tags in line %i: <%s>" % (node.sourceline, node.tag), xml_file],
                             "file": path}
                     listitems.append(item)
+        # Check tags which require specific values
         for check in allowed_text:
             xpath = ".//" + " | .//".join(check[0])
             for node in root.xpath(xpath):
@@ -525,6 +539,7 @@ class InfoProvider():
                             "message": ["invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text), xml_file],
                             "file": path}
                     listitems.append(item)
+        # Check attributes which require specific values
         for check in allowed_attr:
             for node in root.xpath(".//*[(@%s)]" % check[0]):
                 if node.attrib[check[0]] not in check[1]:
