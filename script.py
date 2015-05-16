@@ -29,11 +29,13 @@ def check_tags(tag_type):
     elif tag_type == "label":
         undefined_refs, unused_defs = INFOS.check_labels()
     for e in undefined_refs:
-        print("Undefined %s reference: %s" % (tag_type, e["name"]))
+        content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
+        print("Undefined %s reference: %s" % (tag_type, content))
         print(e["file"] + ": " + str(e["line"]))
         print("")
     for e in unused_defs:
-        print("Unused %s definition: %s" % (tag_type, e["name"]))
+        content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
+        print("Unused %s definition: %s" % (tag_type, content))
         print(e["file"] + ": line " + str(e["line"]))
         print("")
 
