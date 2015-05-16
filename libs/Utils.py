@@ -64,7 +64,7 @@ def findWord(view):
 def get_node_content(view, flags):
     for region in view.sel():
         try:
-            bracket_region = view.expand_by_class(region, flags, '<>"')
+            bracket_region = view.expand_by_class(region, flags, '<>"[]')
             log(view.substr(bracket_region))
             return view.substr(bracket_region)
         except:
@@ -79,6 +79,7 @@ def jump_to_label_declaration(view, label_id):
 
 def log(string):
     print("SublimeKodi: " + str(string))
+
 
 def message_dialog(string):
     try:

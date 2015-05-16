@@ -335,7 +335,7 @@ class InfoProvider():
                 for element in root.xpath(".//label | .//altlabel | .//label2"):
                     if not element.text:
                         continue
-                    if "$" not in element.text and not element.text.isdigit() and not element.text == "-":
+                    if "$" not in element.text and not element.text.isdigit() and element.text not in ["-", "<", ">", "--"]:
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
@@ -351,7 +351,7 @@ class InfoProvider():
                                         "file": path,
                                         "line": element.sourceline}
                                 refs.append(item)
-                        if "$" not in attr and not attr.isdigit() and not attr == "-":
+                        if "$" not in attr and not attr.isdigit() and attr not in ["-", "<", ">", "--"]:
                             item = {"name": attr,
                                     "type": element.tag,
                                     "file": path,
