@@ -24,6 +24,15 @@ def get_cont_col(col):
     return tohex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
+def check_bom(filename):
+
+    bytes = min(32, os.path.getsize(filename))
+    raw = open(filename, 'rb').read(bytes)
+
+    if raw.startswith(codecs.BOM_UTF8):
+        log("found BOM. File: " + filename)
+
+
 def checkPaths(paths):
     for path in paths:
         if os.path.exists(path):

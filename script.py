@@ -37,6 +37,7 @@ def check_tags(tag_type):
         print(e["file"] + ": line " + str(e["line"]))
         print("")
 
+
 if __name__ == "__main__":
     if len(sys.argv) == 2:
         project_folder = sys.argv[1]
@@ -47,6 +48,10 @@ if __name__ == "__main__":
     INFOS.init_addon(project_folder)
     if INFOS.xml_folders:
         INFOS.update_xml_files()
+        for folder in INFOS.xml_folders:
+            for xml_file in INFOS.window_file_list[folder]:
+                path = os.path.join(INFOS.project_path, folder, xml_file)
+                check_bom(path)
         check_tags("include")
         check_tags("variable")
         check_tags("font")
