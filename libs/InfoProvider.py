@@ -249,24 +249,27 @@ class InfoProvider():
                     if node["type"] == "variable" and node["name"] == ref["name"]:
                         break
                 else:
+                    node["message"] = "Undefined variable reference: %s" % node["name"]
                     undefined_vars.append(ref)
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
                 if node["type"] == "variable" and node["name"] not in ref_list:
+                    node["message"] = "Unused variable definition: %s" % node["name"]
                     unused_vars.append(node)
         return undefined_vars, unused_vars
 
     def check_includes(self):
-        unused_vars = []
-        undefined_vars = []
+        unused_includes = []
+        undefined_includes = []
+        # include check for each folder separately
         for folder in self.xml_folders:
             var_refs = []
+            # get all include refs
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
                 if root is None:
                     continue
-                # tree = ET.ElementTree(root)
                 for node in root.xpath(".//include"):
                         if node.text and not node.text.startswith("skinshortcuts-"):
                             name = node.text
@@ -279,17 +282,21 @@ class InfoProvider():
                                 "file": path,
                                 "name": name}
                         var_refs.append(item)
+            # find undefined include refs
             for ref in var_refs:
                 for node in self.include_list[folder]:
                     if node["type"] == "include" and node["name"] == ref["name"]:
                         break
                 else:
-                    undefined_vars.append(ref)
+                    ref["message"] = "Undefined include reference: %s" % ref["name"]
+                    undefined_includes.append(ref)
+            # find unused include defs
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
                 if node["type"] == "include" and node["name"] not in ref_list:
-                    unused_vars.append(node)
-        return undefined_vars, unused_vars
+                    node["message"] = "Unused include definition: %s" % node["name"]
+                    unused_includes.append(node)
+        return undefined_includes, unused_includes
 
     def get_font_refs(self):
         font_refs = {}
@@ -306,14 +313,19 @@ class InfoProvider():
         font_refs = self.get_font_refs()
         for folder in self.xml_folders:
             fontlist = ["-"]
+            # create a list with all font names from default fontset
             for item in self.fonts[folder]:
                 fontlist.append(item["name"])
+            # find undefined font refs
             for ref in font_refs[folder]:
                 if ref["name"] not in fontlist:
+                    ref["message"] = "Undefined font reference: %s" % ref["name"]
                     undefined_fonts.append(ref)
+            # find unused font defs
             ref_list = [d['name'] for d in font_refs[folder]]
             for node in self.fonts[folder]:
                 if node["name"] not in ref_list:
+                    node["message"] = "Unused font definition: %s" % node["name"]
                     unused_fonts.append(node)
         return undefined_fonts, unused_fonts
 

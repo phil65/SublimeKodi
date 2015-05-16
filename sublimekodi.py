@@ -297,12 +297,9 @@ class CheckVariablesCommand(QuickPanelCommand):
             self.undefined_vars, self.unused_vars = INFOS.check_labels()
         listitems = []
         self.nodes = self.unused_vars + self.undefined_vars
-        for item in self.unused_vars:
+        for item in self.nodes:
             filename = os.path.basename(item["file"])
-            listitems.append(["Unused: %s" % (item["name"]), filename + ": " + str(item["line"])])
-        for item in self.undefined_vars:
-            filename = os.path.basename(item["file"])
-            listitems.append(["Missing definition: %s" % (item["name"]), filename + ": " + str(item["line"])])
+            listitems.append([item["message"], filename + ": " + str(item["line"])])
         if listitems:
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:

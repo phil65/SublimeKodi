@@ -31,7 +31,7 @@ def check_tags(tag_type):
     for e in undefined_refs:
         content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print("Undefined %s reference: %s" % (tag_type, content))
-        print("%s: line %s \n" % (e["file"], str(e["line"])))
+        print("%s: line %s\n" % (e["file"], str(e["line"])))
     for e in unused_defs:
         content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print("Unused %s definition: %s" % (tag_type, content))
@@ -62,5 +62,4 @@ if __name__ == "__main__":
         check_tags("label")
         listitems = INFOS.check_values()
         for e in listitems:
-            print(e["message"][0])
-            print(e["message"][1]+ "\n")
+            print("\n".join(e["message"]) + "\n")
