@@ -141,12 +141,18 @@ def get_label_list(po_file_path):
 
 def get_root_from_file(xml_file):
     try:
-        parser = ET.XMLParser(remove_blank_text=True)
+        parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
         tree = ET.parse(xml_file, parser)
         return tree.getroot()
     except Exception as e:
-        message_dialog("Error when parsing %s\n%s" % (xml_file, e))
-        return None
+        log("Error when parsing %s\n%s\nTry again with recover=True..." % (xml_file, e))
+        try:
+            parser = ET.XMLParser(remove_blank_text=True, recover=True, remove_comments=True)
+            tree = ET.parse(xml_file, parser)
+            return tree.getroot()
+        except Exception as e:
+            message_dialog("Could not load %s" % (xml_file, e))
+            return None
 
 
 def get_xml_file_paths(xml_path):
