@@ -140,6 +140,9 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_activated_async(self, view):
         self.check_project_change()
 
+    def on_deactivated_async(self, view):
+        view.hide_popup()
+
     def on_post_save_async(self, view):
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
             settings = sublime.load_settings(SETTINGS_FILE)
