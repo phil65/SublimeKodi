@@ -21,20 +21,16 @@ settings = """{
 
 def check_tags(tag_type):
     if tag_type == "variable":
-        undefined_refs, unused_defs = INFOS.check_variables()
+        errors = INFOS.check_variables()
     elif tag_type == "include":
-        undefined_refs, unused_defs = INFOS.check_includes()
+        errors = INFOS.check_includes()
     elif tag_type == "font":
-        undefined_refs, unused_defs = INFOS.check_fonts()
+        errors = INFOS.check_fonts()
     elif tag_type == "label":
-        undefined_refs, unused_defs = INFOS.check_labels()
-    for e in undefined_refs:
-        content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
-        print("Undefined %s reference: %s" % (tag_type, content))
-        print("%s: line %s\n" % (e["file"], str(e["line"])))
-    for e in unused_defs:
-        content = e["name"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
-        print("Unused %s definition: %s" % (tag_type, content))
+        errors = INFOS.check_labels()
+    for e in errors:
+        content = e["message"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
+        print(content)
         print("%s: line %s\n" % (e["file"], str(e["line"])))
 
 
