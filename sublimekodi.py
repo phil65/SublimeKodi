@@ -288,15 +288,14 @@ class CheckVariablesCommand(QuickPanelCommand):
     def run(self, tag_type):
         INFOS.update_xml_files()
         if tag_type == "variable":
-            self.undefined_vars, self.unused_vars = INFOS.check_variables()
+            self.nodes = INFOS.check_variables()
         elif tag_type == "include":
-            self.undefined_vars, self.unused_vars = INFOS.check_includes()
+            self.nodes = INFOS.check_includes()
         elif tag_type == "font":
-            self.undefined_vars, self.unused_vars = INFOS.check_fonts()
+            self.nodes = INFOS.check_fonts()
         elif tag_type == "label":
-            self.undefined_vars, self.unused_vars = INFOS.check_labels()
+            self.nodes = INFOS.check_labels()
         listitems = []
-        self.nodes = self.unused_vars + self.undefined_vars
         for item in self.nodes:
             filename = os.path.basename(item["file"])
             listitems.append([item["message"], filename + ": " + str(item["line"])])

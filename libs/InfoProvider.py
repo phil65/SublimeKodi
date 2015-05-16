@@ -230,8 +230,7 @@ class InfoProvider():
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"
-        unused_vars = []
-        undefined_vars = []
+        listitems = []
         for folder in self.xml_folders:
             var_refs = []
             for xml_file in self.window_file_list[folder]:
@@ -249,18 +248,17 @@ class InfoProvider():
                     if node["type"] == "variable" and node["name"] == ref["name"]:
                         break
                 else:
-                    node["message"] = "Undefined variable reference: %s" % node["name"]
-                    undefined_vars.append(ref)
+                    node["message"] = "Variable not defined: %s" % node["name"]
+                    listitems.append(ref)
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
                 if node["type"] == "variable" and node["name"] not in ref_list:
-                    node["message"] = "Unused variable definition: %s" % node["name"]
-                    unused_vars.append(node)
-        return undefined_vars, unused_vars
+                    node["message"] = "Unused variable: %s" % node["name"]
+                    listitems.append(node)
+        return listitems
 
     def check_includes(self):
-        unused_includes = []
-        undefined_includes = []
+        listitems = []
         # include check for each folder separately
         for folder in self.xml_folders:
             var_refs = []
@@ -288,15 +286,15 @@ class InfoProvider():
                     if node["type"] == "include" and node["name"] == ref["name"]:
                         break
                 else:
-                    ref["message"] = "Undefined include reference: %s" % ref["name"]
-                    undefined_includes.append(ref)
+                    ref["message"] = "Include not defined: %s" % ref["name"]
+                    listitems.append(ref)
             # find unused include defs
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
                 if node["type"] == "include" and node["name"] not in ref_list:
-                    node["message"] = "Unused include definition: %s" % node["name"]
-                    unused_includes.append(node)
-        return undefined_includes, unused_includes
+                    node["message"] = "Unused include: %s" % node["name"]
+                    listitems.append(node)
+        return listitems
 
     def get_font_refs(self):
         font_refs = {}
@@ -308,8 +306,7 @@ class InfoProvider():
         return font_refs
 
     def check_fonts(self):
-        unused_fonts = []
-        undefined_fonts = []
+        listitems = []
         font_refs = self.get_font_refs()
         for folder in self.xml_folders:
             fontlist = ["-"]
@@ -319,19 +316,18 @@ class InfoProvider():
             # find undefined font refs
             for ref in font_refs[folder]:
                 if ref["name"] not in fontlist:
-                    ref["message"] = "Undefined font reference: %s" % ref["name"]
-                    undefined_fonts.append(ref)
+                    ref["message"] = "Font not defined: %s" % ref["name"]
+                    listitems.append(ref)
             # find unused font defs
             ref_list = [d['name'] for d in font_refs[folder]]
             for node in self.fonts[folder]:
                 if node["name"] not in ref_list:
-                    node["message"] = "Unused font definition: %s" % node["name"]
-                    unused_fonts.append(node)
-        return undefined_fonts, unused_fonts
+                    node["message"] = "Unused font: %s" % node["name"]
+                    listitems.append(node)
+        return listitems
 
     def check_labels(self):
-        unused_labels = []
-        undefined_labels = []
+        listitems = []
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
         label_regex = r"[A-Za-z0-9]+"
@@ -366,7 +362,7 @@ class InfoProvider():
                                 "file": path,
                                 "message": "Label in tag not translated: %s" % element.text,
                                 "line": element.sourceline}
-                        unused_labels.append(item)
+                        listitems.append(item)
                 # find some more references (in attribute values this time)....
                 for check in checks:
                     for element in root.xpath(check[0]):
@@ -385,14 +381,14 @@ class InfoProvider():
                                     "file": path,
                                     "message": "Label in attribute not translated: %s" % attr,
                                     "line": element.sourceline}
-                            unused_labels.append(item)
+                            listitems.append(item)
         # check if refs are defined in po files
         label_ids = [s["id"] for s in self.string_list]
         for ref in refs:
             if "#" + ref["name"] not in label_ids:
                 ref["message"] = "Label not defined: %s" % ref["name"]
-                undefined_labels.append(ref)
-        return undefined_labels, unused_labels
+                listitems.append(ref)
+        return listitems
 
     def check_values(self):
         listitems = []
