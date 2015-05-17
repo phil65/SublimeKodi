@@ -285,32 +285,22 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
 
 class CheckVariablesCommand(QuickPanelCommand):
 
-    def run(self, tag_type):
+    def run(self, check_type):
         INFOS.update_xml_files()
-        if tag_type == "variable":
+        if check_type == "variable":
             self.nodes = INFOS.check_variables()
-        elif tag_type == "include":
+        elif check_type == "include":
             self.nodes = INFOS.check_includes()
-        elif tag_type == "font":
+        elif check_type == "font":
             self.nodes = INFOS.check_fonts()
-        elif tag_type == "label":
+        elif check_type == "label":
             self.nodes = INFOS.check_labels()
+        elif check_type == "general":
+            self.nodes = INFOS.check_values()
         listitems = []
         for item in self.nodes:
             filename = os.path.basename(item["file"])
             listitems.append([item["message"], filename + ": " + str(item["line"])])
-        if listitems:
-            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
-        else:
-            sublime.message_dialog("No unused or undefined %ss found" % tag_type)
-
-
-class CheckValuesCommand(QuickPanelCommand):
-
-    def run(self):
-        INFOS.update_xml_files()
-        self.nodes = INFOS.check_values()
-        listitems = [[item["message"], item["file"]] for item in self.nodes]
         if listitems:
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:

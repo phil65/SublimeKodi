@@ -28,11 +28,13 @@ def check_tags(tag_type):
         errors = INFOS.check_fonts()
     elif tag_type == "label":
         errors = INFOS.check_labels()
+    elif tag_type == "general":
+        errors = INFOS.check_values()
     for e in errors:
         content = e["message"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print(content)
-        filename = os.path.basename(e["file"])
-        print("%s: line %s\n" % (filename, str(e["line"])))
+        path = "/".join(e["file"].split(os.sep)[-2:])
+        print("%s: line %s\n" % (path, str(e["line"])))
 
 
 if __name__ == "__main__":
@@ -57,8 +59,6 @@ if __name__ == "__main__":
         check_tags("font")
         print("\n\nLABEL CHECK\n\n")
         check_tags("label")
-        listitems = INFOS.check_values()
-        for e in listitems:
-            print(e["message"])
-            filename = os.path.basename(e["file"])
-            print(filename + "\n")
+        print("\n\nCHECK FOR COMMON MISTAKES\n\n")
+        check_tags("general")
+
