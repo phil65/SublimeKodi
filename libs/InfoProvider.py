@@ -484,10 +484,14 @@ class InfoProvider():
         for check in tag_checks:
             for node in root.xpath(check[0]):
                 if node.tag not in check[1]:
+                    if "type" in node.getparent().attrib:
+                        text = '"%s type="%s"' % (node.getparent().tag, node.getparent().attrib["type"])
+                    else:
+                        text = node.getparent().tag
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": "invalid tag for <%s>: <%s>" % (node.getparent().tag, node.tag),
+                            "message": "invalid tag for <%s>: <%s>" % (text, node.tag),
                             "file": path}
                     listitems.append(item)
         # find invalid attributes
