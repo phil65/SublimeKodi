@@ -9,6 +9,7 @@ from Utils import *
 import json
 from InfoProvider import InfoProvider
 INFOS = InfoProvider()
+RESULTS_FILE = "results.txt"
 
 settings = """{
     "kodi_path": "C:/Kodi",
@@ -17,7 +18,7 @@ settings = """{
 
 
 def log(text):
-    with open("results.txt", "a") as myfile:
+    with open(RESULTS_FILE, "a") as myfile:
         myfile.write(text + "\n")
     try:
         print(text)
@@ -44,6 +45,7 @@ def check_tags(tag_type):
 
 
 if __name__ == "__main__":
+    open(RESULTS_FILE, 'w').close()
     if len(sys.argv) == 2:
         project_folder = sys.argv[1]
     else:
