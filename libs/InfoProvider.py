@@ -335,7 +335,7 @@ class InfoProvider():
         listitems = []
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
-        label_regex = r"[A-Za-z0-9]+"
+        label_regex = r"[A-Za-z]+"
         # labels = [s["string"] for s in self.string_list]
         checks = [[".//viewtype[(@label)]", "label"],
                   [".//fontset[(@idloc)]", "idloc"],
@@ -503,7 +503,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": "invalid attribute: %s" % (attr),
+                                "message": "invalid attribute for <%s>: %s" % (node.tag, attr),
                                 "file": path}
                         listitems.append(item)
         # check conditions in element content
