@@ -16,6 +16,15 @@ settings = """{
 }"""
 
 
+def log(text):
+    with open("results.txt", "a") as myfile:
+        myfile.write(text + "\n")
+    try:
+        print(text)
+    except:
+        print(text.encode(sys.stdout.encoding, errors='replace').decode("utf-8"))
+
+
 def check_tags(tag_type):
     if tag_type == "variable":
         errors = INFOS.check_variables()
@@ -28,10 +37,10 @@ def check_tags(tag_type):
     elif tag_type == "general":
         errors = INFOS.check_values()
     for e in errors:
-        content = e["message"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
-        print(content)
+        content = e["message"]
+        log(content)
         path = "/".join(e["file"].split(os.sep)[-2:])
-        print("%s: line %s\n" % (path, str(e["line"])))
+        log("%s: line %s\n" % (path, str(e["line"])))
 
 
 if __name__ == "__main__":
@@ -47,15 +56,16 @@ if __name__ == "__main__":
         for folder in INFOS.xml_folders:
             for xml_file in INFOS.window_file_list[folder]:
                 path = os.path.join(INFOS.project_path, folder, xml_file)
-                check_bom(path)
-        print("\n\nINCLUDE CHECK\n\n")
+                if check_bom(path):
+                    log("found BOM. File: " + path)
+        log("\n\nINCLUDE CHECK\n\n")
         check_tags("include")
-        print("\n\nVARIABLE CHECK\n\n")
+        log("\n\nVARIABLE CHECK\n\n")
         check_tags("variable")
-        print("\n\nFONT CHECK\n\n")
+        log("\n\nFONT CHECK\n\n")
         check_tags("font")
-        print("\n\nLABEL CHECK\n\n")
+        log("\n\nLABEL CHECK\n\n")
         check_tags("label")
-        print("\n\nCHECK FOR COMMON MISTAKES\n\n")
+        log("\n\nCHECK FOR COMMON MISTAKES\n\n")
         check_tags("general")
 

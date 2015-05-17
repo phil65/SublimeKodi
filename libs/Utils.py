@@ -30,7 +30,9 @@ def check_bom(filename):
     raw = open(filename, 'rb').read(bytes)
 
     if raw.startswith(codecs.BOM_UTF8):
-        log("found BOM. File: " + filename)
+        return True
+    else:
+        return False
 
 
 def checkPaths(paths):
