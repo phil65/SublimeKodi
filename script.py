@@ -31,7 +31,8 @@ def check_tags(tag_type):
     for e in errors:
         content = e["message"].encode(sys.stdout.encoding, errors='replace').decode("utf-8")
         print(content)
-        print("%s: line %s\n" % (e["file"], str(e["line"])))
+        filename = os.path.basename(e["file"])
+        print("%s: line %s\n" % (filename, str(e["line"])))
 
 
 if __name__ == "__main__":
@@ -59,4 +60,5 @@ if __name__ == "__main__":
         listitems = INFOS.check_values()
         for e in listitems:
             print(e["message"])
-            print(e["file"] + "\n")
+            filename = os.path.basename(e["file"])
+            print(filename + "\n")
