@@ -365,7 +365,7 @@ class InfoProvider():
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
-                                "message": "Label in tag not translated: %s" % element.text,
+                                "message": "Label in <%s> not translated: %s" % (element.tag, element.text),
                                 "line": element.sourceline}
                         listitems.append(item)
                 # find some more references (in attribute values this time)....
