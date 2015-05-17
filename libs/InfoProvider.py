@@ -271,6 +271,10 @@ class InfoProvider():
                 for node in root.xpath(".//include"):
                         if node.text and not node.text.startswith("skinshortcuts-"):
                             name = node.text
+                            if "file" in node.attrib:
+                                include_file = os.path.join(self.project_path, folder, node.attrib["file"])
+                                if include_file not in self.include_file_list[folder]:
+                                    self.update_includes(include_file)
                         elif node.find("./param") is not None:
                             name = node.attrib["name"]
                         else:
