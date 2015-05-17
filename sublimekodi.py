@@ -309,10 +309,8 @@ class CheckValuesCommand(QuickPanelCommand):
 
     def run(self):
         INFOS.update_xml_files()
-        listitems = []
         self.nodes = INFOS.check_values()
-        for item in self.nodes:
-            listitems.append(item["message"])
+        listitems = [[item["message"], item["file"]] for item in self.nodes]
         if listitems:
             sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:

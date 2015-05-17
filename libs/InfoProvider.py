@@ -248,7 +248,7 @@ class InfoProvider():
                     if node["type"] == "variable" and node["name"] == ref["name"]:
                         break
                 else:
-                    node["message"] = "Variable not defined: %s" % node["name"]
+                    ref["message"] = "Variable not defined: %s" % ref["name"]
                     listitems.append(ref)
             ref_list = [d['name'] for d in var_refs]
             for node in self.include_list[folder]:
@@ -482,7 +482,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["invalid tag for <%s> in line %i: <%s>" % (node.getparent().tag, node.sourceline, node.tag), xml_file],
+                            "message": "invalid tag for <%s> in line %i: <%s>" % (node.getparent().tag, node.sourceline, node.tag),
                             "file": path}
                     listitems.append(item)
         # find invalid attributes
@@ -494,7 +494,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
-                                "message": ["invalid attribute in line %i: %s" % (node.sourceline, attr), xml_file],
+                                "message": "invalid attribute in line %i: %s" % (node.sourceline, attr),
                                 "file": path}
                         listitems.append(item)
         # check conditions in element content
@@ -510,7 +510,7 @@ class InfoProvider():
             item = {"line": node.sourceline,
                     "type": node.tag,
                     "filename": xml_file,
-                    "message": [message, xml_file],
+                    "message": message,
                     "file": path}
             listitems.append(item)
         # check conditions in attribute values
@@ -520,7 +520,7 @@ class InfoProvider():
                 item = {"line": node.sourceline,
                         "type": node.tag,
                         "filename": xml_file,
-                        "message": ["Brackets do not match in line %i: %s" % (node.sourceline, condition), xml_file],
+                        "message": "Brackets do not match in line %i: %s" % (node.sourceline, condition),
                         "file": path}
                 listitems.append(item)
         # check for noop as empty action
@@ -530,7 +530,7 @@ class InfoProvider():
                 item = {"line": node.sourceline,
                         "type": node.tag,
                         "filename": xml_file,
-                        "message": ["Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag), xml_file],
+                        "message": "Use 'noop' for empty calls in line %i <%s>" % (node.sourceline, node.tag),
                         "file": path}
                 listitems.append(item)
         # check for not-allowed siblings for some tags
@@ -542,7 +542,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["Invalid multiple tags in line %i: <%s>" % (node.sourceline, node.tag), xml_file],
+                            "message": "Invalid multiple tags for %s in line %i: <%s>" % (node.getparent().tag, node.sourceline, node.tag),
                             "file": path}
                     listitems.append(item)
         # Check tags which require specific values
@@ -553,7 +553,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text), xml_file],
+                            "message": "invalid value for %s in line %i: %s" % (node.tag, node.sourceline, node.text),
                             "file": path}
                     listitems.append(item)
         # Check attributes which require specific values
@@ -563,7 +563,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
-                            "message": ["invalid value for %s attribute in line %i: %s" % (check[0], node.sourceline, node.attrib[check[0]]), xml_file],
+                            "message": "invalid value for %s attribute in line %i: %s" % (check[0], node.sourceline, node.attrib[check[0]]),
                             "file": path}
                     listitems.append(item)
         return listitems
