@@ -5,9 +5,6 @@ __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
-from polib import polib
-from lxml import etree as ET
-from PIL import Image
 from Utils import *
 import json
 from InfoProvider import InfoProvider
