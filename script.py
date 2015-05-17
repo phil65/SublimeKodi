@@ -58,4 +58,5 @@ if __name__ == "__main__":
         check_tags("label")
         listitems = INFOS.check_values()
         for e in listitems:
-            print("\n".join(e["message"]) + "\n")
+            print(e["message"])
+            print(e["file"] + "\n")
