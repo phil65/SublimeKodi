@@ -13,6 +13,7 @@ class InfoProvider():
         self.window_file_list = {}
         self.color_list = []
         self.addon_xml_file = ""
+        self.addon_lang_file = ""
         self.color_file = ""
         self.project_path = ""
         self.addon_type = ""
@@ -28,6 +29,7 @@ class InfoProvider():
         self.addon_type = ""
         self.addon_name = ""
         self.project_path = path
+        self.addon_lang_file = ""
         self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
         self.fonts = []
