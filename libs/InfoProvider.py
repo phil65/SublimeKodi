@@ -332,8 +332,8 @@ class InfoProvider():
         return listitems
 
     def check_ids(self):
-        window_regex = r"(?:Dialog.Close|Window.IsActive|Window.IsVisible)\(([0-9]+)\)"
-        control_regex = "^(?!.*IsActive)(?!.*Window.IsVisible)(?!.*Dialog.Close).*\(([0-9]*?)\)"
+        window_regex = r"(?:Dialog.Close|Window.IsActive|Window.IsVisible|Window)\(([0-9]+)\)"
+        control_regex = "^(?!.*IsActive)(?!.*Window.IsVisible)(?!.*Dialog.Close)(?!.*Window).*\(([0-9]*?)\)"
         builtin_window_ids = [0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17,
                               18, 19, 20, 21, 25, 28, 29, 34, 40, 100, 101, 103,
                               104, 106, 107, 109, 111, 113, 114, 115, 120, 122, 123,
@@ -377,7 +377,7 @@ class InfoProvider():
                                 "file": path,
                                 "line": node.sourceline}
                         window_refs.append(item)
-                bracket_tags = ["visible", "enable", "usealttexture", "selected"]
+                bracket_tags = ["visible", "enable", "usealttexture", "selected", "onclick", "onback"]
                 xpath = ".//" + " | .//".join(bracket_tags)
                 for node in root.xpath(xpath):
                     if not node.text:
