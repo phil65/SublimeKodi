@@ -462,7 +462,6 @@ class InfoProvider():
                                 "file": path,
                                 "line": element.sourceline}
                         refs.append(item)
-                # check for untranslated strings...
                 for element in root.xpath(".//label | .//altlabel | .//label2"):
                     if not element.text:
                         continue
@@ -472,6 +471,7 @@ class InfoProvider():
                                 "file": path,
                                 "line": element.sourceline}
                         refs.append(item)
+                # check for untranslated strings...
                     elif "$" not in element.text and not len(element.text) == 1 and not element.text.endswith(".xml") and re.match(label_regex, element.text):
                         item = {"name": element.text,
                                 "type": element.tag,
