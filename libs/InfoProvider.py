@@ -353,7 +353,6 @@ class InfoProvider():
                 if "id" in root.attrib:
                     window_ids.append(root.attrib["id"])
             for xml_file in self.window_file_list[folder]:
-                log(xml_file)
                 refs = []
                 defines = []
                 path = os.path.join(self.project_path, folder, xml_file)
@@ -366,7 +365,6 @@ class InfoProvider():
                     window_ids.append(resolved_root.attrib["id"])
                 # get all nodes with ids....
                 xpath = ".//*[@id]"
-                # log(len(resolved_root.xpath(xpath)))
                 for node in resolved_root.xpath(xpath):
                     item = {"name": node.attrib["id"],
                             "type": node.tag,
@@ -376,18 +374,17 @@ class InfoProvider():
                     defines.append(item)
                 # get all conditions....
                 xpath = ".//*[@condition]"
-                for node in resolved_root.xpath(xpath):
+                for node in root.xpath(xpath):
                     for match in re.finditer(regex, node.attrib["condition"]):
                         item = {"name": match.group(0),
                                 "type": node.tag,
                                 "path": tree.getpath(node),
                                 "file": path,
                                 "line": node.sourceline}
-                        log(tree.getpath(node))
                         refs.append(item)
                 bracket_tags = ["visible", "enable", "usealttexture", "selected"]
                 xpath = ".//" + " | .//".join(bracket_tags)
-                for node in resolved_root.xpath(xpath):
+                for node in root.xpath(xpath):
                     if not node.text:
                         continue
                     for match in re.finditer(regex, node.text):
@@ -396,7 +393,6 @@ class InfoProvider():
                                 "type": node.tag,
                                 "file": path,
                                 "line": node.sourceline}
-                        log(tree.getpath(node))
                         refs.append(item)
                 # check if all refs exist...
                 define_list = [d['name'] for d in defines]
@@ -409,16 +405,21 @@ class InfoProvider():
                         pass
                     else:
                         tags = item["path"].split("/")
+                        index = len(tags)
                         for i, tag in enumerate(tags):
-                            path = "/" + "/".join(tags[1:-1-i])
-                            log(path)
-                            if tree.find(path) is None:
-                                continue
-                            item["line"] = tree.find(path).sourceline
-                            item["message"] = item["type"] + " " + item["name"]
-                            listitems.append(item)
-                            break
-        # log(len(defines))
+                            if "include" in tag:
+                                index = i + 1
+                                break
+                        path = "/" + "/".join(tags[1:index])
+                        # if "[" in path:
+                        #     path = "[". join(path.split("[")[0:-1])
+                        item["message"] = item["type"] + " " + item["name"] + " " + path
+                        for hit in root.xpath(path):
+                            if hit.sourceline > 1:
+                                item["line"] = hit.sourceline
+                                listitems.append(item)
+                                break
+                        break
                 et = ET.ElementTree(resolved_root)
                 if not os.path.exists("output"):
                     os.mkdir("output")
@@ -435,7 +436,7 @@ class InfoProvider():
         node = self.include_list[folder][index]
         root = ET.fromstring(node["content"])
         root = self.resolve_includes(root, folder)
-        return root.getchildren()
+        return root
 
     def resolve_includes(self, xml_source, folder):
         xpath = ".//include"
@@ -443,9 +444,7 @@ class InfoProvider():
             if node.text:
                 new_include = self.resolve_include(node, folder)
                 if new_include is not None:
-                    for include_elem in new_include:
-                        node.getparent().insert(0, include_elem)
-                    node.getparent().remove(node)
+                    node.getparent().replace(node, new_include)
         return xml_source
 
     def check_labels(self):
