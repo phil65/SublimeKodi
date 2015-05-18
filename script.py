@@ -10,6 +10,7 @@ import json
 from InfoProvider import InfoProvider
 import codecs
 import chardet
+from eol import eol
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
 
@@ -72,9 +73,14 @@ if __name__ == "__main__":
                     encoding = chardet.detect(rawdata)
                     log("detected encoding: %s" % encoding["encoding"])
                     text = codecs.open(path, "rb", encoding=encoding["encoding"]).read()
-                if "\r\n" in text:
-                    log("Windows Line Endings detected in " + path)
-
+        result = eol.eol_info_from_path_patterns([project_folder], recursive=True, includes=[], excludes=['.svn', '.git'])
+        for item in result:
+            if item[1] == '\n' or None:
+                continue
+            elif  item[1] == '\r':
+                log("MAC Line Endings detected in " + item[0])
+            else:
+                log("Windows Line Endings detected in " + item[0])
         log("\n\nINCLUDE CHECK\n\n")
         check_tags("include")
         log("\n\nVARIABLE CHECK\n\n")
