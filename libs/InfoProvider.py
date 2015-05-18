@@ -221,7 +221,8 @@ class InfoProvider():
         if not self.addon_xml_file:
             return False
         paths = [os.path.join(self.project_path, "resources", "language", self.language_folder, "strings.po"),
-                 os.path.join(self.project_path, "language", self.language_folder, "strings.po")]
+                 os.path.join(self.project_path, "language", self.language_folder, "strings.po"),
+                 os.path.join(self.project_path, "language", "resource.language.en_gb", "strings.po")]
         self.addon_lang_path = checkPaths(paths)
         if self.addon_lang_path:
             self.addon_string_list = get_label_list(self.addon_lang_path)
