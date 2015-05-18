@@ -331,6 +331,123 @@ class InfoProvider():
                     listitems.append(node)
         return listitems
 
+    def check_ids(self):
+        regex = r"(?<=\()[0-9]+"
+        builtin_window_ids = [0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17,
+                              18, 19, 20, 21, 25, 28, 29, 34, 40, 100, 101, 103,
+                              104, 106, 107, 109, 111, 113, 114, 115, 120, 122, 123,
+                              124, 125, 126, 128, 129, 130, 131, 132, 134, 135, 136,
+                              137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147,
+                              149, 150, 151, 152, 153, 500, 501, 502, 503, 615, 616,
+                              617, 618, 619, 620, 621, 622, 623, 624, 602, 603, 604,
+                              605, 606, 607, 610, 611, 2000, 2001, 2002, 2003, 2005,
+                              2006, 2007, 2008, 2009, 2600, 2900, 2901, 2902, 2999]
+        listitems = []
+        for folder in self.xml_folders:
+            window_ids = []
+            for xml_file in self.window_file_list[folder]:
+                path = os.path.join(self.project_path, folder, xml_file)
+                root = get_root_from_file(path)
+                if not root.tag == "window":
+                    continue
+                if "id" in root.attrib:
+                    window_ids.append(root.attrib["id"])
+            for xml_file in self.window_file_list[folder]:
+                log(xml_file)
+                refs = []
+                defines = []
+                path = os.path.join(self.project_path, folder, xml_file)
+                root = get_root_from_file(path)
+                tree = ET.ElementTree(root)
+                resolved_root = self.resolve_includes(root, folder)
+                if not resolved_root.tag == "window":
+                    continue
+                if "id" in resolved_root.attrib:
+                    window_ids.append(resolved_root.attrib["id"])
+                # get all nodes with ids....
+                xpath = ".//*[@id]"
+                # log(len(resolved_root.xpath(xpath)))
+                for node in resolved_root.xpath(xpath):
+                    item = {"name": node.attrib["id"],
+                            "type": node.tag,
+                            "path": tree.getpath(node),
+                            "file": path,
+                            "line": node.sourceline}
+                    defines.append(item)
+                # get all conditions....
+                xpath = ".//*[@condition]"
+                for node in resolved_root.xpath(xpath):
+                    for match in re.finditer(regex, node.attrib["condition"]):
+                        item = {"name": match.group(0),
+                                "type": node.tag,
+                                "path": tree.getpath(node),
+                                "file": path,
+                                "line": node.sourceline}
+                        log(tree.getpath(node))
+                        refs.append(item)
+                bracket_tags = ["visible", "enable", "usealttexture", "selected"]
+                xpath = ".//" + " | .//".join(bracket_tags)
+                for node in resolved_root.xpath(xpath):
+                    if not node.text:
+                        continue
+                    for match in re.finditer(regex, node.text):
+                        item = {"name": match.group(0),
+                                "path": tree.getpath(node),
+                                "type": node.tag,
+                                "file": path,
+                                "line": node.sourceline}
+                        log(tree.getpath(node))
+                        refs.append(item)
+                # check if all refs exist...
+                define_list = [d['name'] for d in defines]
+                for item in refs:
+                    if item["name"] in define_list:
+                        pass
+                    elif item["name"] in window_ids:
+                        pass
+                    elif int(item["name"]) in builtin_window_ids:
+                        pass
+                    else:
+                        tags = item["path"].split("/")
+                        for i, tag in enumerate(tags):
+                            path = "/" + "/".join(tags[1:-1-i])
+                            log(path)
+                            if tree.find(path) is None:
+                                continue
+                            item["line"] = tree.find(path).sourceline
+                            item["message"] = item["type"] + " " + item["name"]
+                            listitems.append(item)
+                            break
+        # log(len(defines))
+                et = ET.ElementTree(resolved_root)
+                if not os.path.exists("output"):
+                    os.mkdir("output")
+                et.write(os.path.join("output", xml_file), pretty_print=True)
+        return listitems
+
+    def resolve_include(self, ref, folder):
+        if not ref.text:
+            return None
+        include_names = [item["name"] for item in self.include_list[folder]]
+        if ref.text not in include_names:
+            return None
+        index = include_names.index(ref.text)
+        node = self.include_list[folder][index]
+        root = ET.fromstring(node["content"])
+        root = self.resolve_includes(root, folder)
+        return root.getchildren()
+
+    def resolve_includes(self, xml_source, folder):
+        xpath = ".//include"
+        for node in xml_source.xpath(xpath):
+            if node.text:
+                new_include = self.resolve_include(node, folder)
+                if new_include is not None:
+                    for include_elem in new_include:
+                        node.getparent().insert(0, include_elem)
+                    node.getparent().remove(node)
+        return xml_source
+
     def check_labels(self):
         listitems = []
         refs = []
@@ -476,6 +593,8 @@ class InfoProvider():
                         ["flipx", ["true", "false"]],
                         ["flipy", ["true", "false"]]]
         root = get_root_from_file(path)
+        folder = path.split(os.sep)[-2]
+        # root = self.resolve_includes(root, folder)
         if root is None:
             return []
         tree = ET.ElementTree(root)

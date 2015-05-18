@@ -37,6 +37,8 @@ def check_tags(tag_type):
         errors = INFOS.check_labels()
     elif tag_type == "general":
         errors = INFOS.check_values()
+    elif tag_type == "id":
+        errors = INFOS.check_ids()
     for e in errors:
         content = e["message"]
         log(content)
@@ -68,6 +70,8 @@ if __name__ == "__main__":
         check_tags("font")
         log("\n\nLABEL CHECK\n\n")
         check_tags("label")
+        log("\n\nCHECK FOR IDS\n\n")
+        check_tags("id")
         log("\n\nCHECK FOR COMMON MISTAKES\n\n")
         check_tags("general")
 

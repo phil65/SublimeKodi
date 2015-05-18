@@ -295,6 +295,8 @@ class CheckVariablesCommand(QuickPanelCommand):
             self.nodes = INFOS.check_fonts()
         elif check_type == "label":
             self.nodes = INFOS.check_labels()
+        elif check_type == "id":
+            self.nodes = INFOS.check_ids()
         elif check_type == "general":
             self.nodes = INFOS.check_values()
         listitems = []
