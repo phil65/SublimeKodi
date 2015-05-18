@@ -8,6 +8,8 @@ if libs_path not in sys.path:
 from Utils import *
 import json
 from InfoProvider import InfoProvider
+import codecs
+import chardet
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
 
@@ -18,8 +20,8 @@ settings = """{
 
 
 def log(text):
-    with open(RESULTS_FILE, "a") as myfile:
-        myfile.write(text + "\n")
+    with codecs.open(RESULTS_FILE, "a", encoding='utf-8') as myfile:
+        myfile.write(str(text) + "\n")
     try:
         print(text)
     except:
@@ -62,7 +64,14 @@ if __name__ == "__main__":
                 path = os.path.join(INFOS.project_path, folder, xml_file)
                 if check_bom(path):
                     log("found BOM. File: " + path)
-                text = open(path, "rb").read().decode("utf-8")
+                try:
+                    text = codecs.open(path, "rb", encoding='utf-8', errors="strict").read()
+                except:
+                    log("Error when trying to read %s as UTF-8" % path)
+                    rawdata = codecs.open(path, "rb", errors="ignore").read()
+                    encoding = chardet.detect(rawdata)
+                    log("detected encoding: %s" % encoding["encoding"])
+                    text = codecs.open(path, "rb", encoding=encoding["encoding"]).read()
                 if "\r\n" in text:
                     log("Windows Line Endings detected in " + path)
 
