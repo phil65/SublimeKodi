@@ -547,24 +547,24 @@ class InfoProvider():
                       ["/fonts/*", ["fontset"]],
                       [".//variable/*", ["value"]]]
         # allowed attributes for some specific nodes
-        att_checks = [[["aspectratio"], ["align", "aligny", "scalediffuse"]],
-                      [["texture"], ["background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
-                      [["label"], ["fallback"]],
-                      [["defaultcontrol"], ["always"]],
-                      [["visible"], ["allowhiddenfocus"]],
-                      [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], []],
-                      [["height", "width"], ["min", "max"]],
-                      [["camera"], ["x", "y"]],
-                      [["hitrect"], ["x", "y", "w", "h"]],
-                      [["onload", "onunload", "onclick", "onleft", "onright", "onup", "ondown", "onback", "onfocus", "onunfocus", "value"], ["condition"]],
-                      [["property"], ["name", "fallback"]],
-                      [["focusedlayout", "itemlayout"], ["height", "width", "condition"]],
-                      [["item"], ["id"]],
-                      [["control"], ["id", "type"]],
-                      [["variable"], ["name"]],
-                      [["include"], ["name", "condition", "file"]],
-                      [["animation"], ["start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
-                      [["effect"], ["start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
+        att_checks = [[["aspectratio"], ["description", "align", "aligny", "scalediffuse"]],
+                      [["texture"], ["description", "background", "flipx", "flipy", "fallback", "border", "diffuse", "colordiffuse"]],
+                      [["label"], ["description", "fallback"]],
+                      [["defaultcontrol"], ["description", "always"]],
+                      [["visible"], ["description", "allowhiddenfocus"]],
+                      [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], ["description", ]],
+                      [["height", "width"], ["description", "min", "max"]],
+                      [["camera"], ["description", "x", "y"]],
+                      [["hitrect"], ["description", "x", "y", "w", "h"]],
+                      [["onload", "onunload", "onclick", "onleft", "onright", "onup", "ondown", "onback", "onfocus", "onunfocus", "value"], ["description", "condition"]],
+                      [["property"], ["description", "name", "fallback"]],
+                      [["focusedlayout", "itemlayout"], ["description", "height", "width", "condition"]],
+                      [["item"], ["description", "id"]],
+                      [["control"], ["description", "id", "type"]],
+                      [["variable"], ["description", "name"]],
+                      [["include"], ["description", "name", "condition", "file"]],
+                      [["animation"], ["description", "start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
+                      [["effect"], ["description", "start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         # check correct parantheses for some nodes
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         # check some nodes to use noop instead of "-" / empty
@@ -611,7 +611,7 @@ class InfoProvider():
         # find invalid attributes
         for check in att_checks:
             xpath = ".//" + " | .//".join(check[0])
-            for node in root.xpath(".//%s" % xpath):
+            for node in root.xpath(xpath):
                 for attr in node.attrib:
                     if attr not in check[1]:
                         item = {"line": node.sourceline,
