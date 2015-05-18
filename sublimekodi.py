@@ -402,6 +402,16 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
 
 class PreviewImageCommand(sublime_plugin.TextCommand):
 
+    def is_visible(self):
+        if INFOS.media_path():
+            flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+            content = get_node_content(self.view, flags)
+            log(content)
+            if "/" in content or "\\" in content:
+                return True
+        else:
+            return False
+
     def run(self, edit):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         rel_image_path = get_node_content(self.view, flags)
@@ -562,7 +572,8 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
         if INFOS.project_path and INFOS.addon_lang_path:
             if "text.xml" in scope_name or "source.python" in scope_name:
-                return True
+                if self.view.sel()[0].b != self.view.sel()[0].a:
+                    return True
         return False
 
     def run(self, edit):
