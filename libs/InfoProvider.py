@@ -456,24 +456,29 @@ class InfoProvider():
                 for element in root.xpath(".//label | .//altlabel | .//label2 | .//value | .//onclick | .//property"):
                     if not element.text:
                         continue
-                    for regex in regexs:
-                        for match in re.finditer(regex, element.text):
-                            item = {"name": match.group(1),
-                                    "type": element.tag,
-                                    "file": path,
-                                    "line": element.sourceline}
-                            refs.append(item)
+                    for match in re.finditer(regexs[0], element.text):
+                        item = {"name": match.group(1),
+                                "type": element.tag,
+                                "file": path,
+                                "line": element.sourceline}
+                        refs.append(item)
                 # check for untranslated strings...
                 for element in root.xpath(".//label | .//altlabel | .//label2"):
                     if not element.text:
                         continue
-                    if "$" not in element.text and not element.text.isdigit() and re.match(label_regex, element.text):
+                    if "$" not in element.text and not element.text.isdigit() and not element.text.endswith(".xml") and re.match(label_regex, element.text):
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
                                 "message": "Label in <%s> not translated: %s" % (element.tag, element.text),
                                 "line": element.sourceline}
                         listitems.append(item)
+                    if element.text.isdigit():
+                        item = {"name": element.text,
+                                "type": element.tag,
+                                "file": path,
+                                "line": element.sourceline}
+                        refs.append(item)
                 # find some more references (in attribute values this time)....
                 for check in checks:
                     for element in root.xpath(check[0]):
