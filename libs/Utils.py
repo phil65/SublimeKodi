@@ -1,5 +1,10 @@
 import os
-from lxml import etree as ET
+import sys
+is_64bits = sys.maxsize > 2**32
+if is_64bits:
+    from lxml import etree as ET
+else:
+    from lxml_32 import etree as ET
 import base64
 import json
 import threading

@@ -10,8 +10,13 @@ libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from polib import polib
-from lxml import etree as ET
-from PIL import Image
+is_64bits = sys.maxsize > 2**32
+if is_64bits:
+    from lxml import etree as ET
+    from PIL import Image
+else:
+    from lxml_32 import etree as ET
+    from PIL_32 import Image
 from InfoProvider import InfoProvider
 from Utils import *
 import webbrowser
@@ -244,7 +249,17 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 
 class ShowFontRefsCommand(QuickPanelCommand):
 
+    def is_visible(self):
+        if INFOS.addon_xml_file():
+            flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+            content = get_node_content(self.view, flags)
+            if "/" in content or "\\" in content:
+                return True
+        return False
+
     def run(self):
+        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+        content = get_node_content(self.view, flags)
         listitems = []
         self.nodes = []
         view = self.window.active_view()
@@ -252,7 +267,7 @@ class ShowFontRefsCommand(QuickPanelCommand):
         font_refs = INFOS.get_font_refs()
         self.folder = view.file_name().split(os.sep)[-2]
         for ref in font_refs[self.folder]:
-            if ref["name"] == "Font_Reg28":
+            if ref["name"] == content:
                 listitems.append(ref["name"])
                 self.nodes.append(ref)
         if listitems:
