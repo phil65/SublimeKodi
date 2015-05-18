@@ -10,6 +10,7 @@
     {"caption": "SublimeKodi: Check Includes", "command": "check_variables", "args": { "check_type": "include"}},
     {"caption": "SublimeKodi: Check Fonts", "command": "check_variables", "args": { "check_type": "font"}},
     {"caption": "SublimeKodi: Check Labels", "command": "check_variables", "args": { "check_type": "label"}},
+    {"caption": "SublimeKodi: Check control / window IDs", "command": "check_variables", "args": { "check_type": "id"}},
     {"caption": "SublimeKodi: Check for invalid nodes / attributes", "command": "check_variables", "args": { "check_type": "general"}},
     {"caption": "SublimeKodi: JSON-RPC: Reload Skin", "command": "execute_builtin", "args": { "builtin": "ReloadSkin()" }},
     {"caption": "SublimeKodi: JSON-RPC: Execute Builtin", "command": "execute_builtin_prompt"},
