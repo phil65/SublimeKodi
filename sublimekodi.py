@@ -409,8 +409,7 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
             log(content)
             if "/" in content or "\\" in content:
                 return True
-        else:
-            return False
+        return False
 
     def run(self, edit):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
