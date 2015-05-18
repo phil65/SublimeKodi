@@ -345,30 +345,18 @@ class InfoProvider():
         listitems = []
         for folder in self.xml_folders:
             window_ids = []
+            refs = []
+            defines = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
                 root = get_root_from_file(path)
-                if not root.tag == "window":
-                    continue
                 if "id" in root.attrib:
                     window_ids.append(root.attrib["id"])
-            for xml_file in self.window_file_list[folder]:
-                refs = []
-                defines = []
-                path = os.path.join(self.project_path, folder, xml_file)
-                root = get_root_from_file(path)
-                tree = ET.ElementTree(root)
-                resolved_root = self.resolve_includes(root, folder)
-                if not resolved_root.tag == "window":
-                    continue
-                if "id" in resolved_root.attrib:
-                    window_ids.append(resolved_root.attrib["id"])
                 # get all nodes with ids....
                 xpath = ".//*[@id]"
-                for node in resolved_root.xpath(xpath):
+                for node in root.xpath(xpath):
                     item = {"name": node.attrib["id"],
                             "type": node.tag,
-                            "path": tree.getpath(node),
                             "file": path,
                             "line": node.sourceline}
                     defines.append(item)
@@ -378,7 +366,6 @@ class InfoProvider():
                     for match in re.finditer(regex, node.attrib["condition"]):
                         item = {"name": match.group(0),
                                 "type": node.tag,
-                                "path": tree.getpath(node),
                                 "file": path,
                                 "line": node.sourceline}
                         refs.append(item)
@@ -389,41 +376,22 @@ class InfoProvider():
                         continue
                     for match in re.finditer(regex, node.text):
                         item = {"name": match.group(0),
-                                "path": tree.getpath(node),
                                 "type": node.tag,
                                 "file": path,
                                 "line": node.sourceline}
                         refs.append(item)
                 # check if all refs exist...
-                define_list = [d['name'] for d in defines]
-                for item in refs:
-                    if item["name"] in define_list:
-                        pass
-                    elif item["name"] in window_ids:
-                        pass
-                    elif int(item["name"]) in builtin_window_ids:
-                        pass
-                    else:
-                        tags = item["path"].split("/")
-                        index = len(tags)
-                        for i, tag in enumerate(tags):
-                            if "include" in tag:
-                                index = i + 1
-                                break
-                        path = "/" + "/".join(tags[1:index])
-                        # if "[" in path:
-                        #     path = "[". join(path.split("[")[0:-1])
-                        item["message"] = item["type"] + " " + item["name"] + " " + path
-                        for hit in root.xpath(path):
-                            if hit.sourceline > 1:
-                                item["line"] = hit.sourceline
-                                listitems.append(item)
-                                break
-                        break
-                et = ET.ElementTree(resolved_root)
-                if not os.path.exists("output"):
-                    os.mkdir("output")
-                et.write(os.path.join("output", xml_file), pretty_print=True)
+            define_list = [d['name'] for d in defines]
+            for item in refs:
+                if item["name"] in define_list:
+                    pass
+                elif item["name"] in window_ids:
+                    pass
+                elif int(item["name"]) in builtin_window_ids:
+                    pass
+                else:
+                    item["message"] = "ID not defined: " + item["name"]
+                    listitems.append(item)
         return listitems
 
     def resolve_include(self, ref, folder):
