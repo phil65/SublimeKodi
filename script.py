@@ -62,6 +62,10 @@ if __name__ == "__main__":
                 path = os.path.join(INFOS.project_path, folder, xml_file)
                 if check_bom(path):
                     log("found BOM. File: " + path)
+                text = open(path, "rb").read().decode("utf-8")
+                if "\r\n" in text:
+                    log("Windows Line Endings detected in " + path)
+
         log("\n\nINCLUDE CHECK\n\n")
         check_tags("include")
         log("\n\nVARIABLE CHECK\n\n")
