@@ -227,6 +227,12 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
 class QuickPanelCommand(sublime_plugin.WindowCommand):
 
+    def is_visible(self):
+        if INFOS.addon_xml_file:
+            return True
+        else:
+            return False
+
     def on_done(self, index):
         if index == -1:
             return None
@@ -439,8 +445,10 @@ class GoToTagCommand(sublime_plugin.WindowCommand):
 class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        scope_name = self.view.scope_name(self.view.sel()[0].b)
-        return "source.python" in scope_name or "text.xml" in scope_name
+        if INFOS.media_path():
+            return True
+        else:
+            return False
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
