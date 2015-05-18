@@ -70,7 +70,7 @@ if __name__ == "__main__":
         check_tags("font")
         log("\n\nLABEL CHECK\n\n")
         check_tags("label")
-        log("\n\nCHECK FOR IDS\n\n")
+        log("\n\nID CHECK\n\n")
         check_tags("id")
         log("\n\nCHECK FOR COMMON MISTAKES\n\n")
         check_tags("general")

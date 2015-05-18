@@ -332,7 +332,8 @@ class InfoProvider():
         return listitems
 
     def check_ids(self):
-        regex = r"(?<=\()[0-9]+"
+        window_regex = r"(?:Dialog.Close|Window.IsActive|Window.IsVisible)\(([0-9]+)\)"
+        control_regex = "^(?!.*IsActive)(?!.*Window.IsVisible)(?!.*Dialog.Close).*\(([0-9]*?)\)"
         builtin_window_ids = [0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17,
                               18, 19, 20, 21, 25, 28, 29, 34, 40, 100, 101, 103,
                               104, 106, 107, 109, 111, 113, 114, 115, 120, 122, 123,
@@ -345,7 +346,8 @@ class InfoProvider():
         listitems = []
         for folder in self.xml_folders:
             window_ids = []
-            refs = []
+            window_refs = []
+            control_refs = []
             defines = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
@@ -363,34 +365,50 @@ class InfoProvider():
                 # get all conditions....
                 xpath = ".//*[@condition]"
                 for node in root.xpath(xpath):
-                    for match in re.finditer(regex, node.attrib["condition"]):
-                        item = {"name": match.group(0),
+                    for match in re.finditer(control_regex, node.attrib["condition"], re.IGNORECASE):
+                        item = {"name": match.group(1),
                                 "type": node.tag,
                                 "file": path,
                                 "line": node.sourceline}
-                        refs.append(item)
+                        control_refs.append(item)
+                    for match in re.finditer(window_regex, node.attrib["condition"], re.IGNORECASE):
+                        item = {"name": match.group(1),
+                                "type": node.tag,
+                                "file": path,
+                                "line": node.sourceline}
+                        window_refs.append(item)
                 bracket_tags = ["visible", "enable", "usealttexture", "selected"]
                 xpath = ".//" + " | .//".join(bracket_tags)
                 for node in root.xpath(xpath):
                     if not node.text:
                         continue
-                    for match in re.finditer(regex, node.text):
-                        item = {"name": match.group(0),
+                    for match in re.finditer(control_regex, node.text, re.IGNORECASE):
+                        item = {"name": match.group(1),
                                 "type": node.tag,
                                 "file": path,
                                 "line": node.sourceline}
-                        refs.append(item)
+                        control_refs.append(item)
+                    for match in re.finditer(window_regex, node.text, re.IGNORECASE):
+                        item = {"name": match.group(1),
+                                "type": node.tag,
+                                "file": path,
+                                "line": node.sourceline}
+                        window_refs.append(item)
                 # check if all refs exist...
             define_list = [d['name'] for d in defines]
-            for item in refs:
-                if item["name"] in define_list:
-                    pass
-                elif item["name"] in window_ids:
+            for item in window_refs:
+                if item["name"] in window_ids:
                     pass
                 elif int(item["name"]) in builtin_window_ids:
                     pass
                 else:
-                    item["message"] = "ID not defined: " + item["name"]
+                    item["message"] = "Window ID not defined: " + item["name"]
+                    listitems.append(item)
+            for item in control_refs:
+                if not item["name"] or item["name"] in define_list:
+                    pass
+                else:
+                    item["message"] = "Control / Item ID not defined: " + item["name"]
                     listitems.append(item)
         return listitems
 
