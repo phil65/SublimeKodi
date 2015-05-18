@@ -319,8 +319,10 @@ class InfoProvider():
         for folder in self.xml_folders:
             fontlist = ["-"]
             # create a list with all font names from default fontset
-            for item in self.fonts[folder]:
-                fontlist.append(item["name"])
+            if folder in self.fonts:
+                for item in self.fonts[folder]:
+                    fontlist.append(item["name"])
+            # TODO: add confluence fonts
             # find undefined font refs
             for ref in font_refs[folder]:
                 if ref["name"] not in fontlist:
@@ -328,10 +330,11 @@ class InfoProvider():
                     listitems.append(ref)
             # find unused font defs
             ref_list = [d['name'] for d in font_refs[folder]]
-            for node in self.fonts[folder]:
-                if node["name"] not in ref_list:
-                    node["message"] = "Unused font: %s" % node["name"]
-                    listitems.append(node)
+            if folder in self.fonts:
+                for node in self.fonts[folder]:
+                    if node["name"] not in ref_list:
+                        node["message"] = "Unused font: %s" % node["name"]
+                        listitems.append(node)
         return listitems
 
     def check_ids(self):
