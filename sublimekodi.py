@@ -607,35 +607,22 @@ class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
             break
 
 
-class SwitchXmlFolderCommand(sublime_plugin.TextCommand):
+class SwitchXmlFolderCommand(QuickPanelCommand):
 
     def is_visible(self):
         return len(INFOS.xml_folders) > 1
 
-    def run(self, edit):
-        self.element = None
-        self.file = self.view.file_name()
-        root = get_root_from_file(self.file)
-        tree = ET.ElementTree(root)
-        line, column = self.view.rowcol(self.view.sel()[0].b)
-        elements = [e for e in tree.iter()]
-        for e in elements:
-            if line < e.sourceline:
-                self.element = e
-                break
-    # if len(INFOS.xml_folders) > 2:
-        sublime.active_window().show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
-
-    def show_preview(self, index):
-        path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
-        sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION | sublime.TRANSIENT)
-        # sublime.active_window().focus_view(self.view)
-
-    def on_done(self, index):
-        if index == -1:
-            return None
-        path = os.path.join(INFOS.project_path, INFOS.xml_folders[index], os.path.basename(self.file))
-        sublime.active_window().open_file("%s:%i" % (path, self.element.sourceline), sublime.ENCODED_POSITION)
+    def run(self):
+        view = self.window.active_view()
+        self.nodes = []
+        line, column = view.rowcol(view.sel()[0].b)
+        filename = os.path.basename(view.file_name())
+        for folder in INFOS.xml_folders:
+            path = os.path.join(INFOS.project_path, folder, filename)
+            node = {"file": path,
+                    "line": line}
+            self.nodes.append(node)
+        self.window.show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
 # def plugin_loaded():
 #     INFOS.check_project_change()
