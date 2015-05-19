@@ -573,7 +573,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         for label in INFOS.string_list:
             if label["string"].lower() == word.lower():
                 available_ids.append(label)
-                self.labels.append("%s %s" % (label["string"], label["id"]))
+                self.labels.append(["%s (%s)" % (label["string"], label["id"]), label["comment"]])
                 self.label_ids.append(label["id"])
         if available_ids:
             self.labels.append("Create new label")
