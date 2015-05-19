@@ -35,7 +35,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.settings_loaded = False
 
     def on_selection_modified_async(self, view):
-        if len(view.sel()) > 1:
+        if len(view.sel()) > 1 or not INFOS.addon_xml_file:
             return None
         try:
             region = view.sel()[0]
@@ -43,8 +43,6 @@ class SublimeKodi(sublime_plugin.EventListener):
         except:
             return None
         if region == self.prev_selection:
-            return None
-        elif not INFOS.addon_xml_file:
             return None
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         popup_label = ""
@@ -522,9 +520,8 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         return False
 
     def run(self, edit):
-        available_ids = []
-        self.labels = []
         self.label_ids = []
+        self.labels = []
         region = self.view.sel()[0]
         if region.begin() == region.end():
             sublime.message_dialog("Please select the complete label")
@@ -532,10 +529,9 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         word = self.view.substr(region)
         for label in INFOS.string_list:
             if label["string"].lower() == word.lower():
-                available_ids.append(label)
+                self.label_ids.append(label)
                 self.labels.append(["%s (%s)" % (label["string"], label["id"]), label["comment"]])
-                self.label_ids.append(label["id"])
-        if available_ids:
+        if self.label_ids:
             self.labels.append("Create new label")
             sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
         else:
@@ -548,7 +544,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         if self.labels[index] == "Create new label":
             label_id = self.create_new_label(self.view.substr(region))
         else:
-            label_id = self.label_ids[index][1:]
+            label_id = self.label_ids[index]["id"][1:]
         self.view.run_command("replace_text", {"label_id": label_id})
 
     def create_new_label(self, word):
