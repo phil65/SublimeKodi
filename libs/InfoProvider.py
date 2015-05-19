@@ -350,7 +350,7 @@ class InfoProvider():
         if os.path.exists(imagepath) and not os.path.isdir(imagepath):
             im = Image.open(imagepath)
             file_size = os.path.getsize(imagepath) / 1024
-            return "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
+            return "<b>Dimensions:</b> %s <br><b>File size:</b> %.2f kb" % (str(im.size), file_size)
         return ""
 
     def get_font_refs(self):
