@@ -331,7 +331,7 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
     def run(self):
         label_list = []
         for item in INFOS.string_list:
-            label_list.append("%s (%s)" % (item["string"], item["id"]))
+            label_list.append(["%s (%s)" % (item["string"], item["id"]), item["comment"]])
         self.window.show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
     def label_search_ondone_action(self, index):

@@ -127,6 +127,8 @@ def get_label_list(po_file_path):
         for entry in po:
             string = {"id": entry.msgctxt,
                       "line": entry.linenum,
+                      "comment": entry.comment,
+                      "tcomment": entry.tcomment,
                       "string": entry.msgid,
                       "native_string": entry.msgstr}
             listitems.append(string)
