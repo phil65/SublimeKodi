@@ -256,7 +256,7 @@ class InfoProvider():
         root = ET.fromstring(node_content)
         label = ""
         for e in root.iterchildren():
-            label += "%s: %s<br>" % (e.tag, e.text)
+            label += "<b>%s:</b> %s<br>" % (e.tag, e.text)
         return label
 
     def check_variables(self):
