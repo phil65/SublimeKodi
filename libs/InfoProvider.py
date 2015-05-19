@@ -493,7 +493,11 @@ class InfoProvider():
     def translate_square_bracket(self, info_type, info_id, folder):
         if info_type == "VAR":
             node_content = str(self.return_node_content(info_id, folder=folder))
-            return cgi.escape(node_content).replace("\n", "<br>")
+            root = ET.fromstring(node_content)
+            label = ""
+            for e in root.iterchildren():
+                label += "<b>%s:</b> %s<br>" % (e.attrib.get("condition", "else"), e.text)
+            return label
         elif info_type == "INFO":
             data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
             result = kodi_json_request(data, True, self.settings)
