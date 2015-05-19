@@ -523,17 +523,30 @@ class InfoProvider():
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         # tags allowed for containers
         list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
+        label_common = ["font", "textcolor", "align", "aligny", "label"]
         # allowed child nodes for different control types (+ some other nodes)
-        tag_checks = [[".//*[@type='button']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "label2", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
-                      [".//*[@type='radiobutton']/*", common + ["colordiffuse", "texturefocus", "texturenofocus", "label", "selected", "font", "textcolor", "disabledcolor", "selectedcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus", "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
-                      [".//*[@type='spincontrol']/*", common + ["colordiffuse", "textureup", "textureupfocus", "texturedown", "texturedownfocus", "spinwidth", "spinheight", "spinposx", "spinposy" "label", "subtype", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "hitrect", "enable", "showonepage"]],
-                      [".//*[@type='togglebutton']/*", common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "label", "altlabel", "usealttexture", "font", "textcolor", "disabledcolor", "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
-                      [".//*[@type='label']/*", common + ["align", "aligny", "scroll", "scrollout", "info", "number", "angle", "haspath", "label", "textcolor", "selectedcolor", "font", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline", "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
-                      [".//*[@type='textbox']/*", common + ["align", "aligny", "autoscroll", "label", "info", "font", "textcolor", "selectedcolor", "shadowcolor", "pagecontrol"]],
-                      [".//*[@type='edit']/*", common + ["colordiffuse", "align", "aligny", "label", "hinttext", "font", "textoffsetx", "textoffsety", "pulseonselect", "textcolor", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor", "texturefocus", "texturenofocus", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "hitrect", "enable"]],
+        tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
+                                                                          "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
+                                                                          "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
+                      [".//*[@type='radiobutton']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "selected", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
+                                                                               "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
+                                                                               "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioonnofocus",
+                                                                               "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
+                      [".//*[@type='spincontrol']/*", common + label_common + ["colordiffuse", "textureup", "textureupfocus", "texturedown", "texturedownfocus", "spinwidth", "spinheight", "spinposx", "spinposy",
+                                                                               "subtype", "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onfocus", "onunfocus", "onup", "onleft",
+                                                                               "onright", "ondown", "onback", "hitrect", "enable", "showonepage"]],
+                      [".//*[@type='togglebutton']/*", common + label_common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "altlabel", "usealttexture",
+                                                                                "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft",
+                                                                                "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
+                      [".//*[@type='label']/*", common + label_common + ["scroll", "scrollout", "info", "number", "angle", "haspath", "selectedcolor", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline",
+                                                                         "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
+                      [".//*[@type='textbox']/*", common + label_common + ["autoscroll", "info", "selectedcolor", "shadowcolor", "pagecontrol"]],
+                      [".//*[@type='edit']/*", common + label_common + ["colordiffuse", "hinttext", "textoffsetx", "textoffsety", "pulseonselect", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor",
+                                                                        "texturefocus", "texturenofocus", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth", "hitrect", "enable"]],
                       [".//*[@type='image']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "texture", "bordertexture", "bordersize", "info"]],
                       [".//*[@type='multiimage']/*", common + ["align", "aligny", "aspectratio", "fadetime", "colordiffuse", "imagepath", "timeperimage", "loop", "info", "randomize", "pauseatend"]],
-                      [".//*[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation", "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
+                      [".//*[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation",
+                                                              "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
                       [".//*[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
                       [".//*[@type='videowindow']/*", common],
                       [".//*[@type='visualisation']/*", common],
@@ -554,7 +567,7 @@ class InfoProvider():
                       [["autoscroll"], ["time", "reverse", "delay", "repeat"]],
                       [["defaultcontrol"], ["description", "always"]],
                       [["visible"], ["description", "allowhiddenfocus"]],
-                      [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], ["description", ]],
+                      [["align", "aligny", "posx", "posy", "textoffsetx", "textoffsety"], ["description"]],
                       [["height", "width"], ["description", "min", "max"]],
                       [["camera"], ["description", "x", "y"]],
                       [["hitrect"], ["description", "x", "y", "w", "h"]],
@@ -567,6 +580,7 @@ class InfoProvider():
                       [["include"], ["description", "name", "condition", "file"]],
                       [["animation"], ["description", "start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       [["effect"], ["description", "start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
+        # all_tags = [d[0] for d in att_checks]
         # check correct parantheses for some nodes
         bracket_tags = ["visible", "enable", "usealttexture", "selected"]
         # check some nodes to use noop instead of "-" / empty
@@ -590,7 +604,7 @@ class InfoProvider():
                         ["flipx", ["true", "false"]],
                         ["flipy", ["true", "false"]]]
         root = get_root_from_file(path)
-        folder = path.split(os.sep)[-2]
+        # folder = path.split(os.sep)[-2]
         # root = self.resolve_includes(root, folder)
         if root is None:
             return []
