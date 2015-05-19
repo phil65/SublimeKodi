@@ -45,9 +45,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             return None
         if region == self.prev_selection:
             return None
-        elif not INFOS.project_path:
+        elif not INFOS.addon_xml_file:
             return None
-        settings = sublime.load_settings(SETTINGS_FILE)
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         popup_label = ""
         identifier = ""
@@ -73,7 +72,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = "&nbsp;" + popup_label
             elif identifier.startswith("INFO"):
                 data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
-                result = kodi_json_request(data, True, settings)
+                result = kodi_json_request(data, True, self.settings)
                 if result:
                     key, value = result["result"].popitem()
                     if value:
@@ -120,13 +119,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
-        if popup_label and settings.get("tooltip_delay", 0) > -1:
-            sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), settings.get("tooltip_delay", 0))
+        if popup_label and self.settings.get("tooltip_delay", 0) > -1:
+            sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), self.settings.get("tooltip_delay", 0))
 
     def show_tooltip(self, view, tooltip_label):
-        settings = sublime.load_settings(SETTINGS_FILE)
         view.show_popup(tooltip_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
-                        location=-1, max_width=settings.get("tooltip_width", 1000), max_height=settings.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
+                        location=-1, max_width=self.settings.get("tooltip_width", 1000), max_height=self.settings.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
     def on_modified_async(self, view):
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
@@ -143,25 +141,25 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_post_save_async(self, view):
         if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
-            settings = sublime.load_settings(SETTINGS_FILE)
             if self.is_modified:
-                if settings.get("auto_reload_skin", True):
+                if self.settings.get("auto_reload_skin", True):
                     self.is_modified = False
                     view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
                 INFOS.reload_skin_after_save(view.file_name())
-                if settings.get("auto_skin_check", True):
+                if self.settings.get("auto_skin_check", True):
                     view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
             INFOS.update_labels()
 
     def check_project_change(self):
+        if not INFOS.settings_loaded:
+            self.settings = sublime.load_settings(SETTINGS_FILE)
+            INFOS.get_settings(self.settings)
         view = sublime.active_window().active_view()
-        if view and view.window():
-            if not INFOS.settings_loaded:
-                INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
+        if view and view.window() is not None:
+            variables = view.window().extract_variables()
             if not INFOS.builtin_list:
                 INFOS.get_builtin_label()
-            variables = view.window().extract_variables()
             if "folder" in variables:
                 project_folder = variables["folder"]
                 if project_folder and project_folder != self.actual_project:
@@ -315,7 +313,6 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
-        log(data)
         result = send_json_request(data, self.settings)
         if result:
             key, value = result["result"].popitem()
@@ -395,7 +392,6 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         if INFOS.media_path():
             flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
             content = get_node_content(self.view, flags)
-            log(content)
             if "/" in content or "\\" in content:
                 return True
         return False

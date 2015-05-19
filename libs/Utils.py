@@ -38,7 +38,6 @@ def check_bom(filename):
 def checkPaths(paths):
     for path in paths:
         if os.path.exists(path):
-            log("found path: %s" % path)
             return path
     return ""
 
@@ -76,10 +75,8 @@ def get_node_content(view, flags):
     for region in view.sel():
         try:
             bracket_region = view.expand_by_class(region, flags, '<>"[]')
-            log(view.substr(bracket_region))
             return view.substr(bracket_region)
         except:
-            log("Could not get node content")
             return ""
 
 
@@ -211,7 +208,6 @@ def send_json_request(data, settings):
         log(result)
         return result
     except:
-        log("Could not connect to Kodi")
         return None
 
 
