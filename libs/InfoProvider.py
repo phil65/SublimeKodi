@@ -23,7 +23,6 @@ class InfoProvider():
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
-        self.settings_loaded = False
 
     def init_addon(self, path):
         self.addon_type = ""
@@ -203,7 +202,6 @@ class InfoProvider():
         else:
             self.language_folder = DEFAULT_LANGUAGE_FOLDER
             log("use default language: English")
-        self.settings_loaded = True
 
     def get_builtin_label(self):
         paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),

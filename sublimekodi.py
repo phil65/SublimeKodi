@@ -34,6 +34,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.actual_project = None
         self.prev_selection = None
         self.is_modified = False
+        self.settings_loaded = False
 
     def on_selection_modified_async(self, view):
         if len(view.sel()) > 1:
@@ -152,14 +153,14 @@ class SublimeKodi(sublime_plugin.EventListener):
             INFOS.update_labels()
 
     def check_project_change(self):
-        if not INFOS.settings_loaded:
+        if not self.settings_loaded:
             self.settings = sublime.load_settings(SETTINGS_FILE)
             INFOS.get_settings(self.settings)
+            INFOS.get_builtin_label()
+            self.settings_loaded = True
         view = sublime.active_window().active_view()
         if view and view.window() is not None:
             variables = view.window().extract_variables()
-            if not INFOS.builtin_list:
-                INFOS.get_builtin_label()
             if "folder" in variables:
                 project_folder = variables["folder"]
                 if project_folder and project_folder != self.actual_project:
