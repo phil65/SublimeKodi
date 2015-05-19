@@ -147,25 +147,12 @@ class SublimeKodi(sublime_plugin.EventListener):
             if self.is_modified:
                 if settings.get("auto_reload_skin", True):
                     self.is_modified = False
-                    sublime.active_window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
+                    view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
                 INFOS.reload_skin_after_save(view.file_name())
                 if settings.get("auto_skin_check", True):
-                    self.nodes = INFOS.check_file(view.file_name())
-                    listitems = []
-                    for item in self.nodes:
-                        listitems.append(item["message"])
-                    if listitems:
-                        sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+                    view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
             INFOS.update_labels()
-
-    def on_done(self, index):
-        if index == -1:
-            return None
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
-
-    def show_preview(self, index):
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
     def check_project_change(self):
         view = sublime.active_window().active_view()
@@ -236,10 +223,10 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
     def on_done(self, index):
         if index == -1:
             return None
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
+        self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
 
     def show_preview(self, index):
-        sublime.active_window().open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
 class ShowFontRefsCommand(QuickPanelCommand):
@@ -256,7 +243,7 @@ class ShowFontRefsCommand(QuickPanelCommand):
                 listitems.append(ref["name"])
                 self.nodes.append(ref)
         if listitems:
-            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+            self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:
             sublime.message_dialog("No references found")
 
@@ -284,7 +271,7 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
                                 "line": i + 1}
                         self.nodes.append(node)
         if listitems:
-            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+            self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         else:
             sublime.message_dialog("No references found")
 
@@ -305,13 +292,15 @@ class CheckVariablesCommand(QuickPanelCommand):
             self.nodes = INFOS.check_ids()
         elif check_type == "general":
             self.nodes = INFOS.check_values()
+        elif check_type == "file":
+            self.nodes = INFOS.check_file(self.window.active_view().file_name())
         listitems = []
         for item in self.nodes:
             filename = os.path.basename(item["file"])
             listitems.append([item["message"], filename + ": " + str(item["line"])])
         if listitems:
-            sublime.active_window().show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
-        else:
+            self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        elif not check_type == "file":
             sublime.message_dialog("No errors detected")
 
 
@@ -319,7 +308,7 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         self.settings = sublime.load_settings(SETTINGS_FILE)
-        sublime.active_window().show_input_panel("Get InfoLabels (comma-separated)", self.settings.get("prev_infolabel", ""), self.show_info_label, None, None)
+        self.window.show_input_panel("Get InfoLabels (comma-separated)", self.settings.get("prev_infolabel", ""), self.show_info_label, None, None)
 
     def show_info_label(self, label_string):
         self.settings.set("prev_infolabel", label_string)

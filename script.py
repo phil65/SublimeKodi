@@ -10,7 +10,6 @@ import json
 from InfoProvider import InfoProvider
 import codecs
 import chardet
-from eol import eol
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
 
@@ -50,6 +49,7 @@ def check_tags(tag_type):
 
 
 if __name__ == "__main__":
+    from eol import eol
     open(RESULTS_FILE, 'w').close()
     if len(sys.argv) == 2:
         project_folder = sys.argv[1]
