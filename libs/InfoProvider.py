@@ -3,6 +3,7 @@ from Utils import *
 import re
 import cgi
 from PIL import Image
+import string
 
 DEFAULT_LANGUAGE_FOLDER = "English"
 

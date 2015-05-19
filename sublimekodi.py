@@ -14,7 +14,6 @@ from lxml import etree as ET
 from InfoProvider import InfoProvider
 from Utils import *
 import webbrowser
-import string
 INFOS = InfoProvider()
 # sublime.log_commands(True)
 APP_NAME = "kodi"
@@ -70,23 +69,23 @@ class SublimeKodi(sublime_plugin.EventListener):
         elif "text.xml" in scope_name:
             if info_type in ["INFO", "VAR", "LOCALIZE"]:
                 popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
-            elif "<include" in line_contents and "name=" not in line_contents:
-                node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
-                popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
-            elif "<font" in line_contents:
-                popup_label = INFOS.get_font_info(selected_content, folder)
-            elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
-                popup_label = INFOS.return_label(selected_content)
-            if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents or "<value" in line_contents:
+            if not popup_label:
+                if "<include" in line_contents and "name=" not in line_contents:
+                    node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
+                    popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
+                elif "<font" in line_contents:
+                    popup_label = INFOS.get_font_info(selected_content, folder)
+                elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
+                    popup_label = INFOS.return_label(selected_content)
+                elif "<fadetime" in line_contents:
+                    popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
+                elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
+                    popup_label = INFOS.get_image_info(selected_content)
+                elif "<control " in line_contents:
+                    # todo: add positioning based on parent nodes
+                    popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
-            elif "<fadetime" in line_contents:
-                popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
-            elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
-                popup_label = INFOS.get_image_info(selected_content)
-            elif "<control " in line_contents:
-                # todo: add positioning based on parent nodes
-                popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
         if popup_label and self.settings.get("tooltip_delay", 0) > -1:
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), self.settings.get("tooltip_delay", 0))
 
