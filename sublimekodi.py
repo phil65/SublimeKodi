@@ -61,8 +61,10 @@ class SublimeKodi(sublime_plugin.EventListener):
         selected_content = view.substr(view.expand_by_class(region, flags, '<>"[]'))
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             identifier = view.substr(label_region)
-            info_type = identifier.split("[", 1)[0]
-            info_id = identifier.split("[", 1)[1]
+            info_list = identifier.split("[", 1)
+            info_type = info_list[0]
+            if len(info_list) > 1:
+                info_id = info_list[1]
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
                 popup_label = INFOS.return_label(selected_content)
@@ -82,7 +84,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
                     popup_label = INFOS.get_image_info(selected_content)
                 elif "<control " in line_contents:
-                    # todo: add positioning based on parent nodes
+                    # TODO: add positioning based on parent nodes
                     popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
@@ -99,6 +101,7 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         self.check_project_change()
+        # self.root = get_root_from_file(view.file_name())
 
     def on_activated_async(self, view):
         self.check_project_change()
