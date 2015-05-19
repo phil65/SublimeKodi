@@ -95,7 +95,7 @@ class InfoProvider():
                     string_dict = {"name": node.find("name").text,
                                    "size": node.find("size").text,
                                    "line": node.sourceline,
-                                   "content": ET.tostring(node, pretty_print=True),
+                                   "content": ET.tostring(node, pretty_print=True, encoding="unicode"),
                                    "file": font_file,
                                    "filename": node.find("filename").text}
                     self.fonts[folder].append(string_dict)
@@ -249,6 +249,13 @@ class InfoProvider():
             alpha_percent = round(int(color_string[:2], 16) / (16 * 16) * 100)
             return '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
         return color_info
+
+    def get_font_info(self, font_name, folder):
+        node_content = str(self.return_node_content(font_name, folder=folder))
+        # parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
+        # root = ET.fromstring(node_content, parser)
+        return cgi.escape(node_content).replace("\n", "<br>")
+
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"
@@ -484,10 +491,7 @@ class InfoProvider():
     def translate_square_bracket(self, info_type, info_id, folder):
         if info_type == "VAR":
             node_content = str(self.return_node_content(info_id, folder=folder))
-            ind1 = node_content.find('\\n')
-            popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
-            if popup_label:
-                return "&nbsp;" + popup_label
+            return cgi.escape(node_content).replace("\n", "<br>")
         elif info_type == "INFO":
             data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
             result = kodi_json_request(data, True, self.settings)
