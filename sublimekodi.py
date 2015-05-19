@@ -51,6 +51,8 @@ class SublimeKodi(sublime_plugin.EventListener):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         popup_label = ""
         identifier = ""
+        info_type = ""
+        info_id = ""
         self.prev_selection = region
         view.hide_popup()
         scope_name = view.scope_name(region.b)
@@ -61,23 +63,14 @@ class SublimeKodi(sublime_plugin.EventListener):
         selected_content = view.substr(view.expand_by_class(region, flags, '<>"[]'))
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
             identifier = view.substr(label_region)
+            info_type = identifier.split("[", 1)[0]
+            info_id = identifier.split("[", 1)[1]
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
                 popup_label = INFOS.return_label(selected_content)
         elif "text.xml" in scope_name:
-            if identifier.startswith("VAR"):
-                node_content = str(INFOS.return_node_content(identifier[4:], folder=folder))
-                ind1 = node_content.find('\\n')
-                popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
-                if popup_label:
-                    popup_label = "&nbsp;" + popup_label
-            elif identifier.startswith("INFO"):
-                data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % identifier[5:]
-                result = kodi_json_request(data, True, self.settings)
-                if result:
-                    key, value = result["result"].popitem()
-                    if value:
-                        popup_label = str(value)
+            if info_type in ["INFO", "VAR", "LOCALIZE"]:
+                popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
             elif "<include" in line_contents and "name=" not in line_contents:
                 node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
                 ind1 = node_content.find('\\n')

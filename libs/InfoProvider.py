@@ -1,6 +1,7 @@
 import os
 from Utils import *
 import re
+import cgi
 
 DEFAULT_LANGUAGE_FOLDER = "English"
 
@@ -193,6 +194,7 @@ class InfoProvider():
         return ""
 
     def get_settings(self, settings):
+        self.settings = settings
         self.kodi_path = settings.get("kodi_path")
         log("kodi path: " + self.kodi_path)
         self.use_native = settings.get("use_native_language")
@@ -438,6 +440,24 @@ class InfoProvider():
                 if new_include is not None:
                     node.getparent().replace(node, new_include)
         return xml_source
+
+    def translate_square_bracket(self, info_type, info_id, folder):
+        if info_type == "VAR":
+            node_content = str(self.return_node_content(info_id, folder=folder))
+            ind1 = node_content.find('\\n')
+            popup_label = cgi.escape(node_content[ind1 + 4:-16]).replace("\\n", "<br>")
+            if popup_label:
+                return "&nbsp;" + popup_label
+        elif info_type == "INFO":
+            data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
+            result = kodi_json_request(data, True, self.settings)
+            if result:
+                key, value = result["result"].popitem()
+                if value:
+                    return str(value)
+        elif info_type == "LOCALIZE":
+            return self.return_label(info_id)
+        return ""
 
     def check_labels(self):
         listitems = []
