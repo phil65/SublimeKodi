@@ -253,10 +253,11 @@ class InfoProvider():
 
     def get_font_info(self, font_name, folder):
         node_content = str(self.return_node_content(font_name, folder=folder))
-        # parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
-        # root = ET.fromstring(node_content, parser)
-        return cgi.escape(node_content).replace("\n", "<br>")
-
+        root = ET.fromstring(node_content)
+        label = ""
+        for e in root.iterchildren():
+            label += "%s: %s<br>" % (e.tag, e.text)
+        return label
 
     def check_variables(self):
         var_regex = "\$VAR\[(.*?)\]"
