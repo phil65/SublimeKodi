@@ -325,13 +325,8 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
         view = self.window.active_view()
         scope_name = view.scope_name(view.sel()[0].b)
         label_id = int(INFOS.string_list[index]["id"][1:])
-        if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
-            lang_string = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
-        elif "text.xml" in scope_name:
-            lang_string = "$LOCALIZE[%i]" % label_id
-        else:
-            lang_string = label_id
-        view.run_command("insert", {"characters": lang_string})
+        info_string = INFOS.build_translate_label(label_id, scope_name)
+        view.run_command("insert", {"characters": info_string})
 
 
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
@@ -605,12 +600,7 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
         for region in self.view.sel():
             scope_name = self.view.scope_name(region.b)
             label_id = int(label_id)
-            if "text.xml" in scope_name and INFOS.addon_type == "python" and 32000 <= label_id <= 33000:
-                new = "$ADDON[%s %i]" % (INFOS.addon_name, label_id)
-            elif "text.xml" in scope_name:
-                new = "$LOCALIZE[%i]" % label_id
-            else:
-                new = str(label_id)
+            new = INFOS.build_translate_label(label_id, scope_name)
             self.view.replace(edit, region, new)
 
 
