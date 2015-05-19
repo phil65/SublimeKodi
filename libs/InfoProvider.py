@@ -2,6 +2,7 @@ import os
 from Utils import *
 import re
 import cgi
+from PIL import Image
 
 DEFAULT_LANGUAGE_FOLDER = "English"
 
@@ -303,6 +304,20 @@ class InfoProvider():
                     node["message"] = "Unused include: %s" % node["name"]
                     listitems.append(node)
         return listitems
+
+    def translate_path(self, path):
+        if path.startswith("special://skin/"):
+            return os.path.join(self.project_path, path.replace("special://skin/", ""))
+        else:
+            return os.path.join(self.media_path(), path)
+
+    def get_image_info(self, path):
+        imagepath = self.translate_path(path)
+        if os.path.exists(imagepath) and not os.path.isdir(imagepath):
+            im = Image.open(imagepath)
+            file_size = os.path.getsize(imagepath) / 1024
+            return "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
+        return ""
 
     def get_font_refs(self):
         font_refs = {}

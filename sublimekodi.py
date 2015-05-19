@@ -11,7 +11,6 @@ if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from polib import polib
 from lxml import etree as ET
-from PIL import Image
 from InfoProvider import InfoProvider
 from Utils import *
 import webbrowser
@@ -102,14 +101,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
-                if selected_content.startswith("special://skin/"):
-                    imagepath = os.path.join(INFOS.project_path, selected_content.replace("special://skin/", ""))
-                else:
-                    imagepath = os.path.join(INFOS.media_path(), selected_content)
-                if os.path.exists(imagepath) and not os.path.isdir(imagepath):
-                    im = Image.open(imagepath)
-                    file_size = os.path.getsize(imagepath) / 1024
-                    popup_label = "Dimensions: %s <br>File size: %.2f kb" % (str(im.size), file_size)
+                popup_label = INFOS.get_image_info(selected_content)
             elif "<control " in line_contents:
                 # todo: add positioning based on parent nodes
                 popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
