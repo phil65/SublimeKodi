@@ -384,12 +384,8 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
-        rel_image_path = get_node_content(self.view, flags)
-        if rel_image_path.startswith("special://skin/"):
-            rel_image_path = rel_image_path.replace("special://skin/", "")
-            imagepath = os.path.join(INFOS.project_path, rel_image_path)
-        else:
-            imagepath = os.path.join(INFOS.media_path(), rel_image_path)
+        path = get_node_content(self.view, flags)
+        imagepath = INFOS.translate_path(path)
         if os.path.exists(imagepath):
             if os.path.isdir(imagepath):
                 self.files = []
