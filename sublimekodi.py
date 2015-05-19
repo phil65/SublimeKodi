@@ -86,18 +86,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 popup_label = INFOS.return_label(selected_content)
             if "<color" in line_contents or "color>" in line_contents or "[color" in line_contents or "<value" in line_contents:
                 if not popup_label:
-                    for item in INFOS.color_list:
-                        if item["name"] == selected_content:
-                            color_hex = "#" + item["content"][2:]
-                            cont_color = get_cont_col(color_hex)
-                            alpha_percent = round(int(item["content"][:2], 16) / (16 * 16) * 100)
-                            popup_label += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a> %d %% alpha<br>' % (os.path.basename(item["filename"]), color_hex, cont_color, item["content"], alpha_percent)
-                    if not popup_label:
-                            if all(c in string.hexdigits for c in selected_content) and len(selected_content) == 8:
-                                color_hex = "#" + selected_content[2:]
-                                cont_color = get_cont_col(color_hex)
-                                alpha_percent = round(int(selected_content[:2], 16) / (16 * 16) * 100)
-                                popup_label += '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
+                    popup_label = INFOS.get_color_info(selected_content)
             elif "<fadetime" in line_contents:
                 popup_label = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))[2:-3]
             elif "<texture" in line_contents or "<alttexture" in line_contents or "<bordertexture" in line_contents or "<icon" in line_contents or "<thumb" in line_contents:
