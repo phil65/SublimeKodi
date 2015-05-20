@@ -251,6 +251,30 @@ class InfoProvider():
             return '<a style="background-color:%s;color:%s">%d %% alpha</a>' % (color_hex, cont_color, alpha_percent)
         return color_info
 
+    def get_ancestor_info(self, path, line):
+        element = None
+        root = get_root_from_file(path)
+        tree = ET.ElementTree(root)
+        for e in tree.iter():
+            if line <= e.sourceline:
+                element = e
+                break
+        values = {}
+        for anc in element.iterancestors():
+            for sib in anc.iterchildren():
+                if sib.tag in ["posx", "posy"]:
+                    if sib.tag in values:
+                        values[sib.tag].append(sib.text)
+                    else:
+                        values[sib.tag] = [sib.text]
+        anc_info = ""
+        for key, value in values.items():
+            anc_info += "<b>%s:</b> %s <br>" % (key, str(value))
+        if anc_info:
+            return "<b>Absolute position</b><br>" + anc_info
+        else:
+            return ""
+
     def get_font_info(self, font_name, folder):
         node_content = str(self.return_node_content(font_name, folder=folder))
         root = ET.fromstring(node_content)

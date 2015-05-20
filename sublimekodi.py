@@ -83,7 +83,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = INFOS.get_image_info(selected_content)
                 elif "<control " in line_contents:
                     # TODO: add positioning based on parent nodes
-                    popup_label = str(INFOS.return_node_content(findWord(view), folder=folder))[2:-3]
+                    line, column = view.rowcol(view.sel()[0].b)
+                    popup_label = INFOS.get_ancestor_info(view.file_name(), line)
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
         if popup_label and self.settings.get("tooltip_delay", 0) > -1:
@@ -99,7 +100,11 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         self.check_project_change()
-        # self.root = get_root_from_file(view.file_name())
+        filename = view.file_name()
+        # if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
+        #     self.root = get_root_from_file(filename)
+        #     self.tree = ET.ElementTree(self.root)
+
 
     def on_activated_async(self, view):
         self.check_project_change()
