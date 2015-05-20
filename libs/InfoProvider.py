@@ -567,6 +567,37 @@ class InfoProvider():
         self.update_labels()
         return label_id
 
+    def go_to_help(self, word):
+        controls = {"group": "http://kodi.wiki/view/Group_Control",
+                    "grouplist": "http://kodi.wiki/view/Group_List_Control",
+                    "label": "http://kodi.wiki/view/Label_Control",
+                    "fadelabel": "http://kodi.wiki/view/Fade_Label_Control",
+                    "image": "http://kodi.wiki/view/Image_Control",
+                    "largeimage": "http://kodi.wiki/view/Large_Image_Control",
+                    "multiimage": "http://kodi.wiki/view/MultiImage_Control",
+                    "button": "http://kodi.wiki/view/Button_control",
+                    "radiobutton": "http://kodi.wiki/view/Radio_button_control",
+                    "selectbutton": "http://kodi.wiki/view/Group_Control",
+                    "togglebutton": "http://kodi.wiki/view/Toggle_button_control",
+                    "multiselect": "http://kodi.wiki/view/Multiselect_control",
+                    "spincontrol": "http://kodi.wiki/view/Spin_Control",
+                    "spincontrolex": "http://kodi.wiki/view/Settings_Spin_Control",
+                    "progress": "http://kodi.wiki/view/Progress_Control",
+                    "list": "http://kodi.wiki/view/List_Container",
+                    "wraplist": "http://kodi.wiki/view/Wrap_List_Container",
+                    "fixedlist": "http://kodi.wiki/view/Fixed_List_Container",
+                    "panel": "http://kodi.wiki/view/Text_Box",
+                    "rss": "http://kodi.wiki/view/RSS_feed_Control",
+                    "visualisation": "http://kodi.wiki/view/Visualisation_Control",
+                    "videowindow": "http://kodi.wiki/view/Video_Control",
+                    "edit": "http://kodi.wiki/view/Edit_Control",
+                    "epggrid": "http://kodi.wiki/view/EPGGrid_control",
+                    "mover": "http://kodi.wiki/view/Mover_Control",
+                    "resize": "http://kodi.wiki/view/Resize_Control"
+                    }
+        webbrowser.open_new(controls[word])
+        # control_types = "|".join(controls.keys())
+
     def check_labels(self):
         listitems = []
         refs = []
