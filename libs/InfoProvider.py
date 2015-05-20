@@ -276,7 +276,9 @@ class InfoProvider():
             return ""
 
     def get_font_info(self, font_name, folder):
-        node_content = str(self.return_node_content(font_name, folder=folder))
+        node_content = self.return_node_content(font_name, folder=folder)
+        if not node_content:
+            return ""
         root = ET.fromstring(node_content)
         label = ""
         for e in root.iterchildren():
@@ -406,14 +408,14 @@ class InfoProvider():
                     fontlist.append(item["name"])
             # find undefined font refs
             for ref in font_refs[folder]:
-                if ref["name"] not in fontlist:
+                if ref["name"] not in fontlist + confluence_fonts:
                     ref["message"] = "Font not defined: %s" % ref["name"]
                     listitems.append(ref)
             # find unused font defs
             ref_list = [d['name'] for d in font_refs[folder]]
             if folder in self.fonts:
                 for node in self.fonts[folder]:
-                    if node["name"] not in ref_list and node["name"] not in confluence_fonts:
+                    if node["name"] not in ref_list + confluence_fonts:
                         node["message"] = "Unused font: %s" % node["name"]
                         listitems.append(node)
         return listitems
