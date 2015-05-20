@@ -64,7 +64,8 @@ class SublimeKodi(sublime_plugin.EventListener):
                 info_id = info_list[1]
         if "source.python" in scope_name:
             if "lang" in line_contents or "label" in line_contents or "string" in line_contents:
-                popup_label = INFOS.return_label(selected_content)
+                word = view.substr(view.word(region))
+                popup_label = INFOS.return_label(word)
         elif "text.xml" in scope_name:
             if info_type in ["INFO", "VAR", "LOCALIZE"]:
                 popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
