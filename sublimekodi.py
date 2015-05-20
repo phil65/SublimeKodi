@@ -199,13 +199,21 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
         self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
-class BuildSkinCommand(sublime_plugin.WindowCommand):
+class BuildAddonCommand(sublime_plugin.WindowCommand):
 
-    def run(self):
-        d = threading.Thread(name='buildskin', target=self.build_skin)
+    def run(self, pack_textures=True):
+        d = threading.Thread(name='buildskin', target=self.build_skin, args=(pack_textures,))
         d.start()
 
-    def build_skin(self):
+    def build_skin(self, pack_textures):
+        settings = sublime.load_settings(SETTINGS_FILE)
+        media_path = os.path.join(INFOS.project_path, "media")
+        tp_path = settings.get("texturechecker_path")
+        if pack_textures and tp_path:
+            params = " -dupecheck -input %s -output %s" % (media_path, os.path.join(media_path, "Textures.xbt"))
+            cmd = tp_path + params
+            log(cmd)
+            os.system(cmd)
         zip_path = os.path.join(INFOS.project_path, os.path.basename(INFOS.project_path) + ".zip")
         make_archive(INFOS.project_path, zip_path)
         sublime.message_dialog("Zip file created!")
