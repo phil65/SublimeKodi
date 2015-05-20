@@ -12,7 +12,6 @@ if libs_path not in sys.path:
 from lxml import etree as ET
 from InfoProvider import InfoProvider
 from Utils import *
-import webbrowser
 INFOS = InfoProvider()
 # sublime.log_commands(True)
 APP_NAME = "kodi"
@@ -318,14 +317,9 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        settings = sublime.load_settings(SETTINGS_FILE)
-        if sublime.platform() == "linux":
-            self.log_file = os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME, "temp", "%s.log" % APP_NAME)
-        elif sublime.platform() == "windows":
-            if settings.get("portable_mode"):
-                self.log_file = os.path.join(settings.get("kodi_path"), "portable_data", "%s.log" % APP_NAME)
-            else:
-                self.log_file = os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME, "%s.log" % APP_NAME)
+        filename = "%s.log" % APP_NAME
+        self.log_file = checkPaths([os.path.join(INFOS.get_userdata_folder(), filename),
+                                    os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
         self.window.open_file(self.log_file)
 
 

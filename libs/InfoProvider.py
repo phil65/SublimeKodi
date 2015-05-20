@@ -4,8 +4,11 @@ import re
 from PIL import Image
 from polib import polib
 import string
+import platform
+import webbrowser
 
 DEFAULT_LANGUAGE_FOLDER = "English"
+APP_NAME = "kodi"
 
 
 class InfoProvider():
@@ -100,6 +103,15 @@ class InfoProvider():
                                    "file": font_file,
                                    "filename": node.find("filename").text}
                     self.fonts[folder].append(string_dict)
+
+    def get_userdata_folder(self):
+        if platform.system() == "Linux":
+            return os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME)
+        elif platform.system() == "Windows":
+            if self.settings.get("portable_mode"):
+                return os.path.join(self.settings.get("kodi_path"), "portable_data")
+            else:
+                return os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME)
 
     def reload_skin_after_save(self, path):
         folder = path.split(os.sep)[-2]
