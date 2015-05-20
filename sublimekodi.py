@@ -4,7 +4,7 @@ import re
 import os
 import sys
 import cgi
-import subprocess
+import threading
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -199,6 +199,18 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
         self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
 
 
+class BuildSkinCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        d = threading.Thread(name='buildskin', target=self.build_skin)
+        d.start()
+
+    def build_skin(self):
+        zip_path = os.path.join(INFOS.project_path, os.path.basename(INFOS.project_path) + ".zip")
+        make_archive(INFOS.project_path, zip_path)
+        sublime.message_dialog("Zip file created!")
+
+
 class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
 
     def run(self):
@@ -213,9 +225,8 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
         if sublime.platform() == 'osx':
             return '/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl'
         if sublime.platform() == 'linux':
-            # return open('/proc/self/cmdline').read().split(chr(0))[0]
             return "subl"
-        windows_path = 'C:/Program Files/Sublime Text 3/sublime_text.exe'
+        windows_path = os.path.join(os.getcwd(), "sublime_text.exe")
         if os.path.exists(windows_path):
             return windows_path
         return sys.executable

@@ -11,6 +11,12 @@ import zipfile
 import subprocess
 
 
+def absoluteFilePaths(directory):
+    for dirpath, _, filenames in os.walk(directory):
+        for f in filenames:
+            yield os.path.abspath(os.path.join(dirpath, f))
+
+
 def command_line(program, args):
     command = []
     for arg in args:
@@ -19,14 +25,14 @@ def command_line(program, args):
     return subprocess.Popen(command)
 
 
-def zipdir(path, ziph):
-    # ziph is zipfile handle
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            ziph.write(os.path.join(root, file))
-# zipf = zipfile.ZipFile('Python.zip', 'w')
-# zipdir('tmp/', zipf)
-# zipf.close()
+def make_archive(folderpath, archive):
+    fileList = absoluteFilePaths(folderpath)
+    a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
+    for f in fileList:
+        if not f.endswith(".zip") and ".git" not in f:
+            log("archiving file %s" % (f))
+            a.write(f, os.path.relpath(f, folderpath))
+    a.close()
 
 
 def tohex(r, g, b, a=None):
