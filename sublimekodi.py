@@ -9,7 +9,6 @@ __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
-from polib import polib
 from lxml import etree as ET
 from InfoProvider import InfoProvider
 from Utils import *
@@ -100,11 +99,10 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         self.check_project_change()
-        filename = view.file_name()
+        # filename = view.file_name()
         # if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
         #     self.root = get_root_from_file(filename)
         #     self.tree = ET.ElementTree(self.root)
-
 
     def on_activated_async(self, view):
         self.check_project_change()
@@ -540,43 +538,17 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             self.labels.append("Create new label")
             sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
         else:
-            label_id = self.create_new_label(word)
+            label_id = INFOS.create_new_label(word)
             self.view.run_command("replace_text", {"label_id": label_id})
 
     def on_done(self, index, region):
         if index == -1:
             return None
         if self.labels[index] == "Create new label":
-            label_id = self.create_new_label(self.view.substr(region))
+            label_id = INFOS.create_new_label(self.view.substr(region))
         else:
             label_id = self.label_ids[index]["id"][1:]
         self.view.run_command("replace_text", {"label_id": label_id})
-
-    def create_new_label(self, word):
-        if INFOS.addon_type == "skin":
-            start_id = 31000
-            index_offset = 0
-        else:
-            start_id = 32000
-            index_offset = 2
-        po = polib.pofile(INFOS.addon_lang_path)
-        string_ids = []
-        for i, entry in enumerate(po):
-            try:
-                string_ids.append(int(entry.msgctxt[1:]))
-            except:
-                string_ids.append(entry.msgctxt)
-        for label_id in range(start_id, start_id + 1000):
-            if label_id not in string_ids:
-                log("first free: " + str(label_id))
-                break
-        msgstr = "#" + str(label_id)
-        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
-        po_index = int(label_id) - start_id + index_offset
-        po.insert(po_index, new_entry)
-        po.save(INFOS.addon_lang_path)
-        INFOS.update_labels()
-        return label_id
 
 
 class ReplaceTextCommand(sublime_plugin.TextCommand):

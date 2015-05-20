@@ -1,8 +1,8 @@
 import os
 from Utils import *
 import re
-import cgi
 from PIL import Image
+from polib import polib
 import string
 
 DEFAULT_LANGUAGE_FOLDER = "English"
@@ -389,6 +389,7 @@ class InfoProvider():
     def check_fonts(self):
         listitems = []
         font_refs = self.get_font_refs()
+        # get confluence fonts..
         confluence_fonts = []
         confluence_font_file = os.path.join(self.kodi_path, "addons", "skin.confluence", "720p", "Font.xml")
         if os.path.exists(confluence_font_file):
@@ -396,6 +397,7 @@ class InfoProvider():
             if root is not None:
                 for node in root.find("fontset").findall("font"):
                     confluence_fonts.append(node.find("name").text)
+            # check fonts from each folder independently....
         for folder in self.xml_folders:
             fontlist = ["-"]
             # create a list with all font names from default fontset
@@ -538,6 +540,32 @@ class InfoProvider():
         elif info_type == "LOCALIZE":
             return self.return_label(info_id)
         return ""
+
+    def create_new_label(self, word):
+        if self.addon_type == "skin":
+            start_id = 31000
+            index_offset = 0
+        else:
+            start_id = 32000
+            index_offset = 2
+        po = polib.pofile(self.addon_lang_path)
+        string_ids = []
+        for i, entry in enumerate(po):
+            try:
+                string_ids.append(int(entry.msgctxt[1:]))
+            except:
+                string_ids.append(entry.msgctxt)
+        for label_id in range(start_id, start_id + 1000):
+            if label_id not in string_ids:
+                log("first free: " + str(label_id))
+                break
+        msgstr = "#" + str(label_id)
+        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
+        po_index = int(label_id) - start_id + index_offset
+        po.insert(po_index, new_entry)
+        po.save(self.addon_lang_path)
+        self.update_labels()
+        return label_id
 
     def check_labels(self):
         listitems = []
