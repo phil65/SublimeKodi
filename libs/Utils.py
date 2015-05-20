@@ -30,7 +30,6 @@ def make_archive(folderpath, archive):
     a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
     for f in fileList:
         if not f.endswith(".zip") and ".git" not in f:
-            log("archiving file %s" % (f))
             a.write(f, os.path.relpath(f, folderpath))
     a.close()
 
