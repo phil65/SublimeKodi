@@ -213,7 +213,8 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
         if sublime.platform() == 'osx':
             return '/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl'
         if sublime.platform() == 'linux':
-            return open('/proc/self/cmdline').read().split(chr(0))[0]
+            # return open('/proc/self/cmdline').read().split(chr(0))[0]
+            return "subl"
         windows_path = 'C:/Program Files/Sublime Text 3/sublime_text.exe'
         if os.path.exists(windows_path):
             return windows_path
