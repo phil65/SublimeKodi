@@ -73,7 +73,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if "<include" in line_contents and "name=" not in line_contents:
                     node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
                     popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
-                elif "<font" in line_contents:
+                elif "<font" in line_contents and "</font" in line_contents:
                     popup_label = INFOS.get_font_info(selected_content, folder)
                 elif "<label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
                     popup_label = INFOS.return_label(selected_content)

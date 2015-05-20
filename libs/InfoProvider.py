@@ -389,13 +389,19 @@ class InfoProvider():
     def check_fonts(self):
         listitems = []
         font_refs = self.get_font_refs()
+        confluence_fonts = []
+        confluence_font_file = os.path.join(self.kodi_path, "addons", "skin.confluence", "720p", "Font.xml")
+        if os.path.exists(confluence_font_file):
+            root = get_root_from_file(confluence_font_file)
+            if root is not None:
+                for node in root.find("fontset").findall("font"):
+                    confluence_fonts.append(node.find("name").text)
         for folder in self.xml_folders:
             fontlist = ["-"]
             # create a list with all font names from default fontset
             if folder in self.fonts:
                 for item in self.fonts[folder]:
                     fontlist.append(item["name"])
-            # TODO: add confluence fonts
             # find undefined font refs
             for ref in font_refs[folder]:
                 if ref["name"] not in fontlist:
@@ -405,7 +411,7 @@ class InfoProvider():
             ref_list = [d['name'] for d in font_refs[folder]]
             if folder in self.fonts:
                 for node in self.fonts[folder]:
-                    if node["name"] not in ref_list:
+                    if node["name"] not in ref_list and node["name"] not in confluence_fonts:
                         node["message"] = "Unused font: %s" % node["name"]
                         listitems.append(node)
         return listitems
