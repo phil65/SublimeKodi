@@ -1,0 +1,15 @@
+<snippet>
+    <content><![CDATA[
+    <control type="label">
+        <posx>${1:0}</posx>
+        <posy>${2:0}</posy>
+        <align>${3:left}</align>
+        <label>${4}</label>
+        <textcolor>${5:white}</textcolor>
+        <font>${6}</font>
+        <visible>${7}</visible>
+    </control>
+]]></content>
+    <tabTrigger>label</tabTrigger>
+    <scope>text.xml</scope>
+</snippet>

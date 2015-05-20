@@ -1,0 +1,14 @@
+<snippet>
+    <content><![CDATA[
+    <control type="multiimage">
+        <posx>${1:0}</posx>
+        <posy>${2:0}</posy>
+        <aspectratio>${3:stretch}</aspectratio>
+        <texture>${4}</texture>
+        <randomize>${5:true}</randomize>
+        <visible>${6}</visible>
+    </control>
+]]></content>
+    <tabTrigger>multiimage</tabTrigger>
+    <scope>text.xml</scope>
+</snippet>
