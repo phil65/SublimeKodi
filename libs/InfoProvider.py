@@ -231,6 +231,13 @@ class InfoProvider():
             log("Could not find kodi language file")
             return ""
 
+    def get_kodi_addons(self):
+        addon_path = os.path.join(self.get_userdata_folder(), "addons")
+        if os.path.exists(addon_path):
+            return [folder for folder in os.listdir(addon_path) if not os.path.isfile(folder)]
+        else:
+            return []
+
     def update_labels(self):
         if not self.addon_xml_file:
             return False

@@ -2,6 +2,7 @@
     {"caption": "SublimeKodi: Set Kodi folder", "command": "set_kodi_folder"},
     {"caption": "SublimeKodi: Open log", "command": "open_kodi_log"},
     {"caption": "SublimeKodi: Reload language files", "command": "reload_kodi_language_files"},
+    {"caption": "SublimeKodi: Switch to add-on", "command": "open_kodi_addon"},
     {"caption": "SublimeKodi: Search for label", "command": "search_for_label"},
     {"caption": "SublimeKodi: Search for image", "command": "search_for_image"},
     {"caption": "SublimeKodi: Search for font", "command": "search_for_font"},

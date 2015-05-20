@@ -4,6 +4,7 @@ import re
 import os
 import sys
 import cgi
+import subprocess
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -196,6 +197,32 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 
     def show_preview(self, index):
         self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+
+
+class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.nodes = INFOS.get_kodi_addons()
+        self.window.show_quick_panel(self.nodes, lambda s: self.on_done(s), selected_index=0)
+
+    def on_done(self, index):
+        path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
+        self.sublime_command_line(["-a", path])
+
+    def get_sublime_path(self):
+        if sublime.platform() == 'osx':
+            return '/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl'
+        if sublime.platform() == 'linux':
+            return open('/proc/self/cmdline').read().split(chr(0))[0]
+        windows_path = 'C:/Program Files/Sublime Text 3/sublime_text.exe'
+        if os.path.exists(windows_path):
+            return windows_path
+        return sys.executable
+
+    def sublime_command_line(self, args):
+        args.insert(0, "-n")
+        args.insert(0, self.get_sublime_path())
+        return subprocess.Popen(args)
 
 
 class ShowFontRefsCommand(QuickPanelCommand):
