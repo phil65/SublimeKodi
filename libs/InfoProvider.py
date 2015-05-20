@@ -545,7 +545,9 @@ class InfoProvider():
 
     def translate_square_bracket(self, info_type, info_id, folder):
         if info_type == "VAR":
-            node_content = str(self.return_node_content(info_id, folder=folder))
+            node_content = self.return_node_content(info_id, folder=folder)
+            if root is None:
+                return None
             root = ET.fromstring(node_content)
             label = ""
             for e in root.iterchildren():
