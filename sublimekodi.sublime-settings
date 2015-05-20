@@ -7,6 +7,8 @@
      * Kodi Path
      *
      * Path to your local Kodi installation (used to get labels) *
+     * "\" chars have to be escaped! (\\)
+     *
      */
     "kodi_path": "",
 
@@ -93,5 +95,14 @@
      *
      */
     "auto_skin_check": true,
+    /*
+     * TextureChecker Path
+     *
+     * Allows building the skin from Command palette
+     * "\" chars have to be escaped! (\\)
+     *
+     *
+     */
+    "texturechecker_path": "",
 
 }

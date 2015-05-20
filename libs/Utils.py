@@ -7,6 +7,26 @@ import colorsys
 import codecs
 from polib import polib
 from urllib.request import Request, urlopen
+import zipfile
+import subprocess
+
+
+def command_line(program, args):
+    command = []
+    for arg in args:
+        command.insert(0, arg)
+    command.insert(0, program)
+    return subprocess.Popen(command)
+
+
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file))
+# zipf = zipfile.ZipFile('Python.zip', 'w')
+# zipdir('tmp/', zipf)
+# zipf.close()
 
 
 def tohex(r, g, b, a=None):
