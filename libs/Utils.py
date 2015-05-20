@@ -9,11 +9,13 @@ from polib import polib
 from urllib.request import Request, urlopen
 import zipfile
 import subprocess
+import re
 
 
 def absoluteFilePaths(directory):
     for dirpath, _, filenames in os.walk(directory):
         for f in filenames:
+            # log(os.path.split(dirpath))
             yield os.path.abspath(os.path.join(dirpath, f))
 
 
@@ -29,8 +31,17 @@ def make_archive(folderpath, archive):
     fileList = absoluteFilePaths(folderpath)
     a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
     for f in fileList:
-        if not f.endswith(".zip") and ".git" not in f:
-            a.write(f, os.path.relpath(f, folderpath))
+        path_list = re.split(r'[\\/]', f)
+        if ".git" in path_list:
+            continue
+        if f.endswith(".zip"):
+            continue
+        rel_path = os.path.relpath(f, folderpath)
+        if rel_path.startswith("media") and not rel_path.endswith(".xbt"):
+            continue
+        if rel_path.startswith("themes"):
+            continue
+        a.write(f, rel_path)
     a.close()
 
 
