@@ -599,7 +599,7 @@ class InfoProvider():
             for node in root.xpath(check[0]):
                 if node.tag not in check[1]:
                     if "type" in node.getparent().attrib:
-                        text = '"%s type="%s"' % (node.getparent().tag, node.getparent().attrib["type"])
+                        text = '%s type="%s"' % (node.getparent().tag, node.getparent().attrib["type"])
                     else:
                         text = node.getparent().tag
                     item = {"line": node.sourceline,
