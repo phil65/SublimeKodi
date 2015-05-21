@@ -234,8 +234,8 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
             output = '-output "%s"' % os.path.join(media_path, "Textures.xbt")
             with Popen([tp_path, "-dupecheck", input, output], stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
                 for line in p.stdout:
-                    # self.window.active_view().run_command("append_text", {"label": line})
-                    log(line)
+                    self.window.run_command("log", {"label": line.strip()})
+                    # log(line.strip())
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
         make_archive(skin_path, zip_path)
         sublime.message_dialog("Zip file created!")
@@ -596,7 +596,16 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
 class AppendTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, label):
-        self.view.insert(edit, self.view.size(), label)
+        self.view.insert(edit, self.view.size(), label + "\n")
+
+
+class LogCommand(sublime_plugin.WindowCommand):
+
+    def run(self, label):
+        self.log_view = self.window.find_open_file("SUBLIME_KODI_LOG")
+        if self.log_view is None:
+            self.log_view = self.window.open_file("SUBLIME_KODI_LOG")
+        self.log_view.run_command("append_text", {"label": label})
 
 
 class CreateElementRowCommand(sublime_plugin.WindowCommand):
