@@ -5,6 +5,7 @@ import os
 import sys
 import cgi
 import threading
+import webbrowser
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -142,6 +143,24 @@ class SublimeKodi(sublime_plugin.EventListener):
                 log("Could not find folder path in project file")
 
 
+class RemoteActionsCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        listitems = ["Send to box", "Get log", "Clear cache"]
+        self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
+
+    def on_done(self, index):
+        if index == -1:
+            return None
+        elif index == 0:
+            d = threading.Thread(name='buildskin', target=push_to_box, args=(INFOS.project_path,))
+            d.start()
+        elif index == 1:
+            log("get log")
+        elif index == 2:
+            log("Clear Cache")
+
+
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
 
     def run(self):
@@ -210,13 +229,13 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
         media_path = os.path.join(skin_path, "media")
         tp_path = settings.get("texturechecker_path")
         if pack_textures and tp_path:
-            params = " -dupecheck -input %s -output %s" % (media_path, os.path.join(media_path, "Textures.xbt"))
-            cmd = tp_path + params
-            log(cmd)
-            os.system(cmd)
+            input = '-input "%s"' % media_path
+            output = '-output "%s"' % os.path.join(media_path, "Textures.xbt")
+            command_line(tp_path, ["-dupecheck", input, output])
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
         make_archive(skin_path, zip_path)
         sublime.message_dialog("Zip file created!")
+        webbrowser.open(skin_path)
 
 
 class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
@@ -231,7 +250,7 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
 
     def get_sublime_path(self):
         if sublime.platform() == 'osx':
-            return '/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl'
+            return "subl"
         if sublime.platform() == 'linux':
             return "subl"
         windows_path = os.path.join(os.getcwd(), "sublime_text.exe")
@@ -568,6 +587,12 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
             label_id = int(label_id)
             new = INFOS.build_translate_label(label_id, scope_name)
             self.view.replace(edit, region, new)
+
+
+class AppendTextCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit, label):
+        self.view.insert(edit, self.view.size(), label)
 
 
 class CreateElementRowCommand(sublime_plugin.WindowCommand):

@@ -15,16 +15,22 @@ import re
 def absoluteFilePaths(directory):
     for dirpath, _, filenames in os.walk(directory):
         for f in filenames:
-            # log(os.path.split(dirpath))
             yield os.path.abspath(os.path.join(dirpath, f))
 
 
 def command_line(program, args):
-    command = []
+    command = [program]
     for arg in args:
-        command.insert(0, arg)
-    command.insert(0, program)
-    return subprocess.Popen(command)
+        command.append(arg)
+    try:
+        output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+        log(output.decode("utf-8"))
+        return output
+    except Exception as e:
+        return "Error while executing " + str(command)
+    # proc = subprocess.Popen(['echo', '"to stdout"'],
+    #                     stdout=subprocess.PIPE)
+    # stdout_value = proc.communicate()[0]
 
 
 def make_archive(folderpath, archive):
@@ -32,14 +38,16 @@ def make_archive(folderpath, archive):
     a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
     for f in fileList:
         path_list = re.split(r'[\\/]', f)
+        rel_path = os.path.relpath(f, folderpath)
         if ".git" in path_list:
             continue
         if f.endswith(".zip"):
             continue
-        rel_path = os.path.relpath(f, folderpath)
         if rel_path.startswith("media") and not rel_path.endswith(".xbt"):
             continue
         if rel_path.startswith("themes"):
+            continue
+        if f.endswith('.pyc') or f.endswith('.pyo'):
             continue
         a.write(f, rel_path)
     a.close()
@@ -153,6 +161,29 @@ def get_tags_from_file(path, node_tags):
     else:
         log("%s does not exist" % path)
     return nodes
+
+
+def push_to_box(addon, all_file=True):
+    userdata_folder = "/sdcard/android/data/com.pivos.tofu/files/.tofu/"
+    for root, dirs, files in os.walk(addon):
+        # ignore git files
+        if ".git" in root.split(os.sep):
+            continue
+        if not all_file and os.path.basename(root) not in ['1080i', '720p']:
+            continue
+        else:
+            target = '%saddons/%s%s' % (userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
+            command_line("adb", ["shell", "mkdir", target])
+        for f in files:
+            if f.endswith('.pyc') or f.endswith('.pyo'):
+                continue
+            push_file(os.path.join(root, f), target)
+
+
+def push_file(source, target):
+    if not target.endswith('/'):
+        target += '/'
+    command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
 
 
 def get_label_list(po_file_path):
