@@ -6,6 +6,7 @@ import sys
 import cgi
 import threading
 import webbrowser
+from subprocess import Popen, PIPE
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -231,7 +232,10 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
         if pack_textures and tp_path:
             input = '-input "%s"' % media_path
             output = '-output "%s"' % os.path.join(media_path, "Textures.xbt")
-            command_line(tp_path, ["-dupecheck", input, output])
+            with Popen([tp_path, "-dupecheck", input, output], stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
+                for line in p.stdout:
+                    # self.window.active_view().run_command("append_text", {"label": line})
+                    log(line)
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
         make_archive(skin_path, zip_path)
         sublime.message_dialog("Zip file created!")
@@ -246,7 +250,7 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
 
     def on_done(self, index):
         path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
-        command_line(self.get_sublime_path(), ["-n", "-a", path])
+        Popen([self.get_sublime_path(), "-n", "-a", path])
 
     def get_sublime_path(self):
         if sublime.platform() == 'osx':
