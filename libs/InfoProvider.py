@@ -356,21 +356,21 @@ class InfoProvider():
                 if root is None:
                     continue
                 for node in root.xpath(".//include"):
-                        if node.text and not node.text.startswith("skinshortcuts-"):
-                            name = node.text
-                            if "file" in node.attrib:
-                                include_file = os.path.join(self.project_path, folder, node.attrib["file"])
-                                if include_file not in self.include_file_list[folder]:
-                                    self.update_includes(include_file)
-                        elif node.find("./param") is not None:
-                            name = node.attrib["name"]
-                        else:
-                            continue
-                        item = {"line": node.sourceline,
-                                "type": node.tag,
-                                "file": path,
-                                "name": name}
-                        var_refs.append(item)
+                    if node.text and not node.text.startswith("skinshortcuts-"):
+                        name = node.text
+                        if "file" in node.attrib:
+                            include_file = os.path.join(self.project_path, folder, node.attrib["file"])
+                            if include_file not in self.include_file_list[folder]:
+                                self.update_includes(include_file)
+                    elif node.find("./param") is not None:
+                        name = node.attrib["name"]
+                    else:
+                        continue
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "file": path,
+                            "name": name}
+                    var_refs.append(item)
             # find undefined include refs
             for ref in var_refs:
                 for node in self.include_list[folder]:
@@ -701,13 +701,17 @@ class InfoProvider():
                 listitems.append(ref)
         return listitems
 
+    def file_list_generator(self):
+        if self.xml_folders:
+            for folder in self.xml_folders:
+                for xml_file in self.window_file_list[folder]:
+                    yield os.path.join(self.project_path, folder, xml_file)
+
     def check_values(self):
         listitems = []
-        for folder in self.xml_folders:
-            for xml_file in self.window_file_list[folder]:
-                path = os.path.join(self.project_path, folder, xml_file)
-                new_items = self.check_file(path)
-                listitems.extend(new_items)
+        for path in self.file_list_generator():
+            new_items = self.check_file(path)
+            listitems.extend(new_items)
         return listitems
 
     def check_file(self, path):

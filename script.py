@@ -47,38 +47,35 @@ if __name__ == "__main__":
     INFOS.get_settings(json.loads(settings))
     INFOS.get_builtin_label()
     INFOS.init_addon(project_folder)
-    if INFOS.xml_folders:
-        INFOS.update_xml_files()
-        for folder in INFOS.xml_folders:
-            for xml_file in INFOS.window_file_list[folder]:
-                path = os.path.join(INFOS.project_path, folder, xml_file)
-                if check_bom(path):
-                    log("found BOM. File: " + path)
-                try:
-                    text = codecs.open(path, "rb", encoding='utf-8', errors="strict").read()
-                except:
-                    log("Error when trying to read %s as UTF-8" % path)
-                    rawdata = codecs.open(path, "rb", errors="ignore").read()
-                    encoding = chardet.detect(rawdata)
-                    log("detected encoding: %s" % encoding["encoding"])
-                    text = codecs.open(path, "rb", encoding=encoding["encoding"]).read()
-        result = eol.eol_info_from_path_patterns([project_folder], recursive=True, includes=[], excludes=['.svn', '.git'])
-        for item in result:
-            if item[1] == '\n' or None:
-                continue
-            elif item[1] == '\r':
-                log("MAC Line Endings detected in " + item[0])
-            else:
-                log("Windows Line Endings detected in " + item[0])
-        log("\n\nINCLUDE CHECK\n\n")
-        check_tags("include")
-        log("\n\nVARIABLE CHECK\n\n")
-        check_tags("variable")
-        log("\n\nFONT CHECK\n\n")
-        check_tags("font")
-        log("\n\nLABEL CHECK\n\n")
-        check_tags("label")
-        log("\n\nID CHECK\n\n")
-        check_tags("id")
-        log("\n\nCHECK FOR COMMON MISTAKES\n\n")
-        check_tags("general")
+    INFOS.update_xml_files()
+    for path in INFOS.file_list_generator():
+        if check_bom(path):
+            log("found BOM. File: " + path)
+        try:
+            text = codecs.open(path, "rb", encoding='utf-8', errors="strict").read()
+        except:
+            log("Error when trying to read %s as UTF-8" % path)
+            rawdata = codecs.open(path, "rb", errors="ignore").read()
+            encoding = chardet.detect(rawdata)
+            log("detected encoding: %s" % encoding["encoding"])
+            text = codecs.open(path, "rb", encoding=encoding["encoding"]).read()
+    result = eol.eol_info_from_path_patterns([project_folder], recursive=True, includes=[], excludes=['.svn', '.git'])
+    for item in result:
+        if item[1] == '\n' or None:
+            continue
+        elif item[1] == '\r':
+            log("MAC Line Endings detected in " + item[0])
+        else:
+            log("Windows Line Endings detected in " + item[0])
+    log("\n\nINCLUDE CHECK\n\n")
+    check_tags("include")
+    log("\n\nVARIABLE CHECK\n\n")
+    check_tags("variable")
+    log("\n\nFONT CHECK\n\n")
+    check_tags("font")
+    log("\n\nLABEL CHECK\n\n")
+    check_tags("label")
+    log("\n\nID CHECK\n\n")
+    check_tags("id")
+    log("\n\nCHECK FOR COMMON MISTAKES\n\n")
+    check_tags("general")
