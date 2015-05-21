@@ -252,17 +252,7 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
 
     def on_done(self, index):
         path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
-        Popen([self.get_sublime_path(), "-n", "-a", path])
-
-    def get_sublime_path(self):
-        if sublime.platform() == 'osx':
-            return "subl"
-        if sublime.platform() == 'linux':
-            return "subl"
-        windows_path = os.path.join(os.getcwd(), "sublime_text.exe")
-        if os.path.exists(windows_path):
-            return windows_path
-        return sys.executable
+        Popen([get_sublime_path(), "-n", "-a", path])
 
 
 class ShowFontRefsCommand(QuickPanelCommand):

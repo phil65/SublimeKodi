@@ -10,6 +10,16 @@ from urllib.request import Request, urlopen
 import zipfile
 import subprocess
 import re
+import platform
+
+
+def get_sublime_path():
+    if platform.system() == 'Darwin':
+        return "subl"
+    elif platform.system() == 'Linux':
+        return "subl"
+    elif os.path.exists(os.path.join(os.getcwd(), "sublime_text.exe")):
+        return os.path.join(os.getcwd(), "sublime_text.exe")
 
 
 def absoluteFilePaths(directory):
