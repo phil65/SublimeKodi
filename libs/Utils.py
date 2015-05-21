@@ -165,6 +165,8 @@ def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
         root = get_root_from_file(path)
+        if root is None:
+            return []
         xpath = ".//" + " | .//".join(node_tags)
         for node in root.xpath(xpath):
             if "name" in node.attrib:
@@ -238,21 +240,21 @@ def get_root_from_file(xml_file):
         tree = ET.parse(xml_file, parser)
         return tree.getroot()
     except Exception as e:
-        log("Error when parsing %s\n%s\nTry again with recover=True..." % (xml_file, e))
-        try:
-            parser = ET.XMLParser(remove_blank_text=True, recover=True, remove_comments=True)
-            tree = ET.parse(xml_file, parser)
-            return tree.getroot()
-        except Exception as e:
-            answer = yesno_dialog("Error in %s:\n %s" % (xml_file, str(e)), "Open")
-            if answer:
-                import sublime
-                line = re.search(r"\(line ([0-9]+?)\)", str(e))
-                if line:
-                    sublime.active_window().open_file("%s:%s" % (xml_file, int(line.group(1))), sublime.ENCODED_POSITION)
-                else:
-                    sublime.active_window().open_file(xml_file)
-            return None
+        # log("Error when parsing %s\n%s\nTry again with recover=True..." % (xml_file, e))
+        # try:
+        #     parser = ET.XMLParser(remove_blank_text=True, recover=True, remove_comments=True)
+        #     tree = ET.parse(xml_file, parser)
+        #     return tree.getroot()
+        # except Exception as e:
+        answer = yesno_dialog("Error in %s:\n %s" % (xml_file, str(e)), "Open")
+        if answer:
+            import sublime
+            line = re.search(r"\(line ([0-9]+?)\)", str(e))
+            if line:
+                sublime.active_window().open_file("%s:%s" % (xml_file, int(line.group(1))), sublime.ENCODED_POSITION)
+            else:
+                sublime.active_window().open_file(xml_file)
+        return None
 
 
 def get_xml_file_paths(xml_path):
