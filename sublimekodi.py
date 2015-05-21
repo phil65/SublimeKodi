@@ -237,9 +237,11 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
                     self.window.run_command("log", {"label": line.strip()})
                     # log(line.strip())
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
-        make_archive(skin_path, zip_path)
-        sublime.message_dialog("Zip file created!")
-        webbrowser.open(skin_path)
+        for filename in make_archive(skin_path, zip_path):
+            self.window.run_command("log", {"label": "zipped " + filename})
+        do_open = sublime.ok_cancel_dialog("Zip file created!\nDo you want to open its location a with file browser?", "Open")
+        if do_open:
+            webbrowser.open(skin_path)
 
 
 class OpenKodiAddonCommand(sublime_plugin.WindowCommand):

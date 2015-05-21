@@ -50,6 +50,7 @@ def make_archive(folderpath, archive):
         if f.endswith('.pyc') or f.endswith('.pyo'):
             continue
         a.write(f, rel_path)
+        yield rel_path
     a.close()
 
 
@@ -141,6 +142,16 @@ def message_dialog(string):
         log(string)
 
 
+def yesno_dialog(string, ok_button):
+    try:
+        import sublime
+        return sublime.ok_cancel_dialog(string, ok_button)
+    except:
+        log(string)
+        return False
+
+
+
 def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
@@ -201,9 +212,14 @@ def get_label_list(po_file_path):
             listitems.append(string)
         return listitems
     except Exception as e:
-        log(po_file_path)
-        log(e)
-        message_dialog("Error:\n %s" % (e))
+        answer = yesno_dialog("Error:\n %s" % (e), "Open")
+        if answer:
+            import sublime
+            line = re.search(r"\(line ([0-9]+?)\)", str(e))
+            if line:
+                sublime.active_window().open_file("%s:%s" % (po_file_path, int(line.group(1))), sublime.ENCODED_POSITION)
+            else:
+                sublime.active_window().open_file(po_file_path)
         return []
 
 
