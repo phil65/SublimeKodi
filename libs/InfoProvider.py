@@ -68,6 +68,16 @@ class InfoProvider():
                  os.path.join(self.project_path, "resources", "skins", "Default", "media")]
         return checkPaths(paths)
 
+    def get_check_listitems(self, check_type):
+        self.update_xml_files()
+        checks = {"variable": self.check_variables,
+                  "include": self.check_includes,
+                  "font": self.check_fonts,
+                  "label": self.check_labels,
+                  "id": self.check_ids,
+                  "general": self.check_values}
+        return checks[check_type]()
+
     def get_colors(self):
         self.color_list = []
         color_path = os.path.join(self.project_path, "colors")

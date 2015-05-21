@@ -77,7 +77,7 @@ if __name__ == "__main__":
         for item in result:
             if item[1] == '\n' or None:
                 continue
-            elif  item[1] == '\r':
+            elif item[1] == '\r':
                 log("MAC Line Endings detected in " + item[0])
             else:
                 log("Windows Line Endings detected in " + item[0])
@@ -93,4 +93,3 @@ if __name__ == "__main__":
         check_tags("id")
         log("\n\nCHECK FOR COMMON MISTAKES\n\n")
         check_tags("general")
-

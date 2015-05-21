@@ -315,25 +315,12 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
 class CheckVariablesCommand(QuickPanelCommand):
 
     def run(self, check_type):
-        INFOS.update_xml_files()
-        if check_type == "variable":
-            self.nodes = INFOS.check_variables()
-        elif check_type == "include":
-            self.nodes = INFOS.check_includes()
-        elif check_type == "font":
-            self.nodes = INFOS.check_fonts()
-        elif check_type == "label":
-            self.nodes = INFOS.check_labels()
-        elif check_type == "id":
-            self.nodes = INFOS.check_ids()
-        elif check_type == "general":
-            self.nodes = INFOS.check_values()
-        elif check_type == "file":
-            self.nodes = INFOS.check_file(self.window.active_view().file_name())
-        listitems = []
-        for item in self.nodes:
-            filename = os.path.basename(item["file"])
-            listitems.append([item["message"], filename + ": " + str(item["line"])])
+        filename = self.window.active_view().file_name()
+        if check_type == "file":
+            self.nodes = self.check_file(filename)
+        else:
+            self.nodes = INFOS.get_check_listitems(check_type)
+        listitems = [[item["message"], os.path.basename(item["file"]) + ": " + str(item["line"])] for item in self.nodes]
         if listitems:
             self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
         elif not check_type == "file":
