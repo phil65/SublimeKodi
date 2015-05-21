@@ -154,10 +154,11 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         elif index == 0:
-            d = threading.Thread(name='buildskin', target=push_to_box, args=(INFOS.project_path,))
+            d = threading.Thread(name='push_to_box', target=push_to_box, args=(INFOS.project_path,))
             d.start()
         elif index == 1:
-            log("get log")
+            d = threading.Thread(name='get_remote_log', target=get_remote_log, args=(INFOS.project_path,))
+            d.start()
         elif index == 2:
             log("Clear Cache")
 
@@ -227,15 +228,8 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
 
     def build_skin(self, skin_path, pack_textures):
         settings = sublime.load_settings(SETTINGS_FILE)
-        media_path = os.path.join(skin_path, "media")
-        tp_path = settings.get("texturechecker_path")
-        if pack_textures and tp_path:
-            input = '-input "%s"' % media_path
-            output = '-output "%s"' % os.path.join(media_path, "Textures.xbt")
-            with Popen([tp_path, "-dupecheck", input, output], stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
-                for line in p.stdout:
-                    self.window.run_command("log", {"label": line.strip()})
-                    # log(line.strip())
+        for line in texturepacker_generator(skin_path, settings):
+            self.window.run_command("log", {"label": line.strip()})
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
         for filename in make_archive(skin_path, zip_path):
             self.window.run_command("log", {"label": "zipped " + filename})

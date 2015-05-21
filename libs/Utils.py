@@ -11,6 +11,7 @@ import zipfile
 import subprocess
 import re
 import platform
+from subprocess import Popen, PIPE
 
 
 def get_sublime_path():
@@ -95,6 +96,17 @@ def checkPaths(paths):
         if os.path.exists(path):
             return path
     return ""
+
+
+def texturepacker_generator(skin_path, settings):
+    media_path = os.path.join(skin_path, "media")
+    tp_path = settings.get("texturechecker_path")
+    if tp_path:
+        input = '-input "%s"' % media_path
+        output = '-output "%s"' % os.path.join(media_path, "Textures.xbt")
+        with Popen([tp_path, "-dupecheck", input, output], stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
+            for line in p.stdout:
+                yield line
 
 
 def check_brackets(str):
@@ -183,6 +195,11 @@ def get_tags_from_file(path, node_tags):
     else:
         log("%s does not exist" % path)
     return nodes
+
+
+def get_remote_log():
+    command_line("adb", ["pull", "/sdcard/android/data/com.pivos.tofu/files/.tofu/temp/xbmc.log"])
+    command_line("adb", ["pull", "/sdcard/android/data/com.pivos.tofu/files/.tofu/temp/xbmc.old.log"])
 
 
 def push_to_box(addon, all_file=True):
