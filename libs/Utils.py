@@ -161,7 +161,6 @@ def yesno_dialog(string, ok_button):
         return False
 
 
-
 def get_tags_from_file(path, node_tags):
     nodes = []
     if os.path.exists(path):
@@ -222,7 +221,7 @@ def get_label_list(po_file_path):
             listitems.append(string)
         return listitems
     except Exception as e:
-        answer = yesno_dialog("Error:\n %s" % (e), "Open")
+        answer = yesno_dialog("Error in %s:\n %s" % (po_file_path, str(e)), "Open")
         if answer:
             import sublime
             line = re.search(r"\(line ([0-9]+?)\)", str(e))
@@ -245,7 +244,14 @@ def get_root_from_file(xml_file):
             tree = ET.parse(xml_file, parser)
             return tree.getroot()
         except Exception as e:
-            message_dialog("Could not load %s" % (xml_file, e))
+            answer = yesno_dialog("Error in %s:\n %s" % (xml_file, str(e)), "Open")
+            if answer:
+                import sublime
+                line = re.search(r"\(line ([0-9]+?)\)", str(e))
+                if line:
+                    sublime.active_window().open_file("%s:%s" % (xml_file, int(line.group(1))), sublime.ENCODED_POSITION)
+                else:
+                    sublime.active_window().open_file(xml_file)
             return None
 
 

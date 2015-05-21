@@ -307,7 +307,7 @@ class CheckVariablesCommand(QuickPanelCommand):
     def run(self, check_type):
         filename = self.window.active_view().file_name()
         if check_type == "file":
-            self.nodes = self.check_file(filename)
+            self.nodes = INFOS.check_file(filename)
         else:
             self.nodes = INFOS.get_check_listitems(check_type)
         listitems = [[item["message"], os.path.basename(item["file"]) + ": " + str(item["line"])] for item in self.nodes]
