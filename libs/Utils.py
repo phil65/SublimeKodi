@@ -265,7 +265,6 @@ def get_xml_file_paths(xml_path):
                 if filename.endswith(".xml"):
                     if filename.lower() not in ["script-skinshortcuts-includes.xml", "font.xml"]:
                         xml_files.append(xml_file)
-            log("File List: %i files found." % len(xml_files))
             return xml_files
     else:
         return []

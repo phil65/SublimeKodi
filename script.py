@@ -28,19 +28,8 @@ def log(text):
         print(text.encode(sys.stdout.encoding, errors='replace').decode("utf-8"))
 
 
-def check_tags(tag_type):
-    if tag_type == "variable":
-        errors = INFOS.check_variables()
-    elif tag_type == "include":
-        errors = INFOS.check_includes()
-    elif tag_type == "font":
-        errors = INFOS.check_fonts()
-    elif tag_type == "label":
-        errors = INFOS.check_labels()
-    elif tag_type == "general":
-        errors = INFOS.check_values()
-    elif tag_type == "id":
-        errors = INFOS.check_ids()
+def check_tags(check_type):
+    errors = INFOS.get_check_listitems(check_type)
     for e in errors:
         content = e["message"]
         log(content)
