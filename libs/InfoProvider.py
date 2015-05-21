@@ -20,6 +20,7 @@ class InfoProvider():
         self.color_list = []
         self.addon_xml_file = ""
         self.addon_lang_file = ""
+        self.addon_lang_path = ""
         self.color_file = ""
         self.project_path = ""
         self.addon_type = ""
