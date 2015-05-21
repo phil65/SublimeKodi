@@ -154,13 +154,17 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         elif index == 0:
-            d = threading.Thread(name='push_to_box', target=push_to_box, args=(INFOS.project_path,))
+            d = threading.Thread(name='push_to_box', target=self.push, args=(INFOS.project_path,))
             d.start()
         elif index == 1:
             d = threading.Thread(name='get_remote_log', target=get_remote_log, args=(INFOS.project_path,))
             d.start()
         elif index == 2:
             log("Clear Cache")
+
+    def push(self, path):
+        for item in push_to_box(path):
+            self.window.run_command("log", {"label": item})
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
@@ -578,7 +582,7 @@ class LogCommand(sublime_plugin.WindowCommand):
         self.log_view = self.window.find_open_file("SUBLIME_KODI_LOG")
         if self.log_view is None:
             self.log_view = self.window.open_file("SUBLIME_KODI_LOG")
-        self.log_view.run_command("append_text", {"label": label})
+        self.log_view.run_command("append_text", {"label": str(label)})
 
 
 class CreateElementRowCommand(sublime_plugin.WindowCommand):

@@ -35,10 +35,10 @@ def command_line(program, args):
         command.append(arg)
     try:
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
-        log(output.decode("utf-8"))
-        return output
+        # log(output.decode("utf-8"))
+        return "%s\n%s" % (" ".join(command), output.decode("utf-8").replace('\r', '').replace('\n', ''))
     except Exception as e:
-        return "Error while executing " + str(command)
+        return "Error while executing %s:\n %s" % (str(command), e)
     # proc = subprocess.Popen(['echo', '"to stdout"'],
     #                     stdout=subprocess.PIPE)
     # stdout_value = proc.communicate()[0]
@@ -201,7 +201,7 @@ def get_remote_log():
     command_line("adb", ["pull", "/sdcard/android/data/com.pivos.tofu/files/.tofu/temp/xbmc.old.log"])
 
 
-def push_to_box(addon, all_file=True):
+def push_to_box(addon, all_file=False):
     userdata_folder = "/sdcard/android/data/com.pivos.tofu/files/.tofu/"
     for root, dirs, files in os.walk(addon):
         # ignore git files
@@ -211,17 +211,17 @@ def push_to_box(addon, all_file=True):
             continue
         else:
             target = '%saddons/%s%s' % (userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
-            command_line("adb", ["shell", "mkdir", target])
+            yield command_line("adb", ["shell", "mkdir", target])
         for f in files:
             if f.endswith('.pyc') or f.endswith('.pyo'):
                 continue
-            push_file(os.path.join(root, f), target)
+            yield push_file(os.path.join(root, f), target)
 
 
 def push_file(source, target):
     if not target.endswith('/'):
         target += '/'
-    command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
+    return command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
 
 
 def get_label_list(po_file_path):
