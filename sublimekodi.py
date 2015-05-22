@@ -158,9 +158,12 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         elif index == 0:
             REMOTE.push_to_box(INFOS.project_path)
         elif index == 1:
-            REMOTE.get_log()
+            REMOTE.get_log(self.on_log_done, sublime.packages_path())
         elif index == 2:
             log("Clear Cache")
+
+    def on_log_done(self, path):
+        self.window.open_file(path)
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
@@ -574,8 +577,8 @@ class AppendTextCommand(sublime_plugin.TextCommand):
 
 class AdbReconnectCommand(sublime_plugin.WindowCommand):
 
-    def run(self, ip="192.168.178.43"):
-        REMOTE.adb_reconnect(ip)
+    def run(self):
+        REMOTE.adb_reconnect()
 
 
 class LogCommand(sublime_plugin.TextCommand):

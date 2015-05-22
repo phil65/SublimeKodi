@@ -22,20 +22,23 @@ class RemoteDevice():
     def setup(self, settings):
         self.settings = settings
         self.connected = False
-        self.userdata_folder = "/sdcard/android/data/com.pivos.tofu/files/.tofu/"
+        self.userdata_folder = self.settings.get("remote_userdata_folder")
+        self.ip = self.settings.get("remote_ip")
         self.is_busy = False
 
     @run_async
     def adb_connect(self, ip):
         self.ip = ip
+        self.log("Connect to remote with ip %s" % ip)
         result = command_line("adb", ["connect", str(ip)])
         self.log(result)
         self.connected = True
 
     @run_async
-    def adb_reconnect(self, ip=None):
+    def adb_reconnect(self, ip=""):
         if not ip:
             ip = self.ip
+        self.log("Reconnect to remote with ip %s" % ip)
         result = command_line("adb", ["disconnect"])
         self.log(result)
         result = command_line("adb", ["connect", str(ip)])
@@ -43,9 +46,8 @@ class RemoteDevice():
         self.connected = True
 
     @run_async
-    def adb_disconnect(self, ip=None):
-        if not ip:
-            ip = self.ip
+    def adb_disconnect(self):
+        self.log("Disconnect from remote")
         result = command_line("adb", ["disconnect"])
         self.log(result)
         self.connected = False
@@ -63,8 +65,9 @@ class RemoteDevice():
         result = command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
         self.log(result)
 
-    def adb_pull(self, path):
-        command_line("adb", ["pull", path])
+    def adb_pull(self, path, target):
+        result = command_line("adb", ["pull", path, target])
+        self.log(result)
 
     @run_async
     def adb_pull_async(self, path):
@@ -95,9 +98,12 @@ class RemoteDevice():
         self.log("All files pushed")
 
     @run_async
-    def get_log():
-        self.adb_pull("%stemp/xbmc.log" % self.userdata_folder)
-        self.adb_pull("%stemp/xbmc.old.log" % self.userdata_folder)
+    def get_log(self, open_function, target):
+        self.log("Pull logs from remote")
+        self.adb_pull("%stemp/xbmc.log" % self.userdata_folder, target)
+        # self.adb_pull("%stemp/xbmc.old.log" % self.userdata_folder)
+        self.log("Finished pulling logs")
+        open_function(os.path.join(target, "xbmc.log"))
 
     def log(self, text):
         try:

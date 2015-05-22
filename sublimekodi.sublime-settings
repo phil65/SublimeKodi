@@ -104,5 +104,18 @@
      *
      */
     "texturechecker_path": "",
-
+    /*
+     * Userdata folder on remote device (for ADB)
+     *
+     *
+     *
+     */
+    "remote_userdata_folder": "",
+    /*
+     * IP from from remote device
+     *
+     *
+     *
+     */
+    "remote_ip": "",
 }
