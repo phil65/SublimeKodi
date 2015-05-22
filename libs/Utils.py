@@ -102,8 +102,11 @@ def texturepacker_generator(skin_path, settings):
     media_path = os.path.join(skin_path, "media")
     tp_path = settings.get("texturechecker_path")
     if tp_path:
-        args = '%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))
-        with Popen([args], stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
+        if platform.system() == "Linux":
+            args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))]
+        else:
+            args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, "Textures.xbt")]
+        with Popen(args, stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
             for line in p.stdout:
                 yield line
 
