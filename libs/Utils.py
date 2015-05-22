@@ -199,28 +199,6 @@ def get_tags_from_file(path, node_tags):
     return nodes
 
 
-def get_remote_log():
-    command_line("adb", ["pull", "/sdcard/android/data/com.pivos.tofu/files/.tofu/temp/xbmc.log"])
-    command_line("adb", ["pull", "/sdcard/android/data/com.pivos.tofu/files/.tofu/temp/xbmc.old.log"])
-
-
-def push_to_box(addon, all_file=False):
-    userdata_folder = "/sdcard/android/data/com.pivos.tofu/files/.tofu/"
-    for root, dirs, files in os.walk(addon):
-        # ignore git files
-        if ".git" in root.split(os.sep):
-            continue
-        if not all_file and os.path.basename(root) not in ['1080i', '720p']:
-            continue
-        else:
-            target = '%saddons/%s%s' % (userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
-            yield command_line("adb", ["shell", "mkdir", target])
-        for f in files:
-            if f.endswith('.pyc') or f.endswith('.pyo'):
-                continue
-            yield push_file(os.path.join(root, f), target)
-
-
 def push_file(source, target):
     if not target.endswith('/'):
         target += '/'

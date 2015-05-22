@@ -159,14 +159,15 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
             d = threading.Thread(name='push_to_box', target=self.push, args=(INFOS.project_path,))
             d.start()
         elif index == 1:
-            d = threading.Thread(name='get_remote_log', target=get_remote_log, args=(INFOS.project_path,))
+            d = threading.Thread(name='get_remote_log', target=REMOTE.get_log)
             d.start()
         elif index == 2:
             log("Clear Cache")
 
     def push(self, path):
         for item in REMOTE.push_to_box(path):
-            self.window.run_command("log", {"label": item})
+            # self.window.run_command("log", {"label": item})
+            pass
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
@@ -576,6 +577,12 @@ class AppendTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, label):
         self.view.insert(edit, self.view.size(), label + "\n")
+
+
+class AdbReconnectCommand(sublime_plugin.WindowCommand):
+
+    def run(self, ip="192.168.178.43"):
+        REMOTE.adb_reconnect(ip)
 
 
 class LogCommand(sublime_plugin.TextCommand):

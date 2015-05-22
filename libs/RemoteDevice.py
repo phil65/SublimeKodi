@@ -78,9 +78,10 @@ class RemoteDevice():
             for f in files:
                 if f.endswith('.pyc') or f.endswith('.pyo'):
                     continue
-                yield push_file(os.path.join(root, f), target)
+                yield self.adb_push(os.path.join(root, f), target)
         self.is_busy = False
 
+    @run_async
     def get_log():
         self.adb_pull("%stemp/xbmc.log" % self.userdata_folder)
         self.adb_pull("%stemp/xbmc.old.log" % self.userdata_folder)
@@ -89,6 +90,7 @@ class RemoteDevice():
         try:
             import sublime
             wnd = sublime.active_window()
-            wnd.run_command("log", {"label": line.strip()})
-        except:
+            wnd.run_command("log", {"label": text.strip()})
+        except Exception as e:
+            log(e)
             log(text)
