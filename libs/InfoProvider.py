@@ -691,7 +691,7 @@ class InfoProvider():
                             item = {"name": attr,
                                     "type": element.tag,
                                     "file": path,
-                                    "message": "Label in attribute not translated: %s" % attr,
+                                    "message": 'Label in attribute %s not translated: %s' % (check[1], attr),
                                     "line": element.sourceline}
                             listitems.append(item)
         # check if refs are defined in po files
