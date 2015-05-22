@@ -2,7 +2,6 @@ from Utils import *
 import os
 from threading import Thread
 from functools import wraps
-is_busy = False
 
 
 def run_async(func):
@@ -16,23 +15,23 @@ def run_async(func):
 
 
 def check_busy(func):
-    def decorator(*args, **kwargs):
-        if is_busy:
+    def decorator(self, *args, **kwargs):
+        if self.is_busy:
             message_dialog("Already busy. Please wait.")
             return None
-        global is_busy
-        is_busy = True
+        self.is_busy = True
         try:
-            func(*args, **kwargs)
+            func(self, *args, **kwargs)
         except Exception as e:
             message_dialog(e)
-        is_busy = False
+        self.is_busy = False
     return decorator
 
 
 class RemoteDevice():
 
     def __init__(self):
+        self.is_busy = False
         pass
 
     def setup(self, settings):
