@@ -576,13 +576,18 @@ class AppendTextCommand(sublime_plugin.TextCommand):
         self.view.insert(edit, self.view.size(), label + "\n")
 
 
-class LogCommand(sublime_plugin.WindowCommand):
+class LogCommand(sublime_plugin.TextCommand):
 
-    def run(self, label):
-        self.log_view = self.window.find_open_file("SUBLIME_KODI_LOG")
-        if self.log_view is None:
-            self.log_view = self.window.open_file("SUBLIME_KODI_LOG")
-        self.log_view.run_command("append_text", {"label": str(label)})
+    def run(self, edit, label, panel_name='example'):
+        # get_output_panel doesn't "get" the panel, it *creates* it,
+        # so we should only call get_output_panel once
+        if not hasattr(self, 'output_view'):
+            self.output_view = self.view.window().get_output_panel(panel_name)
+        v = self.output_view
+        v.insert(edit, v.size(), label + '\n')
+        v.end_edit(edit)
+        v.show(v.size())
+        self.view.window().run_command("show_panel", {"panel": "output." + panel_name})
 
 
 class CreateElementRowCommand(sublime_plugin.WindowCommand):
