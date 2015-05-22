@@ -149,18 +149,21 @@ class SublimeKodi(sublime_plugin.EventListener):
 class RemoteActionsCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        listitems = ["Send to box", "Get log", "Clear cache"]
+        listitems = ["Reconnect", "Send to box", "Get log", "Clear cache"]
         self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
         if index == -1:
             return None
         elif index == 0:
-            REMOTE.push_to_box(INFOS.project_path)
+            REMOTE.adb_reconnect()
+            self.window.run_command("remote_actions")
         elif index == 1:
+            REMOTE.push_to_box(INFOS.project_path)
+        elif index == 2:
             plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
             REMOTE.get_log(self.on_log_done, plugin_path)
-        elif index == 2:
+        elif index == 3:
             log("Clear Cache")
 
     def on_log_done(self, path):
@@ -574,12 +577,6 @@ class AppendTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, label):
         self.view.insert(edit, self.view.size(), label + "\n")
-
-
-class AdbReconnectCommand(sublime_plugin.WindowCommand):
-
-    def run(self):
-        REMOTE.adb_reconnect()
 
 
 class LogCommand(sublime_plugin.TextCommand):
