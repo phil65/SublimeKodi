@@ -388,7 +388,7 @@ class InfoProvider():
                     listitems.append(node)
         return listitems
 
-    def build_translate_label(self, label_id, scrope_name):
+    def build_translate_label(self, label_id, scope_name):
         if "text.xml" in scope_name and self.addon_type == "python" and 32000 <= label_id <= 33000:
             return "$ADDON[%s %i]" % (self.addon_name, label_id)
         elif "text.xml" in scope_name:
