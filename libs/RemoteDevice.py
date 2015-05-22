@@ -23,6 +23,7 @@ class RemoteDevice():
         self.settings = settings
         self.connected = False
         self.userdata_folder = "/sdcard/android/data/com.pivos.tofu/files/.tofu/"
+        self.is_busy = False
 
     @run_async
     def adb_connect(self, ip):
@@ -49,14 +50,12 @@ class RemoteDevice():
         self.log(result)
         self.connected = False
 
-    @run_async
     def adb_push(self, source, target):
         if not target.endswith('/'):
             target += '/'
         result = command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
-        log(result)
+        self.log(result)
 
-    @run_async
     def adb_pull(self, path):
         command_line("adb", ["pull", path])
 
@@ -64,7 +63,9 @@ class RemoteDevice():
     def adb_restart_server(self):
         pass
 
+    # @run_async
     def push_to_box(self, addon, all_file=False):
+        self.is_busy = True
         for root, dirs, files in os.walk(addon):
             # ignore git files
             if ".git" in root.split(os.sep):
@@ -78,6 +79,7 @@ class RemoteDevice():
                 if f.endswith('.pyc') or f.endswith('.pyo'):
                     continue
                 yield push_file(os.path.join(root, f), target)
+        self.is_busy = False
 
     def get_log():
         self.adb_pull("%stemp/xbmc.log" % self.userdata_folder)

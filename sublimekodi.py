@@ -165,7 +165,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
             log("Clear Cache")
 
     def push(self, path):
-        for item in push_to_box(path):
+        for item in REMOTE.push_to_box(path):
             self.window.run_command("log", {"label": item})
 
 
