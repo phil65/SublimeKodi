@@ -77,6 +77,7 @@ class RemoteDevice():
     @run_async
     def push_to_box(self, addon, all_file=False):
         self.is_busy = True
+        self.log("push %s to remote" % addon)
         for root, dirs, files in os.walk(addon):
             # ignore git files
             if ".git" in root.split(os.sep):
