@@ -6,7 +6,7 @@ import sys
 import cgi
 import threading
 import webbrowser
-from subprocess import Popen, PIPE
+from subprocess import Popen
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -14,8 +14,10 @@ if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
 from InfoProvider import InfoProvider
+from RemoteDevice import RemoteDevice
 from Utils import *
 INFOS = InfoProvider()
+REMOTE = RemoteDevice()
 # sublime.log_commands(True)
 APP_NAME = "kodi"
 if sublime.platform() == "linux":
@@ -630,5 +632,6 @@ class SwitchXmlFolderCommand(QuickPanelCommand):
             self.nodes.append(node)
         self.window.show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
-# def plugin_loaded():
-#     INFOS.check_project_change()
+
+def plugin_loaded():
+    REMOTE.setup(sublime.load_settings(SETTINGS_FILE))
