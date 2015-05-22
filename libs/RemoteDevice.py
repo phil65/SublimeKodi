@@ -63,7 +63,7 @@ class RemoteDevice():
     def adb_restart_server(self):
         pass
 
-    # @run_async
+    @run_async
     def push_to_box(self, addon, all_file=False):
         self.is_busy = True
         for root, dirs, files in os.walk(addon):
@@ -74,12 +74,13 @@ class RemoteDevice():
                 continue
             else:
                 target = '%saddons/%s%s' % (self.userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
-                yield command_line("adb", ["shell", "mkdir", target])
+                command_line("adb", ["shell", "mkdir", target])
             for f in files:
                 if f.endswith('.pyc') or f.endswith('.pyo'):
                     continue
-                yield self.adb_push(os.path.join(root, f), target)
+                self.adb_push(os.path.join(root, f), target)
         self.is_busy = False
+        self.log("All files pushed")
 
     @run_async
     def get_log():

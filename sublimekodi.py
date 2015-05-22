@@ -156,18 +156,11 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         elif index == 0:
-            d = threading.Thread(name='push_to_box', target=self.push, args=(INFOS.project_path,))
-            d.start()
+            REMOTE.push_to_box(INFOS.project_path)
         elif index == 1:
-            d = threading.Thread(name='get_remote_log', target=REMOTE.get_log)
-            d.start()
+            REMOTE.get_log()
         elif index == 2:
             log("Clear Cache")
-
-    def push(self, path):
-        for item in REMOTE.push_to_box(path):
-            # self.window.run_command("log", {"label": item})
-            pass
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
