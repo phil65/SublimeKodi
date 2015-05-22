@@ -156,7 +156,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         elif index == 0:
-            REMOTE.adb_reconnect()
+            REMOTE.adb_reconnect_async()
             self.window.run_command("remote_actions")
         elif index == 1:
             REMOTE.push_to_box(INFOS.project_path)
