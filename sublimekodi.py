@@ -158,7 +158,8 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         elif index == 0:
             REMOTE.push_to_box(INFOS.project_path)
         elif index == 1:
-            REMOTE.get_log(self.on_log_done, sublime.packages_path())
+            plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
+            REMOTE.get_log(self.on_log_done, plugin_path)
         elif index == 2:
             log("Clear Cache")
 
@@ -590,7 +591,6 @@ class LogCommand(sublime_plugin.TextCommand):
             self.output_view = self.view.window().get_output_panel(panel_name)
         v = self.output_view
         v.insert(edit, v.size(), label + '\n')
-        v.end_edit(edit)
         v.show(v.size())
         self.view.window().run_command("show_panel", {"panel": "output." + panel_name})
 
