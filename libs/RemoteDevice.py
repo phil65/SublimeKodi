@@ -56,7 +56,18 @@ class RemoteDevice():
         result = command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
         self.log(result)
 
+    @run_async
+    def adb_push_async(self, source, target):
+        if not target.endswith('/'):
+            target += '/'
+        result = command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
+        self.log(result)
+
     def adb_pull(self, path):
+        command_line("adb", ["pull", path])
+
+    @run_async
+    def adb_pull_async(self, path):
         command_line("adb", ["pull", path])
 
     @run_async
