@@ -205,6 +205,7 @@ class InfoProvider():
                 for node in self.include_list[folder]:
                     if node["name"] == keyword:
                         return node[return_entry]
+        return ""
                 # log("no node with name %s found" % keyword)
 
     def return_label(self, selection):
