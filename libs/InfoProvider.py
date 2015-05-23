@@ -394,7 +394,7 @@ class InfoProvider():
         elif "text.xml" in scope_name:
             return "$LOCALIZE[%i]" % label_id
         else:
-            return label_id
+            return str(label_id)
 
     def translate_path(self, path):
         if path.startswith("special://skin/"):
