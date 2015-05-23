@@ -79,12 +79,22 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
 - Preview skin image
 
+
 ##### Misc:
 
 - Auto-check skin file on saving
 - Create element row (and insert ascending number) for quickly multiplying listitems / buttons
 - SkinCheck can also be used from command line with "python script.py PATH_TO_ADDON"
   - requires Python 3.3 interpreter
+- Build skin with texturepacker from command palette
+
+
+##### ADB Features ("Remote Actions")
+
+- Connect to remote
+- Push add-on to remote
+- Pull log from remote
+- Clear temp folder on remote
 
 ___
 
