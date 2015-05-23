@@ -292,7 +292,7 @@ def get_xml_file_paths(xml_path):
     else:
         return []
 
-
+@run_async
 def send_json_request_async(data, settings):
     return send_json_request(data, settings)
 
