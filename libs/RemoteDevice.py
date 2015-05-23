@@ -1,31 +1,5 @@
 from Utils import *
 import os
-from threading import Thread
-from functools import wraps
-
-
-def run_async(func):
-    @wraps(func)
-    def async_func(*args, **kwargs):
-        func_hl = Thread(target=func, args=args, kwargs=kwargs)
-        func_hl.start()
-        return func_hl
-
-    return async_func
-
-
-def check_busy(func):
-    def decorator(self, *args, **kwargs):
-        if self.is_busy:
-            message_dialog("Already busy. Please wait.")
-            return None
-        self.is_busy = True
-        try:
-            func(self, *args, **kwargs)
-        except Exception as e:
-            message_dialog(e)
-        self.is_busy = False
-    return decorator
 
 
 class RemoteDevice():

@@ -11,6 +11,32 @@ import zipfile
 import subprocess
 import re
 import platform
+from threading import Thread
+from functools import wraps
+
+
+def run_async(func):
+    @wraps(func)
+    def async_func(*args, **kwargs):
+        func_hl = Thread(target=func, args=args, kwargs=kwargs)
+        func_hl.start()
+        return func_hl
+
+    return async_func
+
+
+def check_busy(func):
+    def decorator(self, *args, **kwargs):
+        if self.is_busy:
+            message_dialog("Already busy. Please wait.")
+            return None
+        self.is_busy = True
+        try:
+            func(self, *args, **kwargs)
+        except Exception as e:
+            message_dialog(e)
+        self.is_busy = False
+    return decorator
 
 
 def get_sublime_path():
@@ -268,27 +294,8 @@ def get_xml_file_paths(xml_path):
         return []
 
 
-def kodi_json_request(data, wait=False, settings=None):
-    request_thread = json_request_thread(data, settings)
-    request_thread.start()
-    if wait:
-        request_thread.join(1)
-        return request_thread.result
-    else:
-        return True
-
-
-class json_request_thread(threading.Thread):
-
-    def __init__(self, data=None, settings=None):
-        threading.Thread.__init__(self)
-        self.data = data
-        self.result = None
-        self.settings = settings
-
-    def run(self):
-        self.result = send_json_request(self.data, self.settings)
-        return True
+def send_json_request_async(data, settings):
+    return send_json_request(data, settings)
 
 
 def send_json_request(data, settings):

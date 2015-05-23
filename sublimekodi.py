@@ -199,7 +199,7 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
     def run(self, builtin):
         settings = sublime.load_settings(SETTINGS_FILE)
         data = '{"jsonrpc":"2.0","id":1,"method":"Addons.ExecuteAddon","params":{"addonid":"script.toolbox", "params": { "info": "builtin", "id": "%s"}}}' % builtin
-        kodi_json_request(data, settings=settings)
+        send_json_request_async(data, settings=settings)
 
 
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
@@ -230,9 +230,9 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 class BuildAddonCommand(sublime_plugin.WindowCommand):
 
     def run(self, pack_textures=True):
-        d = threading.Thread(name='buildskin', target=self.build_skin, args=(INFOS.project_path, pack_textures))
-        d.start()
+        self.build_skin(INFOS.project_path, pack_textures)
 
+    @run_async
     def build_skin(self, skin_path, pack_textures):
         settings = sublime.load_settings(SETTINGS_FILE)
         for line in texturepacker_generator(skin_path, settings):

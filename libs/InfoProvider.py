@@ -567,7 +567,7 @@ class InfoProvider():
             return label
         elif info_type == "INFO":
             data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
-            result = kodi_json_request(data, True, self.settings)
+            result = send_json_request(data, self.settings)
             if result:
                 key, value = result["result"].popitem()
                 if value:
