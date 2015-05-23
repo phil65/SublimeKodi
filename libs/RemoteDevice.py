@@ -131,6 +131,12 @@ class RemoteDevice():
         self.panel_log("Finished pulling logs")
         open_function(os.path.join(target, "xbmc.log"))
 
+    @run_async
+    @check_busy
+    def clear_cache(self):
+        result = command_line("adb", ["shell", "rm", "-rf", os.path.join(self.userdata_folder, "temp")])
+        self.panel_log(result)
+
     def panel_log(self, text):
         try:
             import sublime

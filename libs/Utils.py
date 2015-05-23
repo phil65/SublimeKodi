@@ -11,7 +11,6 @@ import zipfile
 import subprocess
 import re
 import platform
-from subprocess import Popen, PIPE
 
 
 def get_sublime_path():
@@ -37,6 +36,8 @@ def command_line(program, args):
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
         # log(output.decode("utf-8"))
         return "%s\n%s" % (" ".join(command), output.decode("utf-8").replace('\r', '').replace('\n', ''))
+    except subprocess.CalledProcessError as e:
+        return "%s\nErrorCode: %s" % (e, str(e.returncode))
     except Exception as e:
         return "Error while executing %s:\n %s" % (str(command), e)
     # proc = subprocess.Popen(['echo', '"to stdout"'],
@@ -106,7 +107,7 @@ def texturepacker_generator(skin_path, settings):
             args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))]
         else:
             args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, "Textures.xbt")]
-        with Popen(args, stdout=PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
+        with subprocess.Popen(args, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
             for line in p.stdout:
                 yield line
 

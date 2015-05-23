@@ -164,7 +164,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
             plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
             REMOTE.get_log(self.on_log_done, plugin_path)
         elif index == 3:
-            log("Clear Cache")
+            REMOTE.clear_cache()
 
     def on_log_done(self, path):
         self.window.open_file(path)
