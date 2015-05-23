@@ -4,7 +4,6 @@ import re
 import os
 import sys
 import cgi
-import threading
 import webbrowser
 from subprocess import Popen
 __file__ = os.path.normpath(os.path.abspath(__file__))

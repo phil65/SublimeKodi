@@ -2,7 +2,6 @@ import os
 from lxml import etree as ET
 import base64
 import json
-import threading
 import colorsys
 import codecs
 from polib import polib
