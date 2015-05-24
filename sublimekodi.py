@@ -103,6 +103,8 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         self.check_project_change()
+        if INFOS.xml_folders and view.file_name().endswith(".xml"):
+            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
         # filename = view.file_name()
         # if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
         #     self.root = get_root_from_file(filename)
@@ -110,6 +112,8 @@ class SublimeKodi(sublime_plugin.EventListener):
 
     def on_activated_async(self, view):
         self.check_project_change()
+        if INFOS.xml_folders and view.file_name().endswith(".xml"):
+            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
 
     def on_deactivated_async(self, view):
         view.hide_popup()
