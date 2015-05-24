@@ -94,7 +94,7 @@ class InfoProvider():
                 color_dict = {"name": node.attrib["name"],
                               "line": node.sourceline,
                               "content": node.text,
-                              "filename": file_path}
+                              "file": file_path}
                 self.color_list.append(color_dict)
             log("color list: %i colors found" % len(self.color_list))
 
@@ -189,8 +189,8 @@ class InfoProvider():
                         path = os.path.join(self.project_path, folder, "Font.xml")
                         return "%s:%s" % (path, node["line"])
                 for node in self.color_list:
-                    if node["name"] == keyword and node["filename"].endswith("defaults.xml"):
-                        return "%s:%s" % (node["filename"], node["line"])
+                    if node["name"] == keyword and node["file"].endswith("defaults.xml"):
+                        return "%s:%s" % (node["file"], node["line"])
                 log("no node with name %s found" % keyword)
         return False
 
@@ -261,7 +261,7 @@ class InfoProvider():
                 color_hex = "#" + item["content"][2:]
                 cont_color = get_cont_col(color_hex)
                 alpha_percent = round(int(item["content"][:2], 16) / (16 * 16) * 100)
-                color_info += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a> %d %% alpha<br>' % (os.path.basename(item["filename"]), color_hex, cont_color, item["content"], alpha_percent)
+                color_info += '%s&nbsp;<a style="background-color:%s;color:%s">%s</a> %d %% alpha<br>' % (os.path.basename(item["file"]), color_hex, cont_color, item["content"], alpha_percent)
         if color_info:
             return color_info
         if all(c in string.hexdigits for c in color_string) and len(color_string) == 8:

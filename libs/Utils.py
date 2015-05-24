@@ -203,25 +203,25 @@ def yesno_dialog(string, ok_button):
 
 def get_tags_from_file(path, node_tags):
     nodes = []
-    if os.path.exists(path):
-        root = get_root_from_file(path)
-        if root is None:
-            return []
-        xpath = ".//" + " | .//".join(node_tags)
-        for node in root.xpath(xpath):
-            if "name" in node.attrib:
-                if node.find("./param") is not None:
-                    continue
-                include = {"name": node.attrib["name"],
-                           "file": path,
-                           "type": node.tag,
-                           "content": ET.tostring(node, pretty_print=True, encoding="unicode"),
-                           "line": node.sourceline}
-                if node.getnext() is not None:
-                    include["length"] = node.getnext().sourceline - node.sourceline
-                nodes.append(include)
-    else:
+    if not os.path.exists(path):
         log("%s does not exist" % path)
+        return []
+    root = get_root_from_file(path)
+    if root is None:
+        return []
+    xpath = ".//" + " | .//".join(node_tags)
+    for node in root.xpath(xpath):
+        if "name" in node.attrib:
+            if node.find("./param") is not None:
+                continue
+            include = {"name": node.attrib["name"],
+                       "file": path,
+                       "type": node.tag,
+                       "content": ET.tostring(node, pretty_print=True, encoding="unicode"),
+                       "line": node.sourceline}
+            if node.getnext() is not None:
+                include["length"] = node.getnext().sourceline - node.sourceline
+            nodes.append(include)
     return nodes
 
 
