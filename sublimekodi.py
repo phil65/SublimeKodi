@@ -530,7 +530,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        if INFOS.project_path and self.addon_lang_folders:
+        if INFOS.project_path and INFOS.addon_lang_folders:
             if "text.xml" in scope_name or "source.python" in scope_name:
                 if self.view.sel()[0].b != self.view.sel()[0].a:
                     return True
