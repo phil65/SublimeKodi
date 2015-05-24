@@ -8,6 +8,6 @@
         <visible>${5}</visible>
     </control>
 ]]></content>
-    <tabTrigger>image</tabTrigger>
+    <tabTrigger>cimage</tabTrigger>
     <scope>text.xml</scope>
 </snippet>

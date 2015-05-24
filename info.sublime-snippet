@@ -1,5 +1,5 @@
 <snippet>
     <content><![CDATA[\$INFO[${1}]]]></content>
-    <tabTrigger>info</tabTrigger>
+    <tabTrigger>iinfo</tabTrigger>
     <scope>text.xml</scope>
 </snippet>

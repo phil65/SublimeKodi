@@ -10,6 +10,6 @@
         <visible>${7}</visible>
     </control>
 ]]></content>
-    <tabTrigger>label</tabTrigger>
+    <tabTrigger>clabel</tabTrigger>
     <scope>text.xml</scope>
 </snippet>

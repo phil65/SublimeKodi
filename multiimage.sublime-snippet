@@ -9,6 +9,6 @@
         <visible>${6}</visible>
     </control>
 ]]></content>
-    <tabTrigger>multiimage</tabTrigger>
+    <tabTrigger>cmultiimage</tabTrigger>
     <scope>text.xml</scope>
 </snippet>
