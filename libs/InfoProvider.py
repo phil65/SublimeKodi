@@ -18,6 +18,7 @@ class InfoProvider():
         self.include_file_list = {}
         self.window_file_list = {}
         self.color_list = []
+        self.addon_lang_folders = []
         self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
@@ -247,17 +248,22 @@ class InfoProvider():
             return ""
 
     def update_addon_labels(self):
-        self.addon_string_list = []
-        self.addon_lang_folders = []
-        if not self.addon_xml_file:
-            return False
+        self.addon_string_list, self.addon_lang_folders = self.get_string_list(self.lang_path())
+        self.string_list = self.builtin_list + self.addon_string_list
+
+    def get_string_list(self, lang_folder_root):
+        string_list = []
+        lang_folders = []
+        if not self.addon_xml_file or not lang_folder_root:
+            return [], []
         for item in self.settings.get("language_folders"):
-            path = os.path.join(self.lang_path(), item, "strings.po")
+            path = checkPaths([os.path.join(lang_folder_root, item, "strings.po"),
+                               os.path.join(lang_folder_root, item, "resources", "strings.po")])
             if os.path.exists(path):
                 log("found language: " + path)
-                self.addon_string_list += get_label_list(path)
-                self.addon_lang_folders.append(path)
-        self.string_list = self.builtin_list + self.addon_string_list
+                string_list += get_label_list(path)
+                lang_folders.append(path)
+        return string_list, lang_folders
 
     def get_color_info(self, color_string):
         color_info = ""
@@ -577,7 +583,6 @@ class InfoProvider():
         else:
             start_id = 32000
             index_offset = 2
-        log(self.addon_lang_folders[0])
         po = polib.pofile(self.addon_lang_folders[0])
         string_ids = []
         for i, entry in enumerate(po):
