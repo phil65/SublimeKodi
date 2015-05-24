@@ -713,7 +713,7 @@
 		</dict>
 	</dict>
 	<key>scopeName</key>
-	<string>text.kodixml</string>
+	<string>text.xml</string>
 	<key>uuid</key>
 	<string>c00873a7-a89d-4395-abd0-5ef08c6c0b9b</string>
 </dict>
