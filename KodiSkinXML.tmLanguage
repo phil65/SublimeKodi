@@ -315,6 +315,30 @@
 		</dict>
 		<dict>
 			<key>begin</key>
+			<string>\$ADDON\[</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.translation.begin.xml</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.translation.end.xml</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>support.function.kodi.translation.xml</string>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>\$.*?\[</string>
 			<key>beginCaptures</key>
 			<dict>
