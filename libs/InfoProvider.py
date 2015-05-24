@@ -224,10 +224,13 @@ class InfoProvider():
             id_string = "#" + selection
             for item in self.string_list:
                 if id_string == item["id"]:
+                    folder = item["file"].split(os.sep)[-2]
+                    if folder == "resources":
+                        folder = item["file"].split(os.sep)[-3].replace("resource.language.", "")
                     if item["native_string"]:
-                        tooltips += item["native_string"] + "<br>"
+                        tooltips += "<b>%s:</b> %s<br>" % (folder, item["native_string"])
                     else:
-                        tooltips += item["string"] + "<br>"
+                        tooltips += "<b>%s:</b> %s<br>" % (folder, item["string"])
         return tooltips
 
     def update_builtin_labels(self):
