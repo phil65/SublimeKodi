@@ -480,6 +480,7 @@ class InfoProvider():
                 for node in root.xpath(xpath):
                     for match in re.finditer(control_regex, node.attrib["condition"], re.IGNORECASE):
                         item = {"name": match.group(1),
+                                # "region": (match.start(1), match.end(1)),
                                 "type": node.tag,
                                 "file": path,
                                 "line": node.sourceline}
@@ -663,6 +664,7 @@ class InfoProvider():
                         item = {"name": element.text,
                                 "type": element.tag,
                                 "file": path,
+                                "identifier": element.text,
                                 "message": "Label in <%s> not translated: %s" % (element.tag, element.text),
                                 "line": element.sourceline}
                         listitems.append(item)
@@ -682,6 +684,7 @@ class InfoProvider():
                             item = {"name": attr,
                                     "type": element.tag,
                                     "file": path,
+                                    "identifier": attr,
                                     "message": 'Label in attribute %s not translated: %s' % (check[1], attr),
                                     "line": element.sourceline}
                             listitems.append(item)
@@ -810,6 +813,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
+                            "identifier": node.tag,
                             "message": "invalid tag for <%s>: <%s>" % (text, node.tag),
                             "file": path}
                     listitems.append(item)
@@ -822,6 +826,7 @@ class InfoProvider():
                         item = {"line": node.sourceline,
                                 "type": node.tag,
                                 "filename": xml_file,
+                                "identifier": attr,
                                 "message": "invalid attribute for <%s>: %s" % (node.tag, attr),
                                 "file": path}
                         listitems.append(item)
@@ -838,6 +843,7 @@ class InfoProvider():
             item = {"line": node.sourceline,
                     "type": node.tag,
                     "filename": xml_file,
+                    "identifier": condition,
                     "message": message,
                     "file": path}
             listitems.append(item)
@@ -848,6 +854,7 @@ class InfoProvider():
                 item = {"line": node.sourceline,
                         "type": node.tag,
                         "filename": xml_file,
+                        "identifier": condition,
                         "message": "Brackets do not match: %s" % (condition),
                         "file": path}
                 listitems.append(item)
@@ -857,6 +864,7 @@ class InfoProvider():
             if node.text == "-" or not node.text:
                 item = {"line": node.sourceline,
                         "type": node.tag,
+                        "identifier": node.tag,
                         "filename": xml_file,
                         "message": "Use 'noop' for empty calls <%s>" % (node.tag),
                         "file": path}
@@ -870,6 +878,7 @@ class InfoProvider():
                     item = {"line": node.sourceline,
                             "type": node.tag,
                             "filename": xml_file,
+                            "identifier": node.tag,
                             "message": "Invalid multiple tags for %s: <%s>" % (node.getparent().tag, node.tag),
                             "file": path}
                     listitems.append(item)
@@ -880,6 +889,7 @@ class InfoProvider():
                 if node.text.lower() not in check[1]:
                     item = {"line": node.sourceline,
                             "type": node.tag,
+                            "identifier": node.text,
                             "filename": xml_file,
                             "message": "invalid value for %s: %s" % (node.tag, node.text),
                             "file": path}
@@ -890,6 +900,7 @@ class InfoProvider():
                 if node.attrib[check[0]] not in check[1]:
                     item = {"line": node.sourceline,
                             "type": node.tag,
+                            "identifier": node.attrib[check[0]],
                             "filename": xml_file,
                             "message": "invalid value for %s attribute: %s" % (check[0], node.attrib[check[0]]),
                             "file": path}

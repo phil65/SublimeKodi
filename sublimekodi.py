@@ -239,10 +239,26 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
     def on_done(self, index):
         if index == -1:
             return None
-        self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION)
+        node = self.nodes[index]
+        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+        self.select_text(node)
 
     def show_preview(self, index):
-        self.window.open_file("%s:%i" % (self.nodes[index]["file"], self.nodes[index]["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        node = self.nodes[index]
+        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        self.select_text(node)
+
+    def select_text(self, node):
+        view = self.window.active_view()
+        text_point = view.text_point(node["line"] - 1, 0)
+        line = view.line(text_point)
+        if "identifier" in node:
+            line_start = view.substr(line).find(node["identifier"])
+            line_end = line_start + len(node["identifier"])
+            id_start = text_point + line_start
+            id_end = text_point + line_end
+            view.sel().clear()
+            view.sel().add(sublime.Region(int(id_start), int(id_end)))
 
 
 class BuildAddonCommand(sublime_plugin.WindowCommand):
