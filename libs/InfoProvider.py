@@ -254,9 +254,9 @@ class InfoProvider():
         for item in self.settings.get("language_folders"):
             path = os.path.join(self.lang_path(), item, "strings.po")
             if os.path.exists(path):
-                log("found language: " + item)
+                log("found language: " + path)
                 self.addon_string_list += get_label_list(path)
-                self.addon_lang_folders += path
+                self.addon_lang_folders.append(path)
         self.string_list = self.builtin_list + self.addon_string_list
 
     def get_color_info(self, color_string):
@@ -577,6 +577,7 @@ class InfoProvider():
         else:
             start_id = 32000
             index_offset = 2
+        log(self.addon_lang_folders[0])
         po = polib.pofile(self.addon_lang_folders[0])
         string_ids = []
         for i, entry in enumerate(po):
