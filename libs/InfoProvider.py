@@ -7,7 +7,6 @@ import string
 import platform
 import webbrowser
 
-DEFAULT_LANGUAGE_FOLDER = "English"
 APP_NAME = "kodi"
 
 
