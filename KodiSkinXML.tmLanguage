@@ -373,6 +373,30 @@
 			<key>name</key>
 			<string>support.function.kodi.translation.xml</string>
 		</dict>
+		<dict>
+			<key>begin</key>
+			<string>\$.*?\[</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>invalid.function.kodi.invalid.begin.xml</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>invalid.function.kodi.invalid.end.xml</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>invalid.function.kodi.invalid.xml</string>
+		</dict>
 	</array>
 	<key>repository</key>
 	<dict>
