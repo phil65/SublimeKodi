@@ -160,57 +160,6 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>&lt;variable</string>
-			<key>captures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.begin.xml</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.namespace.xml</string>
-				</dict>
-				<key>3</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.xml</string>
-				</dict>
-				<key>4</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.namespace.xml</string>
-				</dict>
-				<key>5</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.tag.localname.xml</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>(/?&gt;)</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.tag.end.xml</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>meta.tag.xml2</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#functiontagStuff</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
 			<string>(&lt;/?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)</string>
 			<key>captures</key>
 			<dict>
