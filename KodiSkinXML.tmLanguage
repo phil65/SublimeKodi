@@ -291,6 +291,30 @@
 		</dict>
 		<dict>
 			<key>begin</key>
+			<string>\$NUMBER\[</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.number.begin.xml</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.number.end.xml</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>support.function.kodi.number.xml</string>
+		</dict>
+		<dict>
+			<key>begin</key>
 			<string>\$.*?\[</string>
 			<key>beginCaptures</key>
 			<dict>
