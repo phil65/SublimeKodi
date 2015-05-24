@@ -19,23 +19,12 @@
      */
     "portable_mode": false,
     /*
-     * Add native language
+     * Language folders to check
      *
-     * If set to true, this plugin will show the tooltips
-     * with both English and your native language.
-     *
-     */
-    "use_native_language": false,
-
-    /*
-     * Native language
-     *
-     * Put your native language folder name here like:
-     * Chinese (Simple)
-     * Chinese (Traditional)
+     * Will make use of labels of chosen folders if available
      *
      */
-    "native_language": "Chinese (Simple)",
+    "language_folders": ["English", "resource.language.en_gb"],
     /*
      * Kodi address
      *

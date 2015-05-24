@@ -124,13 +124,13 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if self.settings.get("auto_skin_check", True):
                     view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
-            INFOS.update_labels()
+            INFOS.update_addon_labels()
 
     def check_project_change(self):
         if not self.settings_loaded:
             self.settings = sublime.load_settings(SETTINGS_FILE)
             INFOS.get_settings(self.settings)
-            INFOS.get_builtin_label()
+            INFOS.update_builtin_labels()
             self.settings_loaded = True
         view = sublime.active_window().active_view()
         if view and view.window() is not None:
@@ -205,8 +205,8 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
-        INFOS.get_builtin_label()
-        INFOS.update_labels()
+        INFOS.update_builtin_labels()
+        INFOS.update_addon_labels()
 
 
 class QuickPanelCommand(sublime_plugin.WindowCommand):
@@ -527,7 +527,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        if INFOS.project_path and INFOS.addon_lang_path:
+        if INFOS.project_path and self.addon_lang_folders:
             if "text.xml" in scope_name or "source.python" in scope_name:
                 if self.view.sel()[0].b != self.view.sel()[0].a:
                     return True

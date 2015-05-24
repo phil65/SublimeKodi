@@ -19,8 +19,6 @@ class InfoProvider():
         self.window_file_list = {}
         self.color_list = []
         self.addon_xml_file = ""
-        self.addon_lang_file = ""
-        self.addon_lang_path = ""
         self.color_file = ""
         self.project_path = ""
         self.addon_type = ""
@@ -35,7 +33,6 @@ class InfoProvider():
         self.addon_type = ""
         self.addon_name = ""
         self.project_path = path
-        self.addon_lang_file = ""
         self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
         self.fonts = []
@@ -55,13 +52,18 @@ class InfoProvider():
                          os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
                 folder = checkPaths(paths)
                 self.xml_folders.append(folder)
-        self.update_labels()
+        self.update_addon_labels()
         if self.xml_folders:
             log("Kodi project detected: " + path)
             self.update_include_list()
             self.get_colors()
             self.get_fonts()
             # sublime.status_message("SublimeKodi: successfully loaded addon")
+
+    def lang_path(self):
+        paths = [os.path.join(self.project_path, "resources", "language"),
+                 os.path.join(self.project_path, "language")]
+        return checkPaths(paths)
 
     def media_path(self):
         paths = [os.path.join(self.project_path, "media"),
@@ -176,7 +178,7 @@ class InfoProvider():
                 for node in self.string_list:
                     if node["id"] == "#" + keyword:
                         if int(keyword) >= 31000 and int(keyword) <= 33000:
-                            file_path = self.addon_lang_path
+                            file_path = self.addon_lang_folders[0]
                         else:
                             file_path = self.kodi_lang_path
                         return "%s:%s" % (file_path, node["line"])
@@ -208,32 +210,33 @@ class InfoProvider():
         return ""
                 # log("no node with name %s found" % keyword)
 
-    def return_label(self, selection):
-        if selection.isdigit():
-            id_string = "#" + selection
-            for item in self.string_list:
-                if id_string == item["id"]:
-                    tooltips = item["string"]
-                    if self.use_native:
-                        tooltips += "<br>" + item["native_string"]
-                    return tooltips
-        return ""
-
     def get_settings(self, settings):
         self.settings = settings
         self.kodi_path = settings.get("kodi_path")
         log("kodi path: " + self.kodi_path)
-        self.use_native = settings.get("use_native_language")
-        if self.use_native:
-            self.language_folder = settings.get("native_language")
-            log("use native language: " + self.language_folder)
-        else:
-            self.language_folder = DEFAULT_LANGUAGE_FOLDER
-            log("use default language: English")
 
-    def get_builtin_label(self):
+    def get_kodi_addons(self):
+        addon_path = os.path.join(self.get_userdata_folder(), "addons")
+        if os.path.exists(addon_path):
+            return [folder for folder in os.listdir(addon_path) if not os.path.isfile(folder)]
+        else:
+            return []
+
+    def return_label(self, selection):
+        tooltips = ""
+        if selection.isdigit():
+            id_string = "#" + selection
+            for item in self.string_list:
+                if id_string == item["id"]:
+                    if item["native_string"]:
+                        tooltips += item["native_string"] + "<br>"
+                    else:
+                        tooltips += item["string"] + "<br>"
+        return tooltips
+
+    def update_builtin_labels(self):
         paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
-                 os.path.join(self.kodi_path, "language", self.language_folder, "strings.po")]
+                 os.path.join(self.kodi_path, "language", DEFAULT_LANGUAGE_FOLDER, "strings.po")]
         self.kodi_lang_path = checkPaths(paths)
         if self.kodi_lang_path:
             self.builtin_list = get_label_list(self.kodi_lang_path)
@@ -243,26 +246,17 @@ class InfoProvider():
             log("Could not find kodi language file")
             return ""
 
-    def get_kodi_addons(self):
-        addon_path = os.path.join(self.get_userdata_folder(), "addons")
-        if os.path.exists(addon_path):
-            return [folder for folder in os.listdir(addon_path) if not os.path.isfile(folder)]
-        else:
-            return []
-
-    def update_labels(self):
+    def update_addon_labels(self):
+        self.addon_string_list = []
+        self.addon_lang_folders = []
         if not self.addon_xml_file:
             return False
-        paths = [os.path.join(self.project_path, "resources", "language", self.language_folder, "strings.po"),
-                 os.path.join(self.project_path, "language", self.language_folder, "strings.po"),
-                 os.path.join(self.project_path, "language", "resource.language.en_gb", "strings.po")]
-        self.addon_lang_path = checkPaths(paths)
-        if self.addon_lang_path:
-            self.addon_string_list = get_label_list(self.addon_lang_path)
-            log("Addon Labels updated. Amount: %i" % len(self.addon_string_list))
-        else:
-            self.addon_string_list = []
-            log("Could not find add-on language file")
+        for item in self.settings.get("language_folders"):
+            path = os.path.join(self.lang_path(), item, "strings.po")
+            if os.path.exists(path):
+                log("found language: " + item)
+                self.addon_string_list += get_label_list(path)
+                self.addon_lang_folders += path
         self.string_list = self.builtin_list + self.addon_string_list
 
     def get_color_info(self, color_string):
@@ -583,7 +577,7 @@ class InfoProvider():
         else:
             start_id = 32000
             index_offset = 2
-        po = polib.pofile(self.addon_lang_path)
+        po = polib.pofile(self.addon_lang_folders[0])
         string_ids = []
         for i, entry in enumerate(po):
             try:
@@ -598,8 +592,8 @@ class InfoProvider():
         new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr)
         po_index = int(label_id) - start_id + index_offset
         po.insert(po_index, new_entry)
-        po.save(self.addon_lang_path)
-        self.update_labels()
+        po.save(self.addon_lang_folders[0])
+        self.update_addon_labels()
         return label_id
 
     def go_to_help(self, word):

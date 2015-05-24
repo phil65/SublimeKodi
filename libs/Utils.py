@@ -242,6 +242,7 @@ def get_label_list(po_file_path):
                       "comment": entry.comment,
                       "tcomment": entry.tcomment,
                       "string": entry.msgid,
+                      "file": po_file_path,
                       "native_string": entry.msgstr}
             listitems.append(string)
         return listitems
@@ -291,6 +292,7 @@ def get_xml_file_paths(xml_path):
             return xml_files
     else:
         return []
+
 
 @run_async
 def send_json_request_async(data, settings):
