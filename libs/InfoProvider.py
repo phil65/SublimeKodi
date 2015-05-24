@@ -24,7 +24,7 @@ class InfoProvider():
         self.project_path = ""
         self.addon_type = ""
         self.addon_name = ""
-        self.builtin_list = []
+        self.kodi_string_list = []
         self.fonts = {}
         self.string_list = []
         self.xml_folders = []
@@ -178,11 +178,7 @@ class InfoProvider():
             if keyword.isdigit():
                 for node in self.string_list:
                     if node["id"] == "#" + keyword:
-                        if int(keyword) >= 31000 and int(keyword) <= 33000:
-                            file_path = self.addon_lang_folders[0]
-                        else:
-                            file_path = self.kodi_lang_path
-                        return "%s:%s" % (file_path, node["line"])
+                        return "%s:%s" % (node["file"], node["line"])
             else:
                 # TODO: need to check for include file attribute
                 for node in self.include_list[folder]:
@@ -236,26 +232,19 @@ class InfoProvider():
         return tooltips
 
     def update_builtin_labels(self):
-        paths = [os.path.join(self.kodi_path, "addons", "resource.language.en_gb", "resources", "strings.po"),
-                 os.path.join(self.kodi_path, "language", DEFAULT_LANGUAGE_FOLDER, "strings.po")]
-        self.kodi_lang_path = checkPaths(paths)
-        if self.kodi_lang_path:
-            self.builtin_list = get_label_list(self.kodi_lang_path)
-            log("Builtin labels loaded. Amount: %i" % len(self.builtin_list))
-        else:
-            self.builtin_list = []
-            log("Could not find kodi language file")
-            return ""
+        string_list, lang_folders = self.get_string_list(os.path.join(self.kodi_path, "addons"))
+        string_list2, lang_folders2 = self.get_string_list(os.path.join(self.kodi_path, "language"))
+        string_list3, lang_folders3 = self.get_string_list(os.path.join(self.get_userdata_folder(), "addons"))
+        self.kodi_string_list = string_list + string_list2 + string_list3
+        self.kodi_lang_folders = lang_folders + lang_folders2 + lang_folders3
 
     def update_addon_labels(self):
         self.addon_string_list, self.addon_lang_folders = self.get_string_list(self.lang_path())
-        self.string_list = self.builtin_list + self.addon_string_list
+        self.string_list = self.kodi_string_list + self.addon_string_list
 
     def get_string_list(self, lang_folder_root):
         string_list = []
         lang_folders = []
-        if not self.addon_xml_file or not lang_folder_root:
-            return [], []
         for item in self.settings.get("language_folders"):
             path = checkPaths([os.path.join(lang_folder_root, item, "strings.po"),
                                os.path.join(lang_folder_root, item, "resources", "strings.po")])
