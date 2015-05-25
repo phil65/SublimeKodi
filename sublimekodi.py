@@ -15,6 +15,7 @@ from lxml import etree as ET
 from InfoProvider import InfoProvider
 from RemoteDevice import RemoteDevice
 from Utils import *
+from xml.sax.saxutils import escape
 INFOS = InfoProvider()
 REMOTE = RemoteDevice()
 # sublime.log_commands(True)
@@ -242,24 +243,28 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         node = self.nodes[index]
-        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
-        self.select_text(node)
+        view = self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
+        self.select_text(view, node)
 
     def show_preview(self, index):
         node = self.nodes[index]
-        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
-        self.select_text(node)
+        view = self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        # self.select_text(view, node)
 
-    def select_text(self, node):
-        view = self.window.active_view()
+    @run_async
+    def select_text(self, view, node):
+        while view.is_loading():
+            pass
+        view.sel().clear()
         text_point = view.text_point(node["line"] - 1, 0)
         line = view.line(text_point)
         if "identifier" in node:
-            line_start = view.substr(line).find(node["identifier"])
-            line_end = line_start + len(node["identifier"])
+            label = escape(node["identifier"])
+            line_start = view.substr(line).find(label)
+            line_end = line_start + len(label)
             id_start = text_point + line_start
             id_end = text_point + line_end
-            view.sel().clear()
+            log(view.substr(line))
             view.sel().add(sublime.Region(int(id_start), int(id_end)))
 
 
