@@ -223,6 +223,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#formatter</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#entity</string>
 		</dict>
 		<dict>
@@ -351,6 +355,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#formatter</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#entity</string>
 				</dict>
 				<dict>
@@ -378,6 +386,23 @@
 			<string>(&amp;)([:a-zA-Z_][:a-zA-Z0-9_.-]*|#[0-9]+|#x[0-9a-fA-F]+)(;)</string>
 			<key>name</key>
 			<string>constant.character.entity.xml</string>
+		</dict>
+		<key>formatter</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.constant.xml</string>
+				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>invalid.function</string>
+			<key>match</key>
+			<string>\[([A-Za-z0-9\/ ]*?)\]</string>
+			<key>name</key>
+			<string>storage.type</string>
 		</dict>
 		<key>kodiinfolabel</key>
 		<dict>

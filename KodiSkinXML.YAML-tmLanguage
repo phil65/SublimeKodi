@@ -64,6 +64,8 @@ patterns:
 
 - include: '#kodiinfolabel'
 
+- include: '#formatter'
+
 - include: '#entity'
 
 - include: '#bare-ampersand'
@@ -109,6 +111,7 @@ repository:
     - include: '#kodivariable'
     - include: '#koditranslation'
     - include: '#kodiinfolabel'
+    - include: '#formatter'
     - include: '#entity'
     - include: '#bare-ampersand'
 
@@ -148,6 +151,14 @@ repository:
     end: '[,\]]'
     endCaptures:
       '0': {name: text.xml}
+
+  formatter:
+    name: storage.type
+    contentName: invalid.function
+    match: '\[([A-Za-z0-9\/ ]*?)\]'
+    captures:
+      '1': {name: punctuation.definition.constant.xml}
+
 
   singlequotedString:
     name: string.quoted.single.xml
