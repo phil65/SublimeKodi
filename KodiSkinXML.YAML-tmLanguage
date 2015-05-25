@@ -157,7 +157,7 @@ repository:
   formatter:
     name: storage.type
     contentName: invalid.function
-    match: '\[([A-Za-z0-9\/ ]*?)\]'
+    match: '\[([A-Za-z0-9\/= ]*?)\]'
     captures:
       '1': {name: punctuation.definition.constant.xml}
 
