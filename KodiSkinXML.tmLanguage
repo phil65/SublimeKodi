@@ -407,42 +407,6 @@
 				</dict>
 			</array>
 		</dict>
-		<key>doublequotedfunctionString</key>
-		<dict>
-			<key>begin</key>
-			<string>"</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.begin.xml</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>"</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.end.xml</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>entity.name.function</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#entity</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#bare-ampersand</string>
-				</dict>
-			</array>
-		</dict>
 		<key>entity</key>
 		<dict>
 			<key>captures</key>
@@ -496,7 +460,7 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#doublequotedfunctionString</string>
+					<string>#doublequotedString</string>
 				</dict>
 				<dict>
 					<key>include</key>
