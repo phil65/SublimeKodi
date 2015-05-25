@@ -104,13 +104,11 @@ def make_archive(folderpath, archive):
         rel_path = os.path.relpath(f, folderpath)
         if ".git" in path_list:
             continue
-        if f.endswith(".zip"):
-            continue
         if rel_path.startswith("media") and not rel_path.endswith(".xbt"):
             continue
         if rel_path.startswith("themes"):
             continue
-        if f.endswith('.pyc') or f.endswith('.pyo'):
+        if f.endswith(('.pyc', '.pyo', '.zip')):
             continue
         a.write(f, rel_path)
         yield rel_path
@@ -133,14 +131,9 @@ def get_cont_col(col):
 
 
 def check_bom(filename):
-
-    bytes = min(32, os.path.getsize(filename))
-    raw = open(filename, 'rb').read(bytes)
-
-    if raw.startswith(codecs.BOM_UTF8):
-        return True
-    else:
-        return False
+    file_bytes = min(32, os.path.getsize(filename))
+    raw = open(filename, 'rb').read(file_bytes)
+    return raw.startswith(codecs.BOM_UTF8)
 
 
 def checkPaths(paths):
