@@ -1,3 +1,13 @@
+# -*- coding: utf8 -*-
+
+# Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
+# This program is Free Software see LICENSE file for details
+
+"""
+SublimeKodi is a tool to assist with Kodi skinning / scripting using Sublime Text 3
+"""
+
+
 import os
 from Utils import *
 import re

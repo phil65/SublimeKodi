@@ -1,3 +1,13 @@
+# -*- coding: utf8 -*-
+
+# Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
+# This program is Free Software see LICENSE file for details
+
+"""
+SublimeKodi is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+"""
+
+
 import sublime_plugin
 import sublime
 import re
@@ -228,9 +238,12 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
-        INFOS.update_builtin_labels()
-        INFOS.update_addon_labels()
+        view = self.window.active_view()
+        regions = view.find_by_selector("variable.parameter")
+        log(regions)
+        for region in regions:
+            log(view.substr(region))
+            view.sel().add(region)
 
 
 class QuickPanelCommand(sublime_plugin.WindowCommand):

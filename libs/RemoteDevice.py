@@ -1,3 +1,13 @@
+# -*- coding: utf8 -*-
+
+# Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
+# This program is Free Software see LICENSE file for details
+
+"""
+SublimeKodi is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+"""
+
+
 from Utils import *
 import os
 
@@ -107,7 +117,7 @@ class RemoteDevice():
                 target = '%saddons/%s%s' % (self.userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
                 self.cmd("adb", ["shell", "mkdir", target])
             for f in files:
-                if f.endswith('.pyc') or f.endswith('.pyo'):
+                if f.endswith(('.pyc', '.pyo')):
                     continue
                 result = self.cmd("adb", ["push", os.path.join(root, f).replace('\\', '/'), target.replace('\\', '/')])
                 self.panel_log(result)
