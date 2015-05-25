@@ -388,23 +388,23 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.infolabel.begin.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>meta.function-call</string>
+			<string>variable.parameter kodi.infolabel</string>
 			<key>end</key>
-			<string>]</string>
+			<string>[,\]]</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.infolabel.end.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>name</key>
-			<string>support.function.kodi.infolabel.xml</string>
+			<string>text.kodi.infolabel.xml</string>
 		</dict>
 		<key>koditranslation</key>
 		<dict>
@@ -415,11 +415,11 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.translation.begin.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>meta.function-call</string>
+			<string>variable.parameter kodi.translation</string>
 			<key>end</key>
 			<string>]</string>
 			<key>endCaptures</key>
@@ -427,11 +427,11 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.translation.end.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>name</key>
-			<string>support.function.kodi.translation.xml</string>
+			<string>text.kodi.translation.xml</string>
 		</dict>
 		<key>kodivariable</key>
 		<dict>
@@ -442,23 +442,23 @@
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.variable.begin.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>contentName</key>
-			<string>meta.function-call</string>
+			<string>variable.parameter kodi.variable</string>
 			<key>end</key>
-			<string>]</string>
+			<string>[,\]]</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>0</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.kodi.variable.end.xml</string>
+					<string>text.xml</string>
 				</dict>
 			</dict>
 			<key>name</key>
-			<string>support.function.kodi.variable.xml</string>
+			<string>text.kodi.variable.xml</string>
 		</dict>
 		<key>singlequotedString</key>
 		<dict>

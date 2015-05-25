@@ -120,34 +120,34 @@ repository:
       '3': {name: punctuation.definition.constant.xml}
 
   koditranslation:
-    name: support.function.kodi.translation.xml
-    contentName: meta.function-call
+    name: text.kodi.translation.xml
+    contentName: variable.parameter kodi.translation
     begin: \$LOCALIZE\[
     beginCaptures:
-      '0': {name: support.function.kodi.translation.begin.xml}
+      '0': {name: text.xml}
     end: ']'
     endCaptures:
-      '0': {name: support.function.kodi.translation.end.xml}
+      '0': {name: text.xml}
 
   kodivariable:
-    name: support.function.kodi.variable.xml
-    contentName: meta.function-call
+    name: text.kodi.variable.xml
+    contentName: variable.parameter kodi.variable
     begin: \$VAR\[
     beginCaptures:
-      '0': {name: support.function.kodi.variable.begin.xml}
-    end: ']'
+      '0': {name: text.xml}
+    end: '[,\]]'
     endCaptures:
-      '0': {name: support.function.kodi.variable.end.xml}
+      '0': {name: text.xml}
 
   kodiinfolabel:
-    name: support.function.kodi.infolabel.xml
-    contentName: meta.function-call
+    name: text.kodi.infolabel.xml
+    contentName: variable.parameter kodi.infolabel
     begin: \$(?:ESC)?INFO\[
     beginCaptures:
-      '0': {name: support.function.kodi.infolabel.begin.xml}
-    end: ']'
+      '0': {name: text.xml}
+    end: '[,\]]'
     endCaptures:
-      '0': {name: support.function.kodi.infolabel.end.xml}
+      '0': {name: text.xml}
 
   singlequotedString:
     name: string.quoted.single.xml
