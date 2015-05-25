@@ -260,7 +260,11 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
         line = view.line(text_point)
         if "identifier" in node:
             label = escape(node["identifier"])
-            line_start = view.substr(line).find(label)
+            line_contents = view.substr(line)
+            line_start = line_contents.find(label)
+            num = line_contents.count(label)
+            if num != 1:
+                return False
             line_end = line_start + len(label)
             id_start = text_point + line_start
             id_end = text_point + line_end
