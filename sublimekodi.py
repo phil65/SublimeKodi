@@ -134,7 +134,9 @@ class SublimeKodi(sublime_plugin.EventListener):
         view.hide_popup()
 
     def on_post_save_async(self, view):
-        if INFOS.project_path and view.file_name() and view.file_name().endswith(".xml"):
+        if not INFOS.project_path or not view.file_name():
+            return False
+        if view.file_name().endswith(".xml"):
             if self.is_modified:
                 if self.settings.get("auto_reload_skin", True):
                     self.is_modified = False
