@@ -211,15 +211,19 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#kodivariable</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#koditranslation</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#entity</string>
 		</dict>
 		<dict>
 			<key>include</key>
 			<string>#bare-ampersand</string>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#kodivariable</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -244,30 +248,6 @@
 			</dict>
 			<key>name</key>
 			<string>support.function.kodi.infolabel.xml</string>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>\$LOCALIZE\[</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>support.function.kodi.translation.begin.xml</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>]</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>support.function.kodi.translation.end.xml</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>support.function.kodi.translation.xml</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -379,6 +359,14 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#kodivariable</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#koditranslation</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#entity</string>
 				</dict>
 				<dict>
@@ -406,6 +394,33 @@
 			<string>(&amp;)([:a-zA-Z_][:a-zA-Z0-9_.-]*|#[0-9]+|#x[0-9a-fA-F]+)(;)</string>
 			<key>name</key>
 			<string>constant.character.entity.xml</string>
+		</dict>
+		<key>koditranslation</key>
+		<dict>
+			<key>begin</key>
+			<string>\$LOCALIZE\[</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.translation.begin.xml</string>
+				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>meta.function-call</string>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.kodi.translation.end.xml</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>support.function.kodi.translation.xml</string>
 		</dict>
 		<key>kodivariable</key>
 		<dict>
