@@ -248,7 +248,7 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 
     def show_preview(self, index):
         node = self.nodes[index]
-        view = self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
+        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION | sublime.TRANSIENT)
         # self.select_text(view, node)
 
     @run_async
@@ -264,7 +264,6 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
             line_end = line_start + len(label)
             id_start = text_point + line_start
             id_end = text_point + line_end
-            log(view.substr(line))
             view.sel().add(sublime.Region(int(id_start), int(id_end)))
 
 
