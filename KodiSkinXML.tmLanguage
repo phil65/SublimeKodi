@@ -218,6 +218,10 @@
 			<string>#bare-ampersand</string>
 		</dict>
 		<dict>
+			<key>include</key>
+			<string>#kodivariable</string>
+		</dict>
+		<dict>
 			<key>begin</key>
 			<string>\$(?:ESC)?INFO\[</string>
 			<key>beginCaptures</key>
@@ -240,32 +244,6 @@
 			</dict>
 			<key>name</key>
 			<string>support.function.kodi.infolabel.xml</string>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>\$VAR\[</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>support.function.kodi.variable.begin.xml</string>
-				</dict>
-			</dict>
-			<key>contentName</key>
-			<string>meta.function-call</string>
-			<key>end</key>
-			<string>]</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>support.function.kodi.variable.end.xml</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>support.function.kodi.variable.xml</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -429,46 +407,32 @@
 			<key>name</key>
 			<string>constant.character.entity.xml</string>
 		</dict>
-		<key>functiontagStuff</key>
+		<key>kodivariable</key>
 		<dict>
-			<key>patterns</key>
-			<array>
+			<key>begin</key>
+			<string>\$VAR\[</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
 				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.attribute-name.namespace.xml</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.attribute-name.xml</string>
-						</dict>
-						<key>3</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.separator.namespace.xml</string>
-						</dict>
-						<key>4</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.attribute-name.localname.xml</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string> (?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9]+)=</string>
+					<key>name</key>
+					<string>support.function.kodi.variable.begin.xml</string>
 				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>meta.function-call</string>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
 				<dict>
-					<key>include</key>
-					<string>#doublequotedString</string>
+					<key>name</key>
+					<string>support.function.kodi.variable.end.xml</string>
 				</dict>
-				<dict>
-					<key>include</key>
-					<string>#singlequotedString</string>
-				</dict>
-			</array>
+			</dict>
+			<key>name</key>
+			<string>support.function.kodi.variable.xml</string>
 		</dict>
 		<key>singlequotedString</key>
 		<dict>
