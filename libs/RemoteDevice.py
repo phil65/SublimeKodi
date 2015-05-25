@@ -14,11 +14,27 @@ class RemoteDevice():
         self.userdata_folder = self.settings.get("remote_userdata_folder")
         self.ip = self.settings.get("remote_ip")
 
+    def cmd(self, program, args):
+        command = [program]
+        for arg in args:
+            command.append(arg)
+        try:
+            output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+            # log(output.decode("utf-8"))
+            return "%s\n%s" % (" ".join(command), output.decode("utf-8").replace('\r', '').replace('\n', ''))
+        except subprocess.CalledProcessError as e:
+            return "%s\nErrorCode: %s" % (e, str(e.returncode))
+        except Exception as e:
+            return "Error while executing %s:\n %s" % (str(command), e)
+        # proc = subprocess.Popen(['echo', '"to stdout"'],
+        #                     stdout=subprocess.PIPE)
+        # stdout_value = proc.communicate()[0]
+
     # @check_busy
     def adb_connect(self, ip):
         self.ip = ip
         self.panel_log("Connect to remote with ip %s" % ip)
-        result = command_line("adb", ["connect", str(ip)])
+        result = self.cmd("adb", ["connect", str(ip)])
         self.panel_log(result)
         self.connected = True
 
@@ -41,7 +57,7 @@ class RemoteDevice():
     # @check_busy
     def adb_disconnect(self):
         self.panel_log("Disconnect from remote")
-        result = command_line("adb", ["disconnect"])
+        result = self.cmd("adb", ["disconnect"])
         self.panel_log(result)
         self.connected = False
 
@@ -54,7 +70,7 @@ class RemoteDevice():
     def adb_push(self, source, target):
         if not target.endswith('/'):
             target += '/'
-        result = command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
+        result = self.cmd("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
         self.panel_log(result)
 
     @run_async
@@ -64,7 +80,7 @@ class RemoteDevice():
 
     @check_busy
     def adb_pull(self, path, target):
-        result = command_line("adb", ["pull", path, target])
+        result = self.cmd("adb", ["pull", path, target])
         self.panel_log(result)
 
     @run_async
@@ -89,11 +105,11 @@ class RemoteDevice():
                 continue
             else:
                 target = '%saddons/%s%s' % (self.userdata_folder, os.path.basename(addon), root.replace(addon, "").replace('\\', '/'))
-                command_line("adb", ["shell", "mkdir", target])
+                self.cmd("adb", ["shell", "mkdir", target])
             for f in files:
                 if f.endswith('.pyc') or f.endswith('.pyo'):
                     continue
-                result = command_line("adb", ["push", os.path.join(root, f).replace('\\', '/'), target.replace('\\', '/')])
+                result = self.cmd("adb", ["push", os.path.join(root, f).replace('\\', '/'), target.replace('\\', '/')])
                 self.panel_log(result)
         self.panel_log("All files pushed")
 
@@ -108,7 +124,7 @@ class RemoteDevice():
     @run_async
     @check_busy
     def clear_cache(self):
-        result = command_line("adb", ["shell", "rm", "-rf", os.path.join(self.userdata_folder, "temp")])
+        result = self.cmd("adb", ["shell", "rm", "-rf", os.path.join(self.userdata_folder, "temp")])
         self.panel_log(result)
 
     def panel_log(self, text):
