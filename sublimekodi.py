@@ -44,7 +44,8 @@ class SublimeKodi(sublime_plugin.EventListener):
         if folder not in INFOS.include_list:
             return []
         if "text.xml" in scope_name:
-            for node in INFOS.include_list[folder]:
+            nodes = INFOS.include_list[folder] + INFOS.fonts[folder]
+            for node in nodes:
                 completions.append([node["name"], node["name"]])
             completions.sort()
             return completions
@@ -116,20 +117,14 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.is_modified = True
 
     def on_load_async(self, view):
-        self.check_project_change()
-        filename = view.file_name()
-        if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
-            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
+        self.check_status()
         # filename = view.file_name()
         # if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
         #     self.root = get_root_from_file(filename)
         #     self.tree = ET.ElementTree(self.root)
 
     def on_activated_async(self, view):
-        self.check_project_change()
-        filename = view.file_name()
-        if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
-            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
+        self.check_status()
 
     def on_deactivated_async(self, view):
         view.hide_popup()
@@ -148,13 +143,20 @@ class SublimeKodi(sublime_plugin.EventListener):
         if view.file_name().endswith(".po"):
             INFOS.update_addon_labels()
 
-    def check_project_change(self):
+    def check_status(self):
         if not self.settings_loaded:
             self.settings = sublime.load_settings(SETTINGS_FILE)
             INFOS.get_settings(self.settings)
             INFOS.update_builtin_labels()
             self.settings_loaded = True
         view = sublime.active_window().active_view()
+        filename = view.file_name()
+        if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
+            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
+        if filename and filename.endswith(".po"):
+            view.set_syntax_file('Packages/SublimeKodi/Gettext.tmLanguage')
+        if filename and filename.endswith(".log"):
+            view.set_syntax_file('Packages/SublimeKodi/KodiLog.sublime-syntax')
         if view and view.window() is not None:
             variables = view.window().extract_variables()
             if "folder" in variables:
