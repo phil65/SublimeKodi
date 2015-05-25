@@ -227,6 +227,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#brackets</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#entity</string>
 		</dict>
 		<dict>
@@ -315,6 +319,23 @@
 			<key>name</key>
 			<string>invalid.illegal.bad-ampersand.xml</string>
 		</dict>
+		<key>brackets</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.constant.xml</string>
+				</dict>
+			</dict>
+			<key>contentName</key>
+			<string>invalid.function</string>
+			<key>match</key>
+			<string>\(([A-Za-z0-9.]*?)\)</string>
+			<key>name</key>
+			<string>constant.numeric</string>
+		</dict>
 		<key>doublequotedString</key>
 		<dict>
 			<key>begin</key>
@@ -356,6 +377,10 @@
 				<dict>
 					<key>include</key>
 					<string>#formatter</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#brackets</string>
 				</dict>
 				<dict>
 					<key>include</key>

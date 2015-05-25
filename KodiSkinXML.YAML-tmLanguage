@@ -65,6 +65,7 @@ patterns:
 - include: '#kodiinfolabel'
 
 - include: '#formatter'
+- include: '#brackets'
 
 - include: '#entity'
 
@@ -112,6 +113,7 @@ repository:
     - include: '#koditranslation'
     - include: '#kodiinfolabel'
     - include: '#formatter'
+    - include: '#brackets'
     - include: '#entity'
     - include: '#bare-ampersand'
 
@@ -156,6 +158,13 @@ repository:
     name: storage.type
     contentName: invalid.function
     match: '\[([A-Za-z0-9\/ ]*?)\]'
+    captures:
+      '1': {name: punctuation.definition.constant.xml}
+
+  brackets:
+    name: constant.numeric
+    contentName: invalid.function
+    match: '\(([A-Za-z0-9.]*?)\)'
     captures:
       '1': {name: punctuation.definition.constant.xml}
 
