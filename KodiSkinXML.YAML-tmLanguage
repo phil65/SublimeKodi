@@ -1,0 +1,177 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+name: KodiSkinXML
+scopeName: text.xml
+fileTypes: [xml]
+uuid: c00873a7-a89d-4395-abd0-5ef08c6c0b9b
+
+patterns:
+- name: meta.tag.preprocessor.xml
+  begin: (<\?)\s*([-_a-zA-Z0-9]+)
+  end: (\?>)
+  captures:
+    '1': {name: punctuation.definition.tag.begin.xml}
+    '2': {name: entity.name.tag.xml}
+  patterns:
+  - name: entity.other.attribute-name.xml
+    match: ' ([a-zA-Z-]+)'
+  - include: '#doublequotedString'
+  - include: '#singlequotedString'
+
+- name: comment.block.xml
+  begin: <[!%]--
+  end: --%?>
+  captures:
+    '0': {name: punctuation.definition.comment.xml}
+
+- name: meta.tag.no-content.xml
+  begin: (<)((?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+))(?=(\s[^>]*)?></\2>)
+  beginCaptures:
+    '1': {name: punctuation.definition.tag.begin.xml}
+    '3': {name: entity.name.tag.namespace.xml}
+    '4': {name: entity.name.tag.xml}
+    '5': {name: punctuation.separator.namespace.xml}
+    '6': {name: entity.name.tag.localname.xml}
+  end: (>)(<)(/)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)(>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.xml}
+    '2': {name: punctuation.definition.tag.begin.xml meta.scope.between-tag-pair.xml}
+    '3': {name: punctuation.definition.tag.begin.xml}
+    '4': {name: entity.name.tag.namespace.xml}
+    '5': {name: entity.name.tag.xml}
+    '6': {name: punctuation.separator.namespace.xml}
+    '7': {name: entity.name.tag.localname.xml}
+    '8': {name: punctuation.definition.tag.end.xml}
+  patterns:
+  - include: '#tagStuff'
+
+- name: meta.tag.xml
+  begin: (</?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)
+  end: (/?>)
+  endCaptures:
+    '1': {name: punctuation.definition.tag.end.xml}
+  captures:
+    '1': {name: punctuation.definition.tag.begin.xml}
+    '2': {name: entity.name.tag.namespace.xml}
+    '3': {name: entity.name.tag.xml}
+    '4': {name: punctuation.separator.namespace.xml}
+    '5': {name: entity.name.tag.localname.xml}
+  patterns:
+  - include: '#tagStuff'
+
+- include: '#kodivariable'
+
+- include: '#koditranslation'
+
+- include: '#kodiinfolabel'
+
+- include: '#entity'
+
+- include: '#bare-ampersand'
+
+- name: support.function.kodi.number.xml
+  begin: \$NUMBER\[
+  beginCaptures:
+    '0': {name: support.function.kodi.number.begin.xml}
+  end: ']'
+  endCaptures:
+    '0': {name: support.function.kodi.number.end.xml}
+
+- name: support.function.kodi.translation.xml
+  begin: \$ADDON\[
+  beginCaptures:
+    '0': {name: support.function.kodi.translation.begin.xml}
+  end: ']'
+  endCaptures:
+    '0': {name: support.function.kodi.translation.end.xml}
+
+- name: invalid.function.kodi.invalid.xml
+  begin: \$.*?\[
+  beginCaptures:
+    '0': {name: invalid.function.kodi.invalid.begin.xml}
+  end: ']'
+  endCaptures:
+    '0': {name: invalid.function.kodi.invalid.end.xml}
+
+repository:
+  bare-ampersand:
+    name: invalid.illegal.bad-ampersand.xml
+    match: '&'
+
+  doublequotedString:
+    name: string.quoted.double.xml
+    begin: '"'
+    beginCaptures:
+      '0': {name: punctuation.definition.string.begin.xml}
+    end: '"'
+    endCaptures:
+      '0': {name: punctuation.definition.string.end.xml}
+    patterns:
+    - include: '#kodivariable'
+    - include: '#koditranslation'
+    - include: '#kodiinfolabel'
+    - include: '#entity'
+    - include: '#bare-ampersand'
+
+  entity:
+    name: constant.character.entity.xml
+    match: (&)([:a-zA-Z_][:a-zA-Z0-9_.-]*|#[0-9]+|#x[0-9a-fA-F]+)(;)
+    captures:
+      '1': {name: punctuation.definition.constant.xml}
+      '3': {name: punctuation.definition.constant.xml}
+
+  koditranslation:
+    name: support.function.kodi.translation.xml
+    contentName: meta.function-call
+    begin: \$LOCALIZE\[
+    beginCaptures:
+      '0': {name: support.function.kodi.translation.begin.xml}
+    end: ']'
+    endCaptures:
+      '0': {name: support.function.kodi.translation.end.xml}
+
+  kodivariable:
+    name: support.function.kodi.variable.xml
+    contentName: meta.function-call
+    begin: \$VAR\[
+    beginCaptures:
+      '0': {name: support.function.kodi.variable.begin.xml}
+    end: ']'
+    endCaptures:
+      '0': {name: support.function.kodi.variable.end.xml}
+
+  kodiinfolabel:
+    name: support.function.kodi.infolabel.xml
+    contentName: meta.function-call
+    begin: \$(?:ESC)?INFO\[
+    beginCaptures:
+      '0': {name: support.function.kodi.infolabel.begin.xml}
+    end: ']'
+    endCaptures:
+      '0': {name: support.function.kodi.infolabel.end.xml}
+
+  singlequotedString:
+    name: string.quoted.single.xml
+    begin: "'"
+    beginCaptures:
+      '0': {name: punctuation.definition.string.begin.xml}
+    end: "'"
+    endCaptures:
+      '0': {name: punctuation.definition.string.end.xml}
+    patterns:
+    - include: '#entity'
+    - include: '#bare-ampersand'
+
+  tagStuff:
+    patterns:
+    - match: ' (?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9]+)='
+      captures:
+        '1': {name: entity.other.attribute-name.namespace.xml}
+        '2': {name: entity.other.attribute-name.xml}
+        '3': {name: punctuation.separator.namespace.xml}
+        '4': {name: entity.other.attribute-name.localname.xml}
+    - include: '#doublequotedString'
+    - include: '#singlequotedString'
+firstLineMatch: '^<\?xml '
+foldingStartMarker: ^\s*(<[^!?%/](?!.+?(/>|</.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))
+foldingStopMarker: ^\s*(</[^>]+>|[/%]>|-->)\s*$
+keyEquivalent: ^~X
