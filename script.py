@@ -15,11 +15,15 @@ RESULTS_FILE = "results.txt"
 
 settings = """{
     "kodi_path": "C:/Kodi",
-    "portable_mode": true
+    "portable_mode": true,
+    "language_folders": ["English", "resource.language.en_gb"]
 }"""
 
 
 def log(text):
+    """
+    logs text to both file and console
+    """
     with codecs.open(RESULTS_FILE, "a", encoding='utf-8') as myfile:
         myfile.write(str(text) + "\n")
     try:
@@ -29,6 +33,9 @@ def log(text):
 
 
 def check_tags(check_type):
+    """
+    triggers of test of type "check_type", then formats and logs them
+    """
     errors = INFOS.get_check_listitems(check_type)
     for e in errors:
         content = e["message"]
@@ -48,6 +55,7 @@ if __name__ == "__main__":
     INFOS.update_builtin_labels()
     INFOS.init_addon(project_folder)
     INFOS.update_xml_files()
+    # INFOS.check_xml_files()
     for path in INFOS.file_list_generator():
         if check_bom(path):
             log("found BOM. File: " + path)

@@ -18,6 +18,115 @@ import platform
 import webbrowser
 
 APP_NAME = "kodi"
+# c&p from wiki
+WINDOW_MAP = [("home", "WINDOW_HOME", " 10000", "0", "Home.xml"),
+              ("programs", "WINDOW_PROGRAMS", " 10001", "1", "MyPrograms.xml"),
+              ("pictures", "WINDOW_PICTURES", " 10002", "2", "MyPics.xml"),
+              ("filemanager", " WINDOW_FILES", "10003", "3", "FileManager.xml"),
+              ("settings", "WINDOW_SETTINGS_MENU", "10004", "4", "Settings.xml"),
+              ("systeminfo", "WINDOW_SYSTEM_INFORMATION", "10007", "7", "SettingsSystemInfo.xml"),
+              ("screencalibration", "WINDOW_MOVIE_CALIBRATION", "10011", "11", "SettingsScreenCalibration.xml"),
+              ("picturessettings", "WINDOW_SETTINGS_MYPICTURES", "10012", "12", "SettingsCategory.xml"),
+              ("programssettings", "WINDOW_SETTINGS_MYPROGRAMS", "10013", "13", "SettingsCategory.xml"),
+              ("weathersettings", " WINDOW_SETTINGS_MYWEATHER", "10014", "14", "SettingsCategory.xml"),
+              ("musicsettings", "WINDOW_SETTINGS_MYMUSIC", " 10015", "15", "SettingsCategory.xml"),
+              ("systemsettings", "WINDOW_SETTINGS_SYSTEM", "10016", "16", "SettingsCategory.xml"),
+              ("videossettings", "WINDOW_SETTINGS_MYVIDEOS", "10017", "17", "SettingsCategory.xml"),
+              ("servicesettings", " WINDOW_SETTINGS_SERVICE", " 10018", "18", "SettingsCategory.xml"),
+              ("appearancesettings", "WINDOW_SETTINGS_APPEARANCE", "10019", "19", "SettingsCategory.xml"),
+              ("scripts", " WINDOW_SCRIPTS", "10020", "20", "MyScripts.xml"),
+              ("pvrsettings", " WINDOW_SETTINGS_MYPVR", "10021", "21", "SettingsCategory.xml"),
+              ("videolibrary", "WINDOW_VIDEO_NAV", "10025", "25", "MyVideoNav.xml"),
+              ("videoplaylist", "WINDOW_VIDEO_PLAYLIST", "10028", "28", "MyVideoPlaylist.xml"),
+              ("loginscreen", " WINDOW_LOGINSCREEN", "10029", "29", "LoginScreen.xml"),
+              ("profiles", "WINDOW_SETTINGS_PROFILES", "10034", "34", "SettingsProfile.xml"),
+              ("addonbrowser", "WINDOW_ADDON_BROWSER", "10040", "40", "AddonBrowser.xml"),
+              ("yesnodialog", " WINDOW_DIALOG_YES_NO", "10100", "100", " DialogYesNo.xml"),
+              ("progressdialog", "WINDOW_DIALOG_PROGRESS", "10101", "101", " DialogProgress.xml"),
+              ("virtualkeyboard", " WINDOW_DIALOG_KEYBOARD", "10103", "103", " DialogKeyboard.xml"),
+              ("volumebar", "WINDOW_DIALOG_VOLUME_BAR", "10104", "104", " DialogVolumeBar.xml"),
+              ("contextmenu", " WINDOW_DIALOG_CONTEXT_MENU", "10106", "106", " DialogContextMenu.xml"),
+              ("infodialog", "WINDOW_DIALOG_KAI_TOAST", " 10107", "107", " DialogKaiToast.xml"),
+              ("numericinput", "WINDOW_DIALOG_NUMERIC", "10109", "109", " DialogNumeric.xml"),
+              ("shutdownmenu", "WINDOW_DIALOG_BUTTON_MENU", "10111", "111", " DialogButtonMenu.xml"),
+              ("mutebug", " WINDOW_DIALOG_MUTE_BUG", "10113", "113", " DialogMuteBug.xml"),
+              ("playercontrols", "WINDOW_DIALOG_PLAYER_CONTROLS", "10114", "114", " PlayerControls.xml"),
+              ("seekbar", " WINDOW_DIALOG_SEEK_BAR", "10115", "115", " DialogSeekBar.xml"),
+              ("musicosd", "WINDOW_DIALOG_MUSIC_OSD", " 10120", "120", " MusicOSD.xml"),
+              ("visualisationpresetlist", " WINDOW_DIALOG_VIS_PRESET_LIST", "10122", "122", " VisualizationPresetList.xml"),
+              ("osdvideosettings", "WINDOW_DIALOG_VIDEO_OSD_SETTINGS", "10123", "123", " VideoOSDSettings.xml"),
+              ("osdaudiosettings", "WINDOW_DIALOG_AUDIO_OSD_SETTINGS", "10124", "124", " VideoOSDSettings.xml"),
+              ("videobookmarks", "WINDOW_DIALOG_VIDEO_BOOKMARKS", "10125", "125", " VideoOSDBookmarks.xml"),
+              ("filebrowser", " WINDOW_DIALOG_FILE_BROWSER", "10126", "126", " FileBrowser.xml"),
+              ("networksetup", "WINDOW_DIALOG_NETWORK_SETUP", " 10128", "128", " DialogNetworkSetup.xml"),
+              ("mediasource", " WINDOW_DIALOG_MEDIA_SOURCE", "10129", "129", " DialogMediaSource.xml"),
+              ("profilesettings", " WINDOW_PROFILE_SETTINGS", " 10130", "130", " ProfileSettings.xml"),
+              ("locksettings", "WINDOW_LOCK_SETTINGS", "10131", "131", " LockSettings.xml"),
+              ("contentsettings", " WINDOW_DIALOG_CONTENT_SETTINGS", "10132", "132", " DialogContentSettings.xml"),
+              ("favourites", "WINDOW_DIALOG_FAVOURITES", "10134", "134", " DialogFavourites.xml"),
+              ("songinformation", " WINDOW_DIALOG_SONG_INFO", " 10135", "135", " DialogSongInfo.xml"),
+              ("smartplaylisteditor", " WINDOW_DIALOG_SMART_PLAYLIST_EDITOR", " 10136", "136", " SmartPlaylistEditor.xml"),
+              ("smartplaylistrule", "WINDOW_DIALOG_SMART_PLAYLIST_RULE", "10137", "137", " SmartPlaylistRule.xml"),
+              ("busydialog", "WINDOW_DIALOG_BUSY", "10138", "138", " DialogBusy.xml"),
+              ("pictureinfo", " WINDOW_DIALOG_PICTURE_INFO", "10139", "139", " DialogPictureInfo.xml"),
+              ("addonsettings", "WINDOW_DIALOG_ADDON_SETTINGS", "10140", "140", " DialogAddonSettings.xml"),
+              ("accesspoints", "WINDOW_DIALOG_ACCESS_POINTS", " 10141", "141", " DialogAccessPoints.xml"),
+              ("fullscreeninfo", "WINDOW_DIALOG_FULLSCREEN_INFO", "10142", "142", " DialogFullScreenInfo.xml"),
+              ("karaokeselector", " WINDOW_DIALOG_KARAOKE_SONGSELECT", "10143", "143", " DialogKaraokeSongSelector.xml"),
+              ("karaokelargeselector", "WINDOW_DIALOG_KARAOKE_SELECTOR", "10144", "144", " DialogKaraokeSongSelectorLarge.xml"),
+              ("sliderdialog", "WINDOW_DIALOG_SLIDER", "10145", "145", " DialogSlider.xml"),
+              ("addoninformation", "WINDOW_DIALOG_ADDON_INFO", "10146", "146", " DialogAddonInfo.xml"),
+              ("textviewer", "WINDOW_DIALOG_TEXT_VIEWER", "10147", "147", " DialogTextViewer.xml"),
+              ("peripherals", " WINDOW_DIALOG_PERIPHERAL_MANAGER", "10149", "149", " DialogPeripheralManager.xml"),
+              ("peripheralsettings", "WINDOW_DIALOG_PERIPHERAL_SETTINGS", "10150", "150", " DialogPeripheralSettings.xml"),
+              ("extendedprogressdialog", "WINDOW_DIALOG_EXT_PROGRESS", "10151", "151", " DialogExtendedProgressBar.xml"),
+              ("mediafilter", " WINDOW_DIALOG_MEDIA_FILTER", "10152", "152", " DialogMediaFilter.xml"),
+              ("subtitlesearch", "WINDOW_DIALOG_SUBTITLES", " 10153", "153", " DialogSubtitles.xml"),
+              ("musicplaylist", "WINDOW_MUSIC_PLAYLIST", "10500", "500", " MyMusicPlaylist.xml"),
+              ("musicfiles", "WINDOW_MUSIC_FILES", "10501", "501", " MyMusicSongs.xml"),
+              ("musiclibrary", "WINDOW_MUSIC_NAV", "10502", "502", " MyMusicNav.xml"),
+              ("musicplaylisteditor", " WINDOW_MUSIC_PLAYLIST_EDITOR", "10503", "503", " MyMusicPlaylistEditor.xml"),
+              ("FullscreenLiveTV", "WINDOW_FULLSCREEN_LIVETV", "10614", "?", "?"),
+              ("tvchannels", "WINDOW_TV_CHANNELS", "10615", "615", " MyPVRChannels.xml"),
+              ("tvrecordings", "WINDOW_TV_RECORDINGS", "10616", "616", " MyPVRRecordings.xml"),
+              ("tvguide", " WINDOW_TV_GUIDE", " 10617", "617", " MyPVRGuide.xml"),
+              ("tvtimers", "WINDOW_TV_TIMERS", "10618", "618", " MyPVRTimers.xml"),
+              ("tvsearch", "WINDOW_TV_SEARCH", "10619", "619", " MyPVRSearch.xml"),
+              ("radiochannels", "WINDOW_RADIO_CHANNELS", "10620", "620", " MyPVRChannels.xml"),
+              ("radiorecordings", " WINDOW_RADIO_RECORDINGS", " 10621", "621", " MyPVRRecordings.xml"),
+              ("radioguide", "WINDOW_RADIO_GUIDE", "10622", "622", " MyPVRGuide.xml"),
+              ("radiotimers", " WINDOW_RADIO_TIMERS", " 10623", "623", " MyPVRTimers.xml"),
+              ("radiosearch", " WINDOW_RADIO_SEARCH", " 10624", "624", " MyPVRSearch.xml"),
+              ("pvrguideinfo", "WINDOW_DIALOG_PVR_GUIDE_INFO", "10602", "602", " DialogPVRGuideInfo.xml"),
+              ("pvrrecordinginfo", "WINDOW_DIALOG_PVR_RECORDING_INFO", "10603", "603", " DialogPVRRecordingInfo.xml"),
+              ("pvrtimersetting", " WINDOW_DIALOG_PVR_TIMER_SETTING", " 10604", "604", " DialogPVRTimerSettings.xml"),
+              ("pvrgroupmanager", " WINDOW_DIALOG_PVR_GROUP_MANAGER", " 10605", "605", " DialogPVRGroupManager.xml"),
+              ("pvrchannelmanager", "WINDOW_DIALOG_PVR_CHANNEL_MANAGER", "10606", "606", " DialogPVRChannelManager.xml"),
+              ("pvrguidesearch", "WINDOW_DIALOG_PVR_GUIDE_SEARCH", "10607", "607", " DialogPVRGuideSearch.xml"),
+              ("pvrosdchannels", "WINDOW_DIALOG_PVR_OSD_CHANNELS", "10610", "610", " DialogPVRChannelsOSD.xml"),
+              ("pvrosdguide", " WINDOW_DIALOG_PVR_OSD_GUIDE", " 10611", "611", " DialogPVRGuideOSD.xml"),
+              ("Custom", " Skin", " Windows", " -", "-", "1100–1199", "custom*.xml"),
+              ("selectdialog", "WINDOW_DIALOG_SELECT", "12000", "2000", "DialogSelect.xml"),
+              ("musicinformation", "WINDOW_MUSIC_INFO", "12001", "2001", "DialogAlbumInfo.xml"),
+              ("okdialog", "WINDOW_DIALOG_OK", "12002", "2002", "DialogOK.xml"),
+              ("movieinformation", "WINDOW_VIDEO_INFO", "12003", "2003", "DialogVideoInfo.xml"),
+              ("fullscreenvideo", " WINDOW_FULLSCREEN_VIDEO", " 12005", "2005", "VideoFullScreen.xml"),
+              ("visualisation", "WINDOW_VISUALISATION", "12006", "2006", "MusicVisualisation.xml"),
+              ("slideshow", "WINDOW_SLIDESHOW", "12007", "2007", "SlideShow.xml"),
+              ("filestackingdialog", "WINDOW_DIALOG_FILESTACKING", "12008", "2008", "DialogFileStacking.xml"),
+              ("karaoke", " WINDOW_KARAOKELYRICS", "12009", "2009", "MusicKaraokeLyrics.xml"),
+              ("weather", " WINDOW_WEATHER", "12600", "2600", "MyWeather.xml"),
+              ("screensaver", " WINDOW_SCREENSAVER", "12900", "2900", "none"),
+              ("videoosd", "WINDOW_OSD", "12901", "2901", "VideoOSD.xml"),
+              ("videomenu", "WINDOW_MEDIA_MENU", "12902", "2902", "none"),
+              ("startup", " WINDOW_STARTUP_ANIM", " 12999", "2999", "startup.xml"),
+              ("skinsettings", "-", "-", "-", "SkinSettings.xml"),
+              ("pointer", " -", "-", "105", " Pointer.xml"),
+              ("musicoverlay", "WINDOW_MUSIC_OVERLAY", "12903", "2903", "MusicOverlay.xml"),
+              ("videooverlay", "WINDOW_VIDEO_OVERLAY", "12904", "2904", "VideoOverlay.xml")]
+WINDOW_FILENAMES = [item[4] for item in WINDOW_MAP]
+WINDOW_NAMES = [item[0] for item in WINDOW_MAP]
+WINDOW_IDS = [item[3] for item in WINDOW_MAP]
 
 
 class InfoProvider():
@@ -81,6 +190,9 @@ class InfoProvider():
         return checkPaths(paths)
 
     def get_check_listitems(self, check_type):
+        """
+        starts check with type check_type and returns result nodes
+        """
         self.update_xml_files()
         checks = {"variable": self.check_variables,
                   "include": self.check_includes,
@@ -89,6 +201,14 @@ class InfoProvider():
                   "id": self.check_ids,
                   "general": self.check_values}
         return checks[check_type]()
+
+    def check_xml_files(self):
+        """
+        Checks if the skin contains all core xml window files
+        """
+        for item in WINDOW_FILENAMES:
+            if item not in self.window_file_list:
+                log("Skin does not include %s" % item)
 
     def get_colors(self):
         self.color_list = []
@@ -455,15 +575,6 @@ class InfoProvider():
     def check_ids(self):
         window_regex = r"(?:Dialog.Close|Window.IsActive|Window.IsVisible|Window)\(([0-9]+)\)"
         control_regex = "^(?!.*IsActive)(?!.*Window.IsVisible)(?!.*Dialog.Close)(?!.*Window)(?!.*Row)(?!.*Column).*\(([0-9]*?)\)"
-        builtin_window_ids = [0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 17,
-                              18, 19, 20, 21, 25, 28, 29, 34, 40, 100, 101, 103,
-                              104, 106, 107, 109, 111, 113, 114, 115, 120, 122, 123,
-                              124, 125, 126, 128, 129, 130, 131, 132, 134, 135, 136,
-                              137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147,
-                              149, 150, 151, 152, 153, 500, 501, 502, 503, 615, 616,
-                              617, 618, 619, 620, 621, 622, 623, 624, 602, 603, 604,
-                              605, 606, 607, 610, 611, 2000, 2001, 2002, 2003, 2005,
-                              2006, 2007, 2008, 2009, 2600, 2900, 2901, 2902, 2999]
         listitems = []
         for folder in self.xml_folders:
             window_ids = []
@@ -523,7 +634,7 @@ class InfoProvider():
             for item in window_refs:
                 if item["name"] in window_ids:
                     pass
-                elif int(item["name"]) in builtin_window_ids:
+                elif item["name"] in WINDOW_IDS:
                     pass
                 else:
                     item["message"] = "Window ID not defined: " + item["name"]
