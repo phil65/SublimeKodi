@@ -225,12 +225,6 @@ def get_tags_from_file(path, node_tags):
     return nodes
 
 
-def push_file(source, target):
-    if not target.endswith('/'):
-        target += '/'
-    return command_line("adb", ["push", source.replace('\\', '/'), target.replace('\\', '/')])
-
-
 def get_label_list(po_file_path):
     listitems = []
     try:
