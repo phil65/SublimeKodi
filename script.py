@@ -55,7 +55,7 @@ if __name__ == "__main__":
     INFOS.update_builtin_labels()
     INFOS.init_addon(project_folder)
     INFOS.update_xml_files()
-    # INFOS.check_xml_files()
+    INFOS.check_xml_files()
     for path in INFOS.file_list_generator():
         if check_bom(path):
             log("found BOM. File: " + path)
