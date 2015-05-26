@@ -146,6 +146,16 @@ class InfoProvider():
         self.xml_folders = []
         self.addon_string_list = []
 
+    def load_template(self):
+        path = os.path.normpath(os.path.abspath(__file__))
+        path = os.path.split(path)[0]
+        path = os.path.join(path, "controls.xml")
+        self.template = get_root_from_file(path)
+        # TODO: resolve includes
+
+        # for node in self.template.iterchildren():
+        #     log(node.tag)
+
     def init_addon(self, path):
         self.addon_type = ""
         self.addon_name = ""
@@ -1028,3 +1038,29 @@ class InfoProvider():
                             "file": path}
                     listitems.append(item)
         return listitems
+
+    def check_file2(self, path):
+        xml_file = os.path.basename(path)
+        root = get_root_from_file(path)
+        # folder = path.split(os.sep)[-2]
+        # root = self.resolve_includes(root, folder)
+        if root is None:
+            return []
+        tree = ET.ElementTree(root)
+        listitems = []
+        # find invalid tags
+        for check in tag_checks:
+            for node in root.xpath(check[0]):
+                if node.tag not in check[1]:
+                    if "type" in node.getparent().attrib:
+                        text = '%s type="%s"' % (node.getparent().tag, node.getparent().attrib["type"])
+                    else:
+                        text = node.getparent().tag
+                    item = {"line": node.sourceline,
+                            "type": node.tag,
+                            "filename": xml_file,
+                            "identifier": node.tag,
+                            "message": "invalid tag for <%s>: <%s>" % (text, node.tag),
+                            "file": path}
+                    listitems.append(item)
+        # find invalid attributes
