@@ -16,6 +16,7 @@ import sys
 import cgi
 import webbrowser
 from subprocess import Popen
+from xml.sax.saxutils import escape
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -25,7 +26,6 @@ from lxml import etree as ET
 from InfoProvider import *
 from RemoteDevice import RemoteDevice
 from Utils import *
-from xml.sax.saxutils import escape
 INFOS = InfoProvider()
 REMOTE = RemoteDevice()
 # sublime.log_commands(True)

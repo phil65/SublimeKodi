@@ -17,6 +17,7 @@ import string
 import platform
 import webbrowser
 
+
 APP_NAME = "kodi"
 # c&p from wiki
 WINDOW_MAP = [("home", "WINDOW_HOME", " 10000", "0", "Home.xml"),
@@ -633,7 +634,9 @@ class InfoProvider():
                 if item["name"] in window_ids:
                     pass
                 elif item["name"] in WINDOW_IDS:
-                    pass
+                    windowname = WINDOW_NAMES[WINDOW_IDS.index(item["name"])]
+                    item["message"] = "Window id: Please use %s instead of %s" % (windowname, item["name"])
+                    listitems.append(item)
                 else:
                     item["message"] = "Window ID not defined: " + item["name"]
                     listitems.append(item)
