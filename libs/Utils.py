@@ -266,6 +266,7 @@ def get_label_list(po_file_path):
 
 def get_root_from_file(xml_file):
     if not xml_file.endswith(".xml"):
+        log("Tried to get root from non-xml file")
         return None
     try:
         parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
