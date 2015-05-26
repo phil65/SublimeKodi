@@ -150,6 +150,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     self.is_modified = False
                     view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
                 INFOS.reload_skin_after_save(view.file_name())
+                # TODO: need to check for kodi xml
                 if self.settings.get("auto_skin_check", True):
                     view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
@@ -249,12 +250,15 @@ class ExecuteBuiltinCommand(sublime_plugin.WindowCommand):
 class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        view = self.window.active_view()
-        regions = view.find_by_selector("variable.parameter")
-        log(regions)
-        for region in regions:
-            log(view.substr(region))
-            view.sel().add(region)
+        INFOS.get_settings(sublime.load_settings(SETTINGS_FILE))
+        INFOS.update_builtin_labels()
+        INFOS.update_addon_labels()
+        # view = self.window.active_view()
+        # regions = view.find_by_selector("variable.parameter")
+        # log(regions)
+        # for region in regions:
+        #     log(view.substr(region))
+        #     view.sel().add(region)
 
 
 class QuickPanelCommand(sublime_plugin.WindowCommand):
