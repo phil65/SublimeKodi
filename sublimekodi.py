@@ -38,7 +38,6 @@ else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
-
 class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
@@ -117,6 +116,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = INFOS.get_ancestor_info(view.file_name(), line)
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
+        # node = INFOS.template_root.find(".//control[@type='label']")
+        # log(node)
+        # popup_label = node.find(".//available_tags").text.replace("\\n", "<br>")
         if popup_label and self.settings.get("tooltip_delay", 0) > -1:
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), self.settings.get("tooltip_delay", 0))
 
@@ -165,11 +167,11 @@ class SublimeKodi(sublime_plugin.EventListener):
         view = sublime.active_window().active_view()
         filename = view.file_name()
         if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
-            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.sublime-syntax')
+            view.assign_syntax('Packages/SublimeKodi/KodiSkinXML.sublime-syntax')
         if filename and filename.endswith(".po"):
-            view.set_syntax_file('Packages/SublimeKodi/Gettext.tmLanguage')
+            view.assign_syntax('Packages/SublimeKodi/Gettext.tmLanguage')
         if filename and filename.endswith(".log"):
-            view.set_syntax_file('Packages/SublimeKodi/KodiLog.sublime-syntax')
+            view.assign_syntax('Packages/SublimeKodi/KodiLog.sublime-syntax')
         if view and view.window() is not None:
             variables = view.window().extract_variables()
             if "folder" in variables:
