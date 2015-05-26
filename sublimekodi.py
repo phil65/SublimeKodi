@@ -142,7 +142,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         view.hide_popup()
 
     def on_post_save_async(self, view):
-        if not INFOS.project_path or not view.file_name():
+        if not INFOS.addon_xml_file or not view.file_name():
             return False
         if view.file_name().endswith(".xml"):
             if self.is_modified:
