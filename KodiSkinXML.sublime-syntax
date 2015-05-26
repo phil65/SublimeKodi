@@ -158,7 +158,5 @@ contexts:
       name: constant.numeric
       contentName: invalid.function
       captures:
-        '1': constant.other.allcaps
         '2': constant.other.allcaps
-        '3': constant.other.allcaps
 
