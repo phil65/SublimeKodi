@@ -26,7 +26,9 @@ import time
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
-
+    """
+    Decorator which re-tries the function in case of Exception
+    """
     def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
@@ -51,6 +53,10 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
 
 
 def run_async(func):
+    """
+    Decorator to put a function into a separate thread
+    """
+
     @wraps(func)
     def async_func(*args, **kwargs):
         func_hl = Thread(target=func, args=args, kwargs=kwargs)
@@ -61,6 +67,11 @@ def run_async(func):
 
 
 def check_busy(func):
+    """
+    Decorator to check for self.is_busy
+    Only one of the decorated functions may run simultaniously
+    """
+
     def decorator(self, *args, **kwargs):
         if self.is_busy:
             message_dialog("Already busy. Please wait.")
@@ -75,6 +86,9 @@ def check_busy(func):
 
 
 def get_sublime_path():
+    """
+    get cmd call for different platforms to execute Sublime Text
+    """
     if platform.system() == 'Darwin':
         return "subl"
     elif platform.system() == 'Linux':
@@ -83,14 +97,20 @@ def get_sublime_path():
         return os.path.join(os.getcwd(), "sublime_text.exe")
 
 
-def absoluteFilePaths(directory):
+def get_absolute_file_paths(directory):
+    """
+    Generate absolute file paths for the given directory
+    """
     for dirpath, _, filenames in os.walk(directory):
         for f in filenames:
             yield os.path.abspath(os.path.join(dirpath, f))
 
 
 def make_archive(folderpath, archive):
-    fileList = absoluteFilePaths(folderpath)
+    """
+    Create zip with path *archive from folder with path *folderpath
+    """
+    fileList = get_absolute_file_paths(folderpath)
     a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
     for f in fileList:
         path_list = re.split(r'[\\/]', f)
@@ -108,7 +128,10 @@ def make_archive(folderpath, archive):
     a.close()
 
 
-def tohex(r, g, b, a=None):
+def to_hex(r, g, b, a=None):
+    """
+    return rgba hex values for ST tooltip
+    """
     if a is None:
         a = 255
     return "#%02X%02X%02X%02X" % (r, g, b, a)
@@ -120,16 +143,22 @@ def get_cont_col(col):
     if abs(l1 - l) < .15:
         l1 = .15
     (r, g, b) = colorsys.hls_to_rgb(h, l1, s)
-    return tohex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
+    return to_hex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
 def check_bom(filename):
+    """
+    check file for BOM, return True / False
+    """
     file_bytes = min(32, os.path.getsize(filename))
     raw = open(filename, 'rb').read(file_bytes)
     return raw.startswith(codecs.BOM_UTF8)
 
 
-def checkPaths(paths):
+def check_paths(paths):
+    """
+    Return first valid path of list with paths
+    """
     for path in paths:
         if os.path.exists(path):
             return path
@@ -137,6 +166,9 @@ def checkPaths(paths):
 
 
 def texturepacker_generator(skin_path, settings):
+    """
+    Run Texturepacker and yield command line output
+    """
     media_path = os.path.join(skin_path, "media")
     tp_path = settings.get("texturechecker_path")
     if tp_path:
@@ -150,6 +182,10 @@ def texturepacker_generator(skin_path, settings):
 
 
 def check_brackets(str):
+    """
+    check if all brackets match, return True / False
+    """
+
     stack = []
     pushChars, popChars = "<({[", ">)}]"
     for c in str:
@@ -166,7 +202,7 @@ def check_brackets(str):
     return not len(stack)
 
 
-def findWord(view):
+def find_word(view):
     for region in view.sel():
         if region.begin() == region.end():
             word = view.word(region)

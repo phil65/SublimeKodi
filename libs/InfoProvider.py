@@ -164,7 +164,7 @@ class InfoProvider():
         self.addon_type = ""
         self.addon_name = ""
         self.project_path = path
-        self.addon_xml_file = checkPaths([os.path.join(self.project_path, "addon.xml")])
+        self.addon_xml_file = check_paths([os.path.join(self.project_path, "addon.xml")])
         self.xml_folders = []
         self.fonts = []
         if self.addon_xml_file:
@@ -181,7 +181,7 @@ class InfoProvider():
                 # TODO: parse all python skin folders correctly
                 paths = [os.path.join(self.project_path, "resources", "skins", "Default", "720p"),
                          os.path.join(self.project_path, "resources", "skins", "Default", "1080i")]
-                folder = checkPaths(paths)
+                folder = check_paths(paths)
                 self.xml_folders.append(folder)
         self.update_addon_labels()
         if self.xml_folders:
@@ -194,12 +194,12 @@ class InfoProvider():
     def lang_path(self):
         paths = [os.path.join(self.project_path, "resources", "language"),
                  os.path.join(self.project_path, "language")]
-        return checkPaths(paths)
+        return check_paths(paths)
 
     def media_path(self):
         paths = [os.path.join(self.project_path, "media"),
                  os.path.join(self.project_path, "resources", "skins", "Default", "media")]
-        return checkPaths(paths)
+        return check_paths(paths)
 
     def get_check_listitems(self, check_type):
         """
@@ -247,7 +247,7 @@ class InfoProvider():
         for folder in self.xml_folders:
             paths = [os.path.join(self.project_path, folder, "Font.xml"),
                      os.path.join(self.project_path, folder, "font.xml")]
-            font_file = checkPaths(paths)
+            font_file = check_paths(paths)
             if font_file:
                 self.fonts[folder] = []
                 root = get_root_from_file(font_file)
@@ -287,7 +287,7 @@ class InfoProvider():
                      os.path.join(xml_folder, "includes.xml")]
             self.include_file_list[folder] = []
             self.include_list[folder] = []
-            include_file = checkPaths(paths)
+            include_file = check_paths(paths)
             self.update_includes(include_file)
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[folder]), folder))
 
@@ -391,7 +391,7 @@ class InfoProvider():
         string_list = []
         lang_folders = []
         for item in self.settings.get("language_folders"):
-            path = checkPaths([os.path.join(lang_folder_root, item, "strings.po"),
+            path = check_paths([os.path.join(lang_folder_root, item, "strings.po"),
                                os.path.join(lang_folder_root, item, "resources", "strings.po")])
             if os.path.exists(path):
                 log("found language: " + path)

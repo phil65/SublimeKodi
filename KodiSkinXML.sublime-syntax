@@ -7,6 +7,7 @@ first_line_match: '^<\?xml '
 scope: text.xml
 contexts:
   main:
+    # xml header
     - match: '(<\?)\s*([-_a-zA-Z0-9]+)'
       captures:
         1: punctuation.definition.tag.begin.xml
@@ -18,6 +19,7 @@ contexts:
         - match: " ([a-zA-Z-]+)"
           scope: entity.other.attribute-name.xml
         - include: doublequotedString
+    # comments
     - match: "<!--"
       captures:
         0: punctuation.definition.comment.xml

@@ -442,7 +442,7 @@ class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         filename = "%s.log" % APP_NAME
-        self.log_file = checkPaths([os.path.join(INFOS.get_userdata_folder(), filename),
+        self.log_file = check_paths([os.path.join(INFOS.get_userdata_folder(), filename),
                                     os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
         self.window.open_file(self.log_file)
 
