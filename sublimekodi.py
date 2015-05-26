@@ -22,7 +22,7 @@ libs_path = os.path.join(__path__, 'libs')
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
 from lxml import etree as ET
-from InfoProvider import InfoProvider
+from InfoProvider import *
 from RemoteDevice import RemoteDevice
 from Utils import *
 from xml.sax.saxutils import escape
@@ -57,6 +57,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             nodes = INFOS.include_list[folder] + INFOS.fonts[folder]
             for node in nodes:
                 completions.append([node["name"], node["name"]])
+            for item in WINDOW_NAMES:
+                completions.append([item, item])
             completions.sort()
             return completions
             # return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
