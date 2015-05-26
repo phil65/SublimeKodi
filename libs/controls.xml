@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!--depracated: mover, select, multiselect-->
+    <control type="label" id="1">
+        <description></description>
+        <include>common</include>
+        <include>label_common</include>
+        <scroll>bool</scroll>
+        <info>label</info>
+        <number></number>
+        <angle>30</angle>
+        <haspath>bool</haspath>
+        <shadowcolor>color</shadowcolor>
+        <wrapmultiline>bool</wrapmultiline>
+        <scrollspeed>50</scrollspeed>
+        <scrollsuffix>-</scrollsuffix>
+    </control>
+
+    <control type="fadelabel" id="1">
+        <include>common</include>
+        <scrollout>bool</scrollout>
+        <pauseatend>int</pauseatend>
+        <label>6</label>
+        <info>label</info>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <textoffsetx>20</textoffsetx>
+    </control>
+    <control type="button" id="1">
+        <include>common</include>
+        <include>label_common</include>
+        <colordiffuse>color</colordiffuse>
+        <texturefocus colordiffuse="color">path</texturefocus>
+        <texturenofocus colordiffuse="color">path</texturenofocus>
+        <focusedcolor>color</focusedcolor>
+        <disabledcolor>color</disabledcolor>
+        <invalidcolor>color</invalidcolor>
+        <textoffsetx>int</textoffsetx>
+        <textoffsety>int</textoffsety>
+        <pulseonselect></pulseonselect>
+        <onclick>builtin</onclick>
+        <onfocus>builtin</onfocus>
+        <onunfocus>builtin</onunfocus>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="image" id="1">
+        <include>common</include>
+        <colordiffuse>color</colordiffuse>
+        <fadetime>int</fadetime>
+        <texture border="int" flipy="bool" flipx="bool">path</texture>
+        <bordertexture border="int">path</bordertexture>
+        <bordersize>int</bordersize>
+        <texture>path</texture>
+        <aspectratio>keep</aspectratio>
+    </control>
+    <control type="multiimage" id="1">
+        <include>common</include>
+        <imagepath>myimagepath</imagepath>
+        <info></info>
+        <timeperimage>int</timeperimage>
+        <fadetime>int0</fadetime>
+        <pauseatend>int</pauseatend>
+        <randomize>bool</randomize>
+        <loop>bool</loop>
+        <aspectratio>aspect</aspectratio>
+    </control>
+    <control type="radiobutton" id="1">
+        <include>common</include>
+        <colordiffuse>color</colordiffuse>
+        <texturefocus>path</texturefocus>
+        <texturenofocus>path</texturenofocus>
+        <textureradioonfocus colordiffuse="color">path</textureradioonfocus>
+        <textureradioonnofocus colordiffuse="color">path</textureradioonnofocus>
+        <textureradioofffocus colordiffuse="color">path</textureradioofffocus>
+        <textureradiooffnofocus colordiffuse="color">path</textureradiooffnofocus>
+        <selected>condition</selected>
+        <onclick>builtin</onclick>
+        <label>label</label>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <focusedcolor>color</focusedcolor>
+        <disabledcolor>color</disabledcolor>
+        <align>left</align>
+        <aligny>ypos</aligny>
+        <textoffsetx>int</textoffsetx>
+        <textoffsety>int</textoffsety>
+        <pulseonselect>bool</pulseonselect>
+        <onfocus>builtin</onfocus>
+        <onunfocus>builtin</onunfocus>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="togglebutton" id="1">
+        <include>common</include>
+        <colordiffuse>color</colordiffuse>
+        <texturefocus>path</texturefocus>
+        <texturenofocus>path</texturenofocus>
+        <alttexturefocus>path</alttexturefocus>
+        <alttexturenofocus>path</alttexturenofocus>
+        <usealttexture>condition</usealttexture>
+        <label>label</label>
+        <altlabel>label</altlabel>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <disabledcolor>color</disabledcolor>
+        <align>left</align>
+        <aligny>ypos</aligny>
+        <textoffsetx>int</textoffsetx>
+        <textoffsety>int</textoffsety>
+        <pulseonselect>bool</pulseonselect>
+        <onclick>Player.Pause</onclick>
+        <onfocus>builtin</onfocus>
+        <onunfocus>builtin</onunfocus>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="spincontrol" id="1">
+        <include>common</include>
+        <colordiffuse>color</colordiffuse>
+        <textureup colordiffuse="color">path</textureup>
+        <textureupfocus colordiffuse="color">path</textureupfocus>
+        <texturedown colordiffuse="color">path</texturedown>
+        <texturedownfocus colordiffuse="color">path</texturedownfocus>
+        <subtype>page</subtype>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <disabledcolor>color</disabledcolor>
+        <align>xpos</align>
+        <aligny>ypos</aligny>
+        <textoffsetx>int</textoffsetx>
+        <textoffsety>int</textoffsety>
+        <pulseonselect></pulseonselect>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="spincontrolex" id="1">
+        <include>common</include>
+        <spinposx>int</spinposx>
+        <spinposy>int</spinposy>
+        <spinwidth>int</spinwidth>
+        <spinheight>int</spinheight>
+        <visible>bool</visible>
+        <colordiffuse>color</colordiffuse>
+        <texturefocus>path</texturefocus>
+        <texturenofocus>path</texturenofocus>
+        <textureup>path</textureup>
+        <textureupfocus>path</textureupfocus>
+        <texturedown>path</texturedown>
+        <texturedownfocus>path</texturedownfocus>
+        <label>label</label>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <disabledcolor>color</disabledcolor>
+        <align>xpos</align>
+        <aligny>ypos</aligny>
+        <textoffsetx>int</textoffsetx>
+        <textoffsety>int</textoffsety>
+        <pulseonselect></pulseonselect>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="slider" id="1">
+        <include>common</include>
+        <texturesliderbar>path</texturesliderbar>
+        <textureslidernib>path</textureslidernib>
+        <textureslidernibfocus>path</textureslidernibfocus>
+        <info></info>
+        <action></action>
+        <controloffsetx></controloffsetx>
+        <controloffsety></controloffsety>
+        <pulseonselect></pulseonselect>
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+    </control>
+    <control type="progress" id="1">
+        <include>common</include>
+        <reveal>bool</reveal>
+        <texturebg>path</texturebg>
+        <lefttexture>path</lefttexture>
+        <midtexture>path</midtexture>
+        <righttexture>path</righttexture>
+        <overlaytexture>path</overlaytexture>
+        <info></info>
+    </control>
+    <control type="textbox" id="1">
+        <include>common</include>
+        <colordiffuse>color</colordiffuse>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <pulseonselect></pulseonselect>
+        <pagecontrol>13</pagecontrol>
+        <scrolltime>int</scrolltime>
+        <autoscroll delay="int" time="int" repeat="int">condition</autoscroll>
+        <label>label</label>
+    </control>
+    <control type="rss" id="1">
+        <include>common</include>
+        <font>xxx</font>
+        <textcolor>color</textcolor>
+        <headlinecolor>color</headlinecolor>
+        <titlecolor>color</titlecolor>
+    </control>
+    <control type="visualisation" id ="1">
+        <include>common</include>
+    </control>
+    <control type="videowindow" id="1">
+        <include>common</include>
+    </control>
+    <control type="resize" id="1">
+        <include>common</include>
+        <texturefocus>mytexture.png</texturefocus>
+        <texturenofocus>mytexture.png</texturenofocus>
+        <pulseonselect>true</pulseonselect>
+    </control>
+    <control type="edit" id="1">
+        <include>common</include>
+        <aligny>center</aligny>
+        <label>Search</label>
+        <hinttext>Enter search string</hinttext>
+        <font>font14</font>
+        <textoffsetx>10</textoffsetx>
+        <textcolor>FFB2D4F5</textcolor>
+        <disabledcolor>FF000000</disabledcolor>
+        <invalidcolor>FFFFFFFF</invalidcolor>
+        <texturefocus>button-focus.png</texturefocus>
+        <texturenofocus>button-nofocus.png</texturenofocus>
+        <pulseonselect>no</pulseonselect>
+    </control>
+    <control type="epggrid" id="1">
+        <include>common</include>
+        <pagecontrol>int</pagecontrol>
+        <scrolltime>int</scrolltime>
+        <timeblocks>int</timeblocks>
+        <rulerunit>int</rulerunit>
+        <progresstexture border="5">PVR-EpgProgressIndicator.png</progresstexture>
+        <onleft>31</onleft>
+        <onright>31</onright>
+        <onup>10</onup>
+        <ondown>10</ondown>
+        <rulerlayout height="35" width="int"></rulerlayout>
+        <channellayout height="int" width="int"></channellayout>
+        <focusedchannellayout height="int" width="int"></focusedchannellayout>
+        <itemlayout height="int" width="int"></itemlayout>
+        <focusedlayout height="int" width="int"></focusedlayout>
+    </control>
+    <control type="list" id="1">
+        <include>common</include>
+        <include>list_common</include>
+    </control>
+    <control type="wraplist" id="1">
+        <include>common</include>
+        <include>list_common</include>
+        <focusposition>int</focusposition>
+        <movement>int</movement>
+    </control>
+    <control type="fixedlist" id="1">
+        <include>common</include>
+        <include>list_common</include>
+        <focusposition>int</focusposition>
+        <movement>int</movement>
+    </control>
+    <control type="panel" id="1">
+        <include>common</include>
+        <include>list_common</include>
+    </control>
+    <include name="common">
+        <description>xxx</description>
+        <posx>int</posx>
+        <posy>int</posy>
+        <left>int</left>
+        <right>int</right>
+        <width>int</width>
+        <height>int</height>
+        <visible>bool</visible>
+    </include>
+    <include name="list_common">
+        <onup>builtin</onup>
+        <ondown>builtin</ondown>
+        <onleft>builtin</onleft>
+        <onright>builtin</onright>
+        <onback>builtin</onback>
+        <orientation>orientation</orientation>
+        <preloaditems>bool</preloaditems>
+        <scrolltime>int</scrolltime>
+        <pagecontrol>int</pagecontrol>
+        <viewtype label="label">viewtype</viewtype>
+        <autoscroll delay="int" time="int" repeat="int" reverse="bool">condition</autoscroll>
+        <hitrect></hitrect>
+        <itemlayout width="int" height="int"></itemlayout>
+        <focusedlayout height="int" width="int"></focusedlayout>
+        <content></content>
+    </include>
+    <include name="label_common">
+        <font>font</font>
+        <textcolor>color</textcolor>
+        <align>xpos</align>
+        <aligny>ypos</aligny>
+        <label>label</label>
+    </include>
+</root>

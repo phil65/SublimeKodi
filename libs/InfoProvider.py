@@ -145,12 +145,16 @@ class InfoProvider():
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
+        self.load_template()
 
     def load_template(self):
+        """
+        loads the xml with control nodes for sanity checking (controls.xml)
+        """
         path = os.path.normpath(os.path.abspath(__file__))
         path = os.path.split(path)[0]
         path = os.path.join(path, "controls.xml")
-        self.template = get_root_from_file(path)
+        self.template_root = get_root_from_file(path)
         # TODO: resolve includes
 
         # for node in self.template.iterchildren():
@@ -910,7 +914,7 @@ class InfoProvider():
         # check some nodes to use noop instead of "-" / empty
         noop_tags = ["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]
         # check that some nodes only exist once on each level
-        # todo: special cases: label for fadelabel
+        # TODO: special cases: label for fadelabel
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
                        "colordiffuse", "texturefocus", "texturenofocus", "font", "selected", "textcolor", "disabledcolor", "selectedcolor",
                        "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
