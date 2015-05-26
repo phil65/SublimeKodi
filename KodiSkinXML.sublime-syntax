@@ -65,6 +65,7 @@ contexts:
     - include: koditranslation
     - include: kodiinfolabel
     - include: kodivariable
+    - include: brackets
 
   bare-ampersand:
     - match: "&"
@@ -106,11 +107,11 @@ contexts:
     - match: '(\$)(LOCALIZE)(\[)([0-9]+)(\])'
       name: variable.parameter text.kodi.translation.xml
       captures:
-        1: entity.kodi.label.dollar
-        2: entity.kodi.label.localize
-        3: entity.kodi.label.begin
-        4: entity.kodi.label.id
-        5: entity.kodi.label.end
+        1: variable.parameter entity.kodi.label.dollar
+        2: variable.parameter entity.kodi.label.localize
+        3: variable.parameter entity.kodi.label.begin
+        4: variable.parameter entity.kodi.label.id
+        5: variable.parameter entity.kodi.label.end
 
   kodiinfolabel:
     - match: '(\$)((?:ESC)?INFO)(\[)'
@@ -120,7 +121,7 @@ contexts:
         2: entity.kodi.infolabel.localize
         3: entity.kodi.infolabel.begin
       push:
-        - meta_scope: entity.name.function
+        - meta_scope: support.function
         - match: '(\])'
           captures:
             1: entity.kodi.infolabel.end
@@ -129,11 +130,11 @@ contexts:
 
   formatter:
     - match: '(\[)([A-Za-z0-9\/= ]*?)(\])'
-      name: invalid.function storage.type
+      name: constant.other.allcaps
       captures:
-        '1': kodi.formatter.begin storage.type
-        '2': kodi.formatter.content storage.type
-        '3': kodi.formatter.end storage.type
+        '1': kodi.formatter.begin constant.other.allcaps
+        '2': kodi.formatter.content constant.other.allcaps
+        '3': kodi.formatter.end constant.other.allcaps
 
   kodivariable:
     - match: '(\$)(VAR)(\[)'
@@ -143,7 +144,7 @@ contexts:
         2: entity.kodi.variable.localize
         3: entity.kodi.variable.begin
       push:
-        - meta_scope: entity.name.function
+        - meta_scope: storage.type
         - match: '(\])'
           captures:
             1: entity.kodi.variable.end
@@ -151,9 +152,11 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '\(([A-Za-z0-9.]*?)\)'
+    - match: '(\()([A-Za-z0-9.]*?)(\))'
       name: constant.numeric
       contentName: invalid.function
       captures:
-        '1': punctuation.definition.constant.xml
+        '1': support.function
+        '2': support.function
+        '3': support.function
 

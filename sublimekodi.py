@@ -165,7 +165,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         view = sublime.active_window().active_view()
         filename = view.file_name()
         if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
-            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.tmLanguage')
+            view.set_syntax_file('Packages/SublimeKodi/KodiSkinXML.sublime-syntax')
         if filename and filename.endswith(".po"):
             view.set_syntax_file('Packages/SublimeKodi/Gettext.tmLanguage')
         if filename and filename.endswith(".log"):
