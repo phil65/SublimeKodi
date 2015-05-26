@@ -146,18 +146,18 @@ def get_cont_col(col):
     return to_hex(int(r * 255), int(g * 255), int(b * 255))  # true complementary
 
 
-def check_bom(filename):
+def check_bom(filepath):
     """
-    check file for BOM, return True / False
+    check file *filepath for BOM, return True / False
     """
-    file_bytes = min(32, os.path.getsize(filename))
-    raw = open(filename, 'rb').read(file_bytes)
+    file_bytes = min(32, os.path.getsize(filepath))
+    raw = open(filepath, 'rb').read(file_bytes)
     return raw.startswith(codecs.BOM_UTF8)
 
 
 def check_paths(paths):
     """
-    Return first valid path of list with paths
+    Return first valid path of *paths list
     """
     for path in paths:
         if os.path.exists(path):
@@ -167,7 +167,8 @@ def check_paths(paths):
 
 def texturepacker_generator(skin_path, settings):
     """
-    Run Texturepacker and yield command line output
+    yield command line output from running TexturePacker on *skin_path,
+    also needs *settings for TexturePacker path
     """
     media_path = os.path.join(skin_path, "media")
     tp_path = settings.get("texturechecker_path")
@@ -181,14 +182,13 @@ def texturepacker_generator(skin_path, settings):
                 yield line
 
 
-def check_brackets(str):
+def check_brackets(label):
     """
-    check if all brackets match, return True / False
+    check if all brackets in *label match, return True / False
     """
-
     stack = []
     pushChars, popChars = "<({[", ">)}]"
-    for c in str:
+    for c in label:
         if c in pushChars:
             stack.append(c)
         elif c in popChars:
@@ -232,20 +232,28 @@ def log(string):
     print("SublimeKodi: " + str(string))
 
 
-def message_dialog(string):
+def message_dialog(label):
+    """
+    try to show ST message dialog with label *label,
+    log() in case it fails
+    """
     try:
         import sublime
-        sublime.message_dialog(string)
+        sublime.message_dialog(label)
     except:
-        log(string)
+        log(label)
 
 
-def yesno_dialog(string, ok_button):
+def yesno_dialog(label, ok_button):
+    """
+    try to show ST yesno dialog with label *label and button text *ok_button,
+    log() in case it fails
+    """
     try:
         import sublime
-        return sublime.ok_cancel_dialog(string, ok_button)
+        return sublime.ok_cancel_dialog(label, ok_button)
     except:
-        log(string)
+        log(label)
         return False
 
 
@@ -301,6 +309,9 @@ def get_label_list(po_file_path):
 
 
 def get_root_from_file(xml_file):
+    """
+    return XML root node from file *filename
+    """
     if not xml_file.endswith(".xml"):
         log("Tried to get root from non-xml file")
         return None
@@ -327,6 +338,9 @@ def get_root_from_file(xml_file):
 
 
 def get_xml_file_paths(xml_path):
+    """
+    return list with absolute file paths from XML files in *xml_path
+    """
     xml_files = []
     if os.path.exists(xml_path):
             for xml_file in os.listdir(xml_path):
@@ -341,10 +355,18 @@ def get_xml_file_paths(xml_path):
 
 @run_async
 def send_json_request_async(data, settings):
+    """
+    send JSON command *data to Kodi in separate thread,
+    also needs *settings for remote ip etc.
+    """
     return send_json_request(data, settings)
 
 
 def send_json_request(data, settings):
+    """
+    send JSON command *data to Kodi,
+    also needs *settings for remote ip etc.
+    """
     address = settings.get("kodi_address", "http://localhost:8080")
     if not address:
         return None
