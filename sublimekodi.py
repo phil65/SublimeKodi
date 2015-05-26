@@ -184,25 +184,34 @@ class SublimeKodi(sublime_plugin.EventListener):
 class RemoteActionsCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        listitems = ["Reconnect", "Send to box", "Get log", "Clear cache"]
+        self.settings = sublime.load_settings(SETTINGS_FILE)
+        active_device = "Set device: %s" % self.settings.get("remote_ip")
+        listitems = [active_device, "Reconnect", "Send to box", "Get log", "Clear cache"]
         self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
         if index == -1:
             return None
         elif index == 0:
+            self.window.show_input_panel("Set remote IP", self.settings.get("remote_ip", "192.168.0.1"), self.set_ip, None, None)
+        elif index == 1:
             REMOTE.adb_reconnect_async()
             self.window.run_command("remote_actions")
-        elif index == 1:
-            REMOTE.push_to_box(INFOS.project_path)
         elif index == 2:
+            REMOTE.push_to_box(INFOS.project_path)
+        elif index == 3:
             plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
             REMOTE.get_log(self.on_log_done, plugin_path)
-        elif index == 3:
+        elif index == 4:
             REMOTE.clear_cache()
 
     def on_log_done(self, path):
         self.window.open_file(path)
+
+    def set_ip(self, ip):
+        self.settings.set("remote_ip", ip)
+        sublime.save_settings(SETTINGS_FILE)
+        self.window.run_command("remote_actions")
 
 
 class SetKodiFolderCommand(sublime_plugin.WindowCommand):
