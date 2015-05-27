@@ -130,6 +130,7 @@ contexts:
           captures:
             1: entity.kodi.infolabel.end
           pop: true
+        - include: koditranslation
         - include: formatter
 
   formatter:
