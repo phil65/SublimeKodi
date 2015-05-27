@@ -158,8 +158,11 @@ class InfoProvider():
         path = os.path.join(folder_path, "data.xml")
         root = get_root_from_file(path)
         self.builtins = []
-        for item in root:
+        self.conditions = []
+        for item in root.find("builtins"):
             self.builtins.append([item.find("code").text, item.find("help").text])
+        for item in root.find("conditions"):
+            self.conditions.append([item.find("code").text, item.find("help").text])
         # TODO: resolve includes
 
         # for node in self.template.iterchildren():
