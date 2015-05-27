@@ -452,6 +452,20 @@ class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
         view = self.window.active_view()
 
 
+class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        label_list = []
+        for item in INFOS.conditions:
+            label_list.append(["%s" % (item[0]), item[1]])
+        self.window.show_quick_panel(label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
+
+    def builtin_search_on_done(self, index):
+        if index == -1:
+            return None
+        view = self.window.active_view()
+
+
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
