@@ -46,7 +46,7 @@ contexts:
            1: string.quoted
            2: constant.character.escape
            3: storage.type.function
-        - match: '\b(?:Index|Key|Value|IO|Syntax|Import|Memory|Type|Reference|Runtime|Attribute|Name|Buffer|Arithmetic|Assertion)Error: (.*)$'
+        - match: '\b(?:[A-Za-z]+)Error: (.*)$'
           scope: text.kodi.traceback
           captures:
            1: storage.type.function
