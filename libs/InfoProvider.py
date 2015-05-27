@@ -126,7 +126,6 @@ WINDOW_FILENAMES = [item[4] for item in WINDOW_MAP]
 WINDOW_NAMES = [item[0] for item in WINDOW_MAP]
 WINDOW_IDS = [item[3] for item in WINDOW_MAP]
 
-
 class InfoProvider():
 
     def __init__(self):
@@ -145,16 +144,22 @@ class InfoProvider():
         self.string_list = []
         self.xml_folders = []
         self.addon_string_list = []
-        self.load_template()
+        self.load_data()
 
-    def load_template(self):
+    def load_data(self):
         """
         loads the xml with control nodes for sanity checking (controls.xml)
+        as well as builtins including their help string (data.xml)
         """
         path = os.path.normpath(os.path.abspath(__file__))
-        path = os.path.split(path)[0]
-        path = os.path.join(path, "controls.xml")
+        folder_path = os.path.split(path)[0]
+        path = os.path.join(folder_path, "controls.xml")
         self.template_root = get_root_from_file(path)
+        path = os.path.join(folder_path, "data.xml")
+        root = get_root_from_file(path)
+        self.builtins = []
+        for item in root:
+            self.builtins.append([item.find("code").text, item.find("help").text])
         # TODO: resolve includes
 
         # for node in self.template.iterchildren():

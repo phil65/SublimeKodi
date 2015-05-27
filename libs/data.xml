@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <item>
+        <code>Help</code>
+        <help>This help message (??? probably broken)</help>
+    </item>
+    <item>
+        <code>Reboot</code>
+        <help>Cold reboots the system (power cycle)</help>
+    </item>
+    <item>
+        <code>ShutDown</code>
+        <help>Trigger default Shutdown action defined in System Settings</help>
+    </item>
+    <item>
+        <code>Powerdown</code>
+        <help>Powerdown system</help>
+    </item>
+    <item>
+        <code>Quit</code>
+        <help>Quits Kodi</help>
+    </item>
+    <item>
+        <code>Hibernate</code>
+        <help>Hibernate (S4) the System</help>
+    </item>
+    <item>
+        <code>Suspend</code>
+        <help>Suspends (S3 / S1 depending on bios setting) the System</help>
+    </item>
+    <item>
+        <code>InhibitIdleShutdown(true/false)</code>
+        <help>Prevent the system to shutdown on idle.</help>
+    </item>
+    <item>
+        <code>AllowIdleShutdown</code>
+        <help>Allow the system to shutdown on idle.</help>
+    </item>
+    <item>
+        <code>ActivateScreensaver</code>
+        <help>Starts the screensaver</help>
+    </item>
+    <item>
+        <code>RestartApp</code>
+        <help>Restarts Kodi (only implemented under Windows and Linux)</help>
+    </item>
+    <item>
+        <code>Minimize</code>
+        <help>Minimizes Kodi</help>
+    </item>
+    <item>
+        <code>Reset</code>
+        <help>Reset the system (same as reboot)</help>
+    </item>
+    <item>
+        <code>Mastermode</code>
+        <help>Runs Kodi in master mode</help>
+    </item>
+    <item>
+        <code>SetGUILanguage</code>
+        <help>Set GUI Language</help>
+    </item>
+    <item>
+        <code>ActivateWindow(window[,dir,return])</code>
+        <help>Opens the given window. The parameter window can either be the window's id, or in the case of a standard window, the window's name. [[Window IDs|See here for a list of window names, and their respective ids.]] If, furthermore, the window is Music, Video, Pictures, or Program files, then the optional dir parameter specifies which folder Kodi should default to once the window is opened. This must be a source as specified in sources.xml, or a subfolder of a valid source. For some windows (MusicLibrary and VideoLibrary), the return parameter may be specified, which indicates that Kodi should use this folder as the "root" of the level, and thus the "parent directory" action from within this folder will return the user to where they were prior to the window activating</help>
+    </item>
+    <item>
+        <code>ActivateWindowAndFocus(id1, id2,item1, id3,item2)</code>
+        <help>Activate window with id1, first focus control id2 and then focus control id3. if either of the controls is a container, you can specify which item to focus (else, set it to 0).</help>
+    </item>
+    <item>
+        <code>ReplaceWindow(window,dir)</code>
+        <help>Replaces the current window with the given window. This is the same as ActivateWindow() but it doesn't update the window history list, so when you go back from the new window it will not return to the previous window, rather will return to the previous window's previous window.</help>
+    </item>
+    <item>
+        <code>ReplaceWindowAndFocus(id1, id2,item1, id3,item2)</code>
+        <help>Replace window with id1, first focus control id2 and then focus control id3.  if either of the controls is a container, you can specify which item to focus (else, set it to 0).</help>
+    </item>
+    <item>
+        <code>TakeScreenshot</code>
+        <help>Takes a Screenshot</help>
+    </item>
+    <item>
+        <code>RunScript(script[,args]*)</code>
+        <help>Runs the python script. You must specify the full path to the script. If the script is an add-on, you can also execute it using its add-on id. As of 2007/02/24, all extra parameters are passed to the script as arguments and can be accessed by python using sys.arg</help>
+    </item>
+    <item>
+        <code>StopScript(id)</code>
+        <help>Stop the script by ID or path, if running</help>
+    </item>
+    <item>
+        <code>RunAppleScript(script[,args]*)</code>
+        <help>Run the specified AppleScript command</help>
+    </item>
+    <item>
+        <code>RunPlugin(plugin)</code>
+        <help>Runs the plugin. Full path must be specified. Does not work for folder plugins</help>
+    </item>
+    <item>
+        <code>RunAddon(id)</code>
+        <help>Runs the specified plugin/script</help>
+    </item>
+    <item>
+        <code>NotifyAll</code>
+        <help>Notify all connected clients</help>
+    </item>
+    <item>
+        <code>Extract</code>
+        <help>Extracts a specified archive to an optionally specified 'absolute' path.</help>
+    </item>
+    <item>
+        <code>PlayMedia(media[,isdir][,1],[playoffset=xx])</code>
+        <help>Plays the media. This can be a playlist, music, or video file, directory, plugin or an Url. The optional parameter ",isdir" can be used for playing a directory. ",1" will start a video in a preview window, instead of fullscreen. If media is a playlist, you can use playoffset=xx where xx is the position to start playback from.</help>
+    </item>
+    <item>
+        <code>Seek(seconds)</code>
+        <help>Seeks to the specified relative amount of seconds within the current playing media. A negative value will seek backward and a positive value forward.</help>
+    </item>
+    <item>
+        <code>ShowPicture(picture)</code>
+        <help>Show a picture by its file path/url.</help>
+    </item>
+    <item>
+        <code>SlideShow(dir [,recursive, [not]random])</code>
+        <help>Starts a slideshow of pictures in the folder dir.  Optional parameters are "recursive", and "random" or "notrandom" parameters.  The "recursive" parameter starts a recursive slideshow, adding images from sub-folders.  The "random" and "notrandom" parameters override the Randomize setting found in the pictures media window.</help>
+    </item>
+    <item>
+        <code>RecursiveSlideShow(dir)</code>
+        <help>Run a slideshow from the specified directory, including all subdirs</help>
+    </item>
+    <item>
+        <code>ReloadSkin()</code>
+        <help>Reloads the current skin – useful for Skinners to use after they upload modified skin files (saves power cycling)</help>
+    </item>
+    <item>
+        <code>UnloadSkin()</code>
+        <help>Unloads the current skin</help>
+    </item>
+    <item>
+        <code>RefreshRSS</code>
+        <help>Reload RSS feeds from RSSFeeds.xml</help>
+    </item>
+    <item>
+        <code>PlayerControl(command)</code>
+        <help>Allows control of music and videos. The command may be one of Play, Stop, Forward, Rewind, Next, Previous, BigSkipForward, BigSkipBackward, SmallSkipForward, SmallSkipBackward, Random, RandomOn, RandomOff, Repeat, RepeatOne, RepeatAll, RepeatOff, Partymode(music) or Partymode(video) or Partymode(path to .xsp file), and Record. Play will either pause, resume, or stop ffwding or rewinding.  Random toggles random playback and Repeat cycles through the repeat modes (these both take an optional second parameter, Notify, that notifies the user of the new state). Partymode(music/video) toggles the appropriate partymode, defaults to music if no parameter is given, besides the default music or video partymode you can also pass a path to a custom smartplaylist (.xsp) as parameter.</help>
+    </item>
+    <item>
+        <code>Playlist.PlayOffset</code>
+        <help>Start playing from a particular offset in the playlist</help>
+    </item>
+    <item>
+        <code>Playlist.Clear</code>
+        <help>Clear the current playlist</help>
+    </item>
+    <item>
+        <code>EjectTray()</code>
+        <help>Either opens or closes the DVD tray, depending on its current state</help>
+    </item>
+    <item>
+        <code>AlarmClock(name,command,time[,silent,loop])</code>
+        <help>Pops up a dialog asking for the length of time for the alarm (unless the parameter time is specified), and starts a timer. When the timer runs out, it'll execute the built-in command (the parameter command) if it is specified, otherwise it'll pop up an alarm notice. Add silent to hide the alarm notification. Add loop for the alarm to execute the command each time the specified time interval expires.
+        </help>
+    </item>
+    <item>
+        <code>CancelAlarm(name[,silent])</code>
+        <help>Cancel a running alarm. Set silent to true to hide the alarm notification.</help>
+    </item>
+    <item>
+        <code>Action(action)</code>
+        <help>Executes an action for the active window (same as in keymap)</help>
+    </item>
+    <item>
+        <code>Notification(header,message[,time,image])</code>
+        <help>Will display a notification dialog with the specified header and message, in addition you can set the length of time it displays in milliseconds and a icon image.</help>
+    </item>
+    <item>
+        <code>PlayDVD</code>
+        <help>Will play the inserted CD or DVD media from the DVD-ROM drive.
+        </help>
+    </item>
+    <item>
+        <code>RipCD</code>
+        <help>Will rip the inserted CD from the DVD-ROM drive.
+        </help>
+    </item>
+    <item>
+        <code>Skin.ToggleSetting(setting)</code>
+        <help>Toggles the skin setting ?setting? for use with [[Conditional Visibility|conditional visibility tags]] containing Skin.HasSetting(setting).</help>
+    </item>
+    <item>
+        <code>Skin.SetString(string[,value])</code>
+        <help>Pops up a keyboard dialog and allows the user to input a string which can be used in a label control elsewhere in the skin via the [[InfoLabels|info tag]] Skin.String(string). If the value parameter is specified, then the keyboard dialog does not pop up, and the string is set directly.</help>
+    </item>
+    <item>
+        <code>Skin.SetNumeric(numeric[,value])</code>
+        <help>Pops up a keyboard dialog and allows the user to input a numerical.</help>
+    </item>
+    <item>
+        <code>Skin.SetPath(string[,value])</code>
+        <help>Pops up a folder browser and allows the user to select a folder of images  to be used in a multi image control else where in the skin via the [[InfoLabels|info tag]] Skin.String(string). If the value parameter is specified, then the file browser dialog does not pop up, and the path is set directly.</help>
+    </item>
+    <item>
+        <code>Skin.Theme</code>
+        <help>Cycles the skin theme. Skin.theme(-1) will go backwards.</help>
+    </item>
+    <item>
+        <code>Skin.SetImage(string[,value,path])</code>
+        <help>Pops up a file browser and allows the user to select an image file to be used in an image control elsewhere in the skin via the [[InfoLabels|info tag]] Skin.String(string). If the value parameter is specified, then the file browser dialog does not pop up, and the image path is set directly. the path option allows you to open the file browser in the specified folder.</help>
+    </item>
+    <item>
+        <code>Skin.SetLargeImage(string[,value])</code>
+        <help>Pops up a file browser and allows the user to select an large image file to be used in an image control else where in the skin via the [[InfoLabels|info tag]] Skin.String(string). If the value parameter is specified, then the file browser dialog does not pop up, and the image path is set directly.</help>
+    </item>
+    <item>
+        <code>Skin.SetFile(string,mask,folderpath)</code>
+        <help>Pops up a folder browser and allows the user to select a file off the hard-disk to be used else where in the skin via the [[InfoLabels|info tag]] Skin.String(string). If the mask parameter is specified, then the file browser will only search for the extension specified (.avi,.mp3,.m3u,.png,.bmp,etc.,etc.). To use multiple extensions separate them using "|" minus quotes. If the folderpath parameter is set the file browser will start in that folder.</help>
+    </item>
+    <item>
+        <code>Skin.SetAddon(string,type)</code>
+        <help>Pops up a select dialog and allows the user to select an add-on of the given type to be used elsewhere in the skin via the info tag Skin.String(string). The most common types are ''xbmc.addon.video'', ''xbmc.addon.audio'', ''xbmc.addon.image'' and ''xbmc.addon.executable''.</help>
+    </item>
+    <item>
+        <code>Skin.SetBool(setting)</code>
+        <help>Sets the skin setting ?setting? to true, for use with the [[Conditional Visibility|conditional visibility tags]] containing Skin.HasSetting(setting). The settings are saved per-skin in settings.xml just like all the other Kodi settings.
+        </help>
+    </item>
+    <item>
+        <code>Skin.Reset(setting)</code>
+        <help>Resets the skin setting ?setting?. If ?setting? is a bool setting (i.e. set via SetBool or ToggleSetting) then the setting is reset to false. If ?setting? is a string (Set via SetString, SetImage, or SetPath) then it is set to empty.</help>
+    </item>
+    <item>
+        <code>Skin.ResetSettings</code>
+        <help>Resets all the above skin settings to their defaults (toggles all set to false, strings all set to empty.)</help>
+    </item>
+    <item>
+        <code>Mute</code>
+        <help>Mutes (or unmutes) the volume.</help>
+    </item>
+    <item>
+        <code>SetVolume(percent[,showvolumebar])</code>
+        <help>Sets the volume to the percentage specified. Optionally, show the Volume Dialog in Kodi when setting the volume.</help>
+    </item>
+    <item>
+        <code>Dialog.Close(dialog[,force])</code>
+        <help>Close a dialog. Set force to true to bypass animations. Use (all,true) to close all opened dialogs at once.</help>
+    </item>
+    <item>
+        <code>System.LogOff</code>
+        <help>Log off current user.</help>
+    </item>
+    <item>
+        <code>System.Exec</code>
+        <help>Execute shell commands.</help>
+    </item>
+    <item>
+        <code>System.ExecWait</code>
+        <help>Execute shell commands and freezes Kodi until shell is closed.</help>
+    </item>
+    <item>
+        <code>Resolution</code>
+        <help>Change Kodi's Resolution.</help>
+    </item>
+    <item>
+        <code>SetFocus(id,position)</code>
+        <help>Will make a list with the "id" specified in the command gain focus at "position" number in its list. Alias SetFocus(id,position)</help>
+    </item>
+    <item>
+        <code>UpdateLibrary(database,[path])</code>
+        <help>Takes either "video" or "music" as a parameter to begin updating the corresponding database. For "video" you can additionally specify a specific path to be scanned.</help>
+    </item>
+    <item>
+        <code>CleanLibrary(database)</code>
+        <help>This funtion will perform a number of 'cleanup' tasks on your video database and can be run if you have moved, deleted or renamed files. Takes either "video" or "music" as a parameter to begin cleaning the corresponding database.</help>
+    </item>
+    <item>
+        <code>exportlibrary(music,false,filepath)</code>
+        <help>The music library will be exported to a single file stored at filepath location.</help>
+    </item>
+    <item>
+        <code>exportlibrary(video,true,thumbs,overwrite,actorthumbs)</code>
+        <help>The video library is exported to multiple files with the given options. Here thumbs, overwrite and actorthumbs are boolean values (true or false).</help>
+    </item>
+    <item>
+        <code>PageDown</code>
+        <help>Send a page down event to the pagecontrol with given id.</help>
+    </item>
+    <item>
+        <code>PageUp</code>
+        <help>Send a page up event to the pagecontrol with given id.</help>
+    </item>
+    <item>
+        <code>Container.Refresh</code>
+        <help>Refresh current listing.</help>
+    </item>
+    <item>
+        <code>Container.Update</code>
+        <help>Update current listing. Send Container.Update(path,replace) to reset the path history.</help>
+    </item>
+    <item>
+        <code>Container.NextViewMode</code>
+        <help>Select the next view mode.</help>
+    </item>
+    <item>
+        <code>Container.PreviousViewMode</code>
+        <help>Select the previous view mode.</help>
+    </item>
+    <item>
+        <code>Container.SetViewMode(id)</code>
+        <help>Set the current view mode (list, icons etc.) to the given container id.</help>
+    </item>
+    <item>
+        <code>Container.NextSortMethod</code>
+        <help>Change to the next sort method.</help>
+    </item>
+    <item>
+        <code>Container.PreviousSortMethod</code>
+        <help>Change to the previous sort method.</help>
+    </item>
+    <item>
+        <code>Container.SetSortMethod(id)</code>
+        <help>Change to the specified sort method. (For list of ID's see 'List of sort methods' below)</help>
+    </item>
+    <item>
+        <code>Container.SortDirection</code>
+        <help>Toggle the sort direction.</help>
+    </item>
+    <item>
+        <code>Control.Move(id,offset)</code>
+        <help>Will make a Container with the "id" specified in the command move focus by "offset".</help>
+    </item>
+    <item>
+        <code>Control.SetFocus(id,position)</code>
+        <help>Will make a list with the "id" specified in the command gain focus at "position" number in its list. Alias SetFocus(id,position)</help>
+    </item>
+    <item>
+        <code>Control.Message(id,message,[windowid])</code>
+        <help>Sends a given message to a control in a given window (or active window if omitted). Messages can be movedown, moveup, pagedown, pageup, click.</help>
+    </item>
+    <item>
+        <code>SendClick(windowid,id)</code>
+        <help>Sends a click to a control in a given window (or active window if omitted).</help>
+    </item>
+    <item>
+        <code>LoadProfile(profilename,[prompt])</code>
+        <help>Load the specified profile. If prompt is not specified, and a password would be required for the requested profile, this command will silently fail. If promp' is specified and a password is required, a password dialog will be shown.</help>
+    </item>
+    <item>
+        <code>SetProperty(key,value[,id])</code>
+        <help>Sets a window property for the current window (key,value), or the specified window (key,value,id).</help>
+    </item>
+    <item>
+        <code>ClearProperty(key[,id])</code>
+        <help>Clears a window property for the current focused window/dialog(key), or the specified window (key,id).</help>
+    </item>
+    <item>
+        <code>PlayWith()</code>
+        <help>Play the selected item with the specified player core.</help>
+    </item>
+    <item>
+        <code>WakeOnLan(''mac'')</code>
+        <help>Sends the wake-up packet to the broadcast address for the specified MAC address (Format: FF:FF:FF:FF:FF:FF or FF-FF-FF-FF-FF-FF).</help>
+    </item>
+    <item>
+        <code>Addon.Default.OpenSettings</code>
+        <help>Open a settings dialog for the default addon of the given type</help>
+    </item>
+    <item>
+        <code>Addon.Default.Set</code>
+        <help>Open a select dialog to allow choosing the default addon of the given type</help>
+    </item>
+    <item>
+        <code>Addon.OpenSettings(id)</code>
+        <help>Open a settings dialog for the addon of the given id</help>
+    </item>
+    <item>
+        <code>UpdateAddonRepos</code>
+        <help>Triggers a forced update of enabled add-on repositories.</help>
+    </item>
+    <item>
+        <code>UpdateLocalAddons</code>
+        <help>Triggers a scan of local add-on directories.</help>
+    </item>
+    <item>
+        <code>ToggleDPMS</code>
+        <help>Toggle DPMS mode manually</help>
+    </item>
+    <item>
+        <code>CECToggleState</code>
+        <help>Toggle state of playing device via a CEC peripheral</help>
+    </item>
+    <item>
+        <code>CECActivateSource</code>
+        <help>Wake up playing device via a CEC peripheral</help>
+    </item>
+    <item>
+        <code>CECStandby</code>
+        <help>Put playing device on standby via a CEC peripheral</help>
+    </item>
+    <item>
+        <code>Weather.Refresh</code>
+        <help>Force weather data refresh</help>
+    </item>
+    <item>
+        <code>Weather.LocationNext</code>
+        <help>Switch to next weather location</help>
+    </item>
+    <item>
+        <code>Weather.LocationPrevious</code>
+        <help>Switch to previous weather location</help>
+    </item>
+    <item>
+        <code>Weather.LocationSet</code>
+        <help>Switch to given weather location (parameter can be 1-3)</help>
+    </item>
+    <item>
+        <code>LIRC.Stop</code>
+        <help>Removes Kodi as a LIRC client.</help>
+    </item>
+    <item>
+        <code>LIRC.Start</code>
+        <help>Adds Kodi as a LIRC client.</help>
+    </item>
+    <item>
+        <code>LIRC.Send(command)</code>
+        <help>Sends a command to LIRC, syntax is the lirc protocol without the newline.
+            <br />Example: LIRC.Send(SEND_ONCE Onkyo_RC-453S2 volup)
+        </help>
+    </item>
+    <item>
+        <code>VideoLibrary.Search</code>
+        <help>Brings up a search dialog which will search the library</help>
+    </item>
+    <item>
+        <code>ToggleDebug</code>
+        <help>Enables/disables debug mode</help>
+    </item>
+    <item>
+        <code>StartPVRManager</code>
+        <help>(Re)Starts the PVR manager</help>
+    </item>
+    <item>
+        <code>StopPVRManager</code>
+        <help>Stops the PVR manager</help>
+    </item>
+    <item>
+        <code>{{nowrap|StartAndroidActivity(package,[intent,dataType,dataURI])}}</code>
+        <help>Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI.</help>
+    </item>
+    <item>
+        <code>PreviousChannelGroup</code>
+        <help>Navigate to the previous PVR channel group (in DialogPVRChannelsOSD.xml)</help>
+    </item>
+    <item>
+        <code>NextChannelGroup</code>
+        <help>Navigate to the next PVR channel group (in DialogPVRChannelsOSD.xml)</help>
+    </item>
+    <item>
+        <code>settingslevelchange</code>
+        <help>Toggles the visible settings (in SettingsCategory.xml) between 'basic', 'standard', 'advanced and 'expert'</help>
+    </item>
+    <item>
+        <code>SetStereoMode</code>
+        <help>Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, monoscopic)</help>
+    </item>
+    <item>
+        <code>NextStereoMode</code>
+        <help>Changes the stereo mode of the GUI to the next available mode.</help>
+    </item>
+    <item>
+        <code>PreviousStereoMode</code>
+        <help>Changes the stereo mode of the GUI to the previous available mode.</help>
+    </item>
+    <item>
+        <code>ToggleStereoMode</code>
+        <help>Toggle the stereoscopic mode of the GUI (on/off).</help>
+    </item>
+    <item>
+        <code>StereoModeToMono</code>
+        <help>Toggle the stereoscopic mode to 2D.</help>
+    </item>
+</root>

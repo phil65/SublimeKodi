@@ -8,6 +8,7 @@
     {"caption": "SublimeKodi: Search for label", "command": "search_for_label"},
     {"caption": "SublimeKodi: Search for image", "command": "search_for_image"},
     {"caption": "SublimeKodi: Search for font", "command": "search_for_font"},
+    {"caption": "SublimeKodi: Search for BuiltIns", "command": "search_for_builtin"},
     {"caption": "SublimeKodi: Search translated strings of open file", "command": "search_file_for_labels"},
     {"caption": "SublimeKodi: Check Variables", "command": "check_variables", "args": { "check_type": "variable"}},
     {"caption": "SublimeKodi: Check Includes", "command": "check_variables", "args": { "check_type": "include"}},
