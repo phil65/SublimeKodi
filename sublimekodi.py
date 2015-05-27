@@ -686,8 +686,12 @@ class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
         selected_text = self.view.substr(self.view.sel()[0])
         # new_text = selected_text + "\n"
         new_text = ""
-        for i in range(1, int(num_items) + 1):
-            new_text = new_text + selected_text.replace("[X]", str(i)) + "\n"
+        reg = re.search(r"\[([0-9]+)\]", selected_text)
+        offset = 0
+        if reg:
+            offset = int(reg.group(1))
+        for i in range(0, int(num_items)):
+            new_text = new_text + selected_text.replace("[%i]" % offset, str(i + offset)) + "\n"
             i += 1
         for region in self.view.sel():
             self.view.replace(edit, region, new_text)
