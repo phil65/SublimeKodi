@@ -80,6 +80,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         self.prev_selection = region
         view.hide_popup()
         scope_name = view.scope_name(region.b)
+        scope_content = view.substr(view.extract_scope(region.b))
         line = view.line(region)
         line_contents = view.substr(line).lower()
         label_region = view.expand_by_class(region, flags, '$],')
@@ -116,6 +117,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = INFOS.get_ancestor_info(view.file_name(), line)
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
+            if not popup_label and "constant.other.allcaps" in scope_name:
+                if scope_content in WINDOW_NAMES:
+                    popup_label = WINDOW_FILENAMES[WINDOW_NAMES.index(scope_content)]
         # node = INFOS.template_root.find(".//control[@type='label']")
         # log(node)
         # popup_label = node.find(".//available_tags").text.replace("\\n", "<br>")
