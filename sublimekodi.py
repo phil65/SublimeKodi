@@ -714,7 +714,7 @@ class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
         selected_text = self.view.substr(self.view.sel()[0])
         # new_text = selected_text + "\n"
         new_text = ""
-        reg = re.search(r"\[([0-9]+)\]", selected_text)
+        reg = re.search(r"\[(-?[0-9]+)\]", selected_text)
         offset = 0
         if reg:
             offset = int(reg.group(1))
