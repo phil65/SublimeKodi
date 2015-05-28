@@ -170,7 +170,7 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '(\()([A-Za-z0-9.]*?)(\))'
+    - match: '(\()([A-Za-z0-9._]*?)(\))'
       name: constant.numeric
       contentName: invalid.function
       captures:
