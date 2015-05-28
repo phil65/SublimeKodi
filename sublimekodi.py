@@ -198,7 +198,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         self.settings = sublime.load_settings(SETTINGS_FILE)
-        active_device = "Set device: %s" % self.settings.get("remote_ip")
+        active_device = "Set device: %s" % self.settings.get("remote_ip", "")
         listitems = [active_device, "Reconnect", "Send this add-on", "Get log", "Get Screenshot", "Clear cache", "Reboot"]
         self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
 
