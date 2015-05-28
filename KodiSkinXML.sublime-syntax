@@ -65,6 +65,7 @@ contexts:
     - include: entity
     - include: bare-ampersand
     - include: koditranslation
+    - include: kodinumber
     - include: kodiinfolabel
     - include: kodivariable
     - include: brackets
@@ -116,6 +117,17 @@ contexts:
         3: variable.parameter entity.kodi.label.begin
         4: variable.parameter entity.kodi.label.id
         5: variable.parameter entity.kodi.label.end
+
+  kodinumber:
+    - match: '(\$)(NUMBER)(\[)([0-9]+)(\])'
+      name: variable.parameter text.kodi.number.xml
+      captures:
+        1: variable.parameter entity.kodi.number.dollar
+        2: variable.parameter entity.kodi.number.number
+        3: variable.parameter entity.kodi.number.begin
+        4: variable.parameter entity.kodi.number.id
+        5: variable.parameter entity.kodi.number.end
+
 
   kodiinfolabel:
     - match: '(\$)((?:ESC)?INFO)(\[)'
