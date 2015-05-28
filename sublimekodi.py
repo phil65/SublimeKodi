@@ -38,6 +38,7 @@ else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
 
+
 class SublimeKodi(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
@@ -53,9 +54,14 @@ class SublimeKodi(sublime_plugin.EventListener):
         if folder not in INFOS.include_list:
             return []
         if "text.xml" in scope_name:
-            nodes = INFOS.include_list[folder] + INFOS.fonts[folder]
-            for node in nodes:
+            for node in INFOS.fonts[folder]:
                 completions.append([node["name"], node["name"]])
+            for node in INFOS.include_list[folder]:
+                completions.append([node["name"], node["name"]])
+            for node in INFOS.builtins:
+                completions.append([node[0], node[0]])
+            for node in INFOS.conditions:
+                completions.append([node[0], node[0]])
             for item in WINDOW_NAMES:
                 completions.append([item, item])
             completions.sort()
@@ -193,7 +199,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.settings = sublime.load_settings(SETTINGS_FILE)
         active_device = "Set device: %s" % self.settings.get("remote_ip")
-        listitems = [active_device, "Reconnect", "Send to box", "Get log", "Clear cache"]
+        listitems = [active_device, "Reconnect", "Send to box", "Get log", "Get Screenshot", "Clear cache"]
         self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
@@ -208,11 +214,14 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
             REMOTE.push_to_box(INFOS.project_path)
         elif index == 3:
             plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
-            REMOTE.get_log(self.on_log_done, plugin_path)
+            REMOTE.get_log(self.open_file, plugin_path)
         elif index == 4:
+            plugin_path = os.path.join(sublime.packages_path(), "SublimeKodi")
+            REMOTE.get_screenshot(self.open_file, plugin_path)
+        elif index == 5:
             REMOTE.clear_cache()
 
-    def on_log_done(self, path):
+    def open_file(self, path):
         self.window.open_file(path)
 
     def set_ip(self, ip):
