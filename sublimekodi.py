@@ -465,6 +465,7 @@ class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         view = self.window.active_view()
+        view.run_command("insert", {"characters": INFOS.builtins[index][0]})
 
 
 class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
@@ -479,6 +480,7 @@ class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         view = self.window.active_view()
+        view.run_command("insert", {"characters": INFOS.conditions[index][0]})
 
 
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
