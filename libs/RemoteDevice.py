@@ -144,6 +144,10 @@ class RemoteDevice():
     def clear_cache(self):
         self.cmd("adb", ["shell", "rm", "-rf", os.path.join(self.userdata_folder, "temp")])
 
+    @run_async
+    def reboot(self):
+        self.cmd("adb", ["reboot"])
+
     def panel_log(self, text):
         try:
             import sublime

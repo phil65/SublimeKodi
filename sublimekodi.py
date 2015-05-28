@@ -199,7 +199,7 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.settings = sublime.load_settings(SETTINGS_FILE)
         active_device = "Set device: %s" % self.settings.get("remote_ip")
-        listitems = [active_device, "Reconnect", "Send to box", "Get log", "Get Screenshot", "Clear cache"]
+        listitems = [active_device, "Reconnect", "Send this add-on", "Get log", "Get Screenshot", "Clear cache", "Reboot"]
         self.window.show_quick_panel(listitems, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
@@ -220,6 +220,8 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
             REMOTE.get_screenshot(self.open_file, plugin_path)
         elif index == 5:
             REMOTE.clear_cache()
+        elif index == 6:
+            REMOTE.reboot()
 
     def open_file(self, path):
         self.window.open_file(path)
