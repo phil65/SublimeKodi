@@ -132,6 +132,7 @@ contexts:
           pop: true
         - include: koditranslation
         - include: formatter
+        - include: brackets
 
   formatter:
     - match: '(\[)([A-Za-z0-9\/= ]*?)(\])'
@@ -163,3 +164,14 @@ contexts:
       captures:
         '2': constant.other.allcaps
 
+  # brackets:
+  #   - match: \(
+  #     push: closingbracket
+  #   - match: \)
+  #     scope: invalid.illegal.stray-bracket-end
+
+  # closingbracket:
+  #   - meta_content_scope: constant.other.allcaps
+  #   - match: \)
+  #     pop: true
+  #   - include: brackets
