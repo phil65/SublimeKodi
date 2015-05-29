@@ -102,7 +102,6 @@ Also, don´t forget to set up your SublimeKodi settings!
 ##### Context menu:
 
 - Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCALIZE[foo])
-- Replicate text selection (including offset option)
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
 - Preview skin image
 
@@ -110,7 +109,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 ##### Misc:
 
 - Auto-check skin file on saving
-- Create element row (and insert ascending number) for quickly multiplying listitems / buttons
+- Create element row (and insert ascending number starting with [offset]) for quickly multiplying listitems / buttons
 - SkinCheck can also be used from command line with "python script.py PATH_TO_ADDON"
   - requires Python 3.3 interpreter
 - Build skin with texturepacker from command palette
