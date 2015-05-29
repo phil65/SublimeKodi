@@ -300,7 +300,9 @@ class InfoProvider():
             log("Include List: %i nodes found in '%s' folder." % (len(self.include_list[folder]), folder))
 
     def update_includes(self, xml_file):
-        # recursive, walks through include files and updates include list and include file list
+        """
+        recursive, walks through include files and updates include list and include file list
+        """
         if os.path.exists(xml_file):
             folder = xml_file.split(os.sep)[-2]
             log("found include file: " + xml_file)
@@ -315,14 +317,18 @@ class InfoProvider():
             log("Could not find include file " + xml_file)
 
     def update_xml_files(self):
-        # update list of all include and window xmls
+        """
+        update list of all include and window xmls
+        """
         self.window_file_list = {}
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
 
     def go_to_tag(self, keyword, folder):
-        # jumps to the definition of ref named keyword
+        """
+        jumps to the definition of ref named keyword
+        """
         # TODO: need to add param with ref type
         if keyword:
             if keyword.isdigit():
@@ -355,7 +361,6 @@ class InfoProvider():
                     if node["name"] == keyword:
                         return node[return_entry]
         return ""
-                # log("no node with name %s found" % keyword)
 
     def get_settings(self, settings):
         self.settings = settings
@@ -400,7 +405,7 @@ class InfoProvider():
         lang_folders = []
         for item in self.settings.get("language_folders"):
             path = check_paths([os.path.join(lang_folder_root, item, "strings.po"),
-                               os.path.join(lang_folder_root, item, "resources", "strings.po")])
+                                os.path.join(lang_folder_root, item, "resources", "strings.po")])
             if os.path.exists(path):
                 log("found language: " + path)
                 string_list += get_label_list(path)

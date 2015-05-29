@@ -7,7 +7,7 @@ first_line_match: '^<\?xml '
 scope: text.xml
 contexts:
   main:
-    # xml header
+    # xml header ?
     - match: '(<\?)\s*([-_a-zA-Z0-9]+)'
       captures:
         1: punctuation.definition.tag.begin.xml
@@ -48,6 +48,7 @@ contexts:
             8: punctuation.definition.tag.end.xml
           pop: true
         - include: tagStuff
+    # xml header ?
     - match: "(</?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)"
       captures:
         1: punctuation.definition.tag.begin.xml
