@@ -1,6 +1,7 @@
 # SublimeKodi
 
 [![Join the chat at https://gitter.im/phil65/SublimeKodi](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/phil65/SublimeKodi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ST3 plugin to show translated Kodi labels in mouseover popup, quickly open the Kodi log, log syntax highlighting and much more.
 
 
