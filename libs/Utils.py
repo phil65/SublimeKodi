@@ -315,6 +315,8 @@ def get_root_from_file(xml_file):
     if not xml_file.endswith(".xml"):
         log("Tried to get root from non-xml file")
         return None
+    if not os.path.exists(xml_file):
+        return None
     try:
         parser = ET.XMLParser(remove_blank_text=True, remove_comments=True)
         tree = ET.parse(xml_file, parser)

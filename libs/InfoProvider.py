@@ -567,11 +567,10 @@ class InfoProvider():
         # get confluence fonts..
         confluence_fonts = []
         confluence_font_file = os.path.join(self.kodi_path, "addons", "skin.confluence", "720p", "Font.xml")
-        if os.path.exists(confluence_font_file):
-            root = get_root_from_file(confluence_font_file)
-            if root is not None:
-                for node in root.find("fontset").findall("font"):
-                    confluence_fonts.append(node.find("name").text)
+        root = get_root_from_file(confluence_font_file)
+        if root is not None:
+            for node in root.find("fontset").findall("font"):
+                confluence_fonts.append(node.find("name").text)
             # check fonts from each folder independently....
         for folder in self.xml_folders:
             fontlist = ["-"]
