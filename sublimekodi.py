@@ -65,7 +65,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             for item in WINDOW_NAMES:
                 completions.append([item, item])
             for item in completions:
-                for i, match in enumerate(re.findall(r"\([a-z]+\)", item[1])):
+                for i, match in enumerate(re.findall(r"\([a-z,\]\[]+\)", item[1])):
                     item[1] = item[1].replace(match, "($%i)" % (i + 1))
             completions.sort()
             return completions
