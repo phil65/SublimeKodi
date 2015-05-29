@@ -64,6 +64,9 @@ class SublimeKodi(sublime_plugin.EventListener):
                 completions.append([node[0], node[0]])
             for item in WINDOW_NAMES:
                 completions.append([item, item])
+            for item in completions:
+                for i, match in enumerate(re.findall(r"\([a-z]+\)", item[1])):
+                    item[1] = item[1].replace(match, "($%i)" % (i + 1))
             completions.sort()
             return completions
             # return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
@@ -158,13 +161,16 @@ class SublimeKodi(sublime_plugin.EventListener):
             return False
         if view.file_name().endswith(".xml"):
             if self.is_modified:
-                if self.settings.get("auto_reload_skin", True):
-                    self.is_modified = False
-                    view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
+                INFOS.update_xml_files()
+                filename = os.path.basename(view.file_name())
+                folder = view.file_name().split(os.sep)[-2]
                 INFOS.reload_skin_after_save(view.file_name())
-                # TODO: need to check for kodi xml
-                if self.settings.get("auto_skin_check", True):
-                    view.window().run_command("check_variables", {"check_type": "file"})
+                if folder in INFOS.window_file_list and filename in INFOS.window_file_list[folder]:
+                    if self.settings.get("auto_reload_skin", True):
+                        self.is_modified = False
+                        view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
+                    if self.settings.get("auto_skin_check", True):
+                        view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
             INFOS.update_addon_labels()
 
