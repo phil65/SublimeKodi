@@ -12,6 +12,7 @@ import codecs
 import chardet
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
+ADDONS = {}
 
 settings = """{
     "kodi_path": "C:/Kodi",
@@ -42,6 +43,59 @@ def check_tags(check_type):
         log(content)
         path = "/".join(e["file"].split(os.sep)[-2:])
         log("%s: line %s\n" % (path, str(e["line"])))
+
+
+def get_addons(reponame):
+    """
+    get available addons from the kodi addon repository
+    """
+    repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
+    req = urlopen(repo_list % reponame)
+    data = req.read()
+    req.close()
+    root = ET.fromstring(data)
+    for item in root.iter('addon'):
+        ADDONS[item.get('id')] = item.get('version')
+
+
+def check_dependencies(skinpath):
+    """
+    validate the addon dependencies
+    """
+    imports = {}
+    gotham   = '5.0.1'
+    helix    = '5.3.0'
+    isengard = '5.9.0'
+    repo = input('Enter Kodi version (gotham / helix / isengard): ')
+    tree = ET.parse(os.path.join(skinpath, 'addon.xml'))
+    root = tree.getroot()
+    for item in root.iter('import'):
+        imports[item.get('addon')] = item.get('version')
+    version = imports['xbmc.gui']
+    if repo == 'gotham':
+        if version > gotham:
+            log('xbmc.gui version incorrect')
+        get_addons('gotham')
+    elif repo == 'helix':
+        if version > helix:
+            log('xbmc.gui version incorrect')
+        get_addons('gotham')
+        get_addons('helix')
+    elif repo == 'isengard':
+        if version > isengard:
+            log('xbmc.gui version incorrect')
+        get_addons('gotham')
+        get_addons('helix')
+        get_addons('isengard')
+    else:
+        log('You entered an invalid Kodi version')
+    del imports['xbmc.gui']
+    for dep, ver in imports.items():
+        if dep in ADDONS:
+            if ver > ADDONS[dep]:
+                log('%s version higher than in Kodi repository' % dep)
+        else:
+            log('%s not available in Kodi repository' % dep)
 
 
 if __name__ == "__main__":
@@ -75,6 +129,8 @@ if __name__ == "__main__":
             log("MAC Line Endings detected in " + item[0])
         else:
             log("Windows Line Endings detected in " + item[0])
+    log("\n\nADDON DEPENDENCY CHECK\n\n")
+    check_dependencies(project_folder)
     log("\n\nINCLUDE CHECK\n\n")
     check_tags("include")
     log("\n\nVARIABLE CHECK\n\n")
