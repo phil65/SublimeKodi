@@ -38,6 +38,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Show constant value
 - Show value of selected Kodi InfoLabel in tooltip (by using JSON-RPC)
 - Show infos for selected image (image dimensions and file size)
+- Show window file name
 
 
 ##### JSON-RPC: (newest script.toolbox version needed)
@@ -113,6 +114,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 - SkinCheck can also be used from command line with "python script.py PATH_TO_ADDON"
   - requires Python 3.3 interpreter
 - Build skin with texturepacker from command palette
+- Jump-to-Addon command
 
 
 ##### Remote Actions
