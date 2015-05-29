@@ -123,8 +123,8 @@ Also, don´t forget to set up your SublimeKodi settings!
   - push add-on to remote
   - pull log from remote
   - clear temp folder on remote
-  - pull screenshot from device
-  - reboot device
+  - pull screenshot from remote
+  - reboot remote
 
 ___
 
