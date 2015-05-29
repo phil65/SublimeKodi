@@ -39,8 +39,7 @@ def check_tags(check_type):
     """
     errors = INFOS.get_check_listitems(check_type)
     for e in errors:
-        content = e["message"]
-        log(content)
+        log(e["message"])
         path = "/".join(e["file"].split(os.sep)[-2:])
         log("%s: line %s\n" % (path, str(e["line"])))
 
@@ -49,8 +48,8 @@ def get_addons(reponames):
     """
     get available addons from the kodi addon repository
     """
+    repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
     for reponame in reponames:
-        repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
         req = urlopen(repo_list % reponame)
         data = req.read()
         req.close()
