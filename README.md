@@ -15,8 +15,15 @@ Also, don´t forget to set up your SublimeKodi settings!
 ##### Kodi Log:
 
 - Open log from command palette
-- Added syntax highlighting
 - Jump to code where exception ocurred by pressing shift+enter when line with path is selected
+
+
+##### Syntax Highlighting:
+
+- Added custom syntax highlighting for
+  - Kodi language files
+  - Kodi SkinXML files
+  - Kodi log files
 
 
 ##### Tooltips:
@@ -42,6 +49,18 @@ Also, don´t forget to set up your SublimeKodi settings!
 
 ##### Shortcuts:
 
+- Auto-completion for common Kodi snippets
+  - builtins
+  - boolean conditions
+  - window names
+  - include names
+  - variable names
+  - font names
+  - constant names
+
+
+##### Shortcuts:
+
 - Jump to include (shift+enter)
 - Jump to variable (shift+enter)
 - Jump to constant (shift+enter)
@@ -58,6 +77,9 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Search through all textures including preview
 - Search through all available fonts
 - Search through all translated strings ($LOCALIZE[id]) of currently open file
+- Search through all boolean conditions
+- Search through all builtins
+
 
 ##### Sanity checks:
 
@@ -78,6 +100,7 @@ Also, don´t forget to set up your SublimeKodi settings!
 ##### Context menu:
 
 - Move label to language file (creates entry in strings.po using the first free id and replaces selected text with $LOCALIZE[foo])
+- Replicate text selection (including offset option)
 - Go to Kodi online wiki (opens corresponding online help page, only for control types atm)
 - Preview skin image
 
@@ -91,14 +114,18 @@ Also, don´t forget to set up your SublimeKodi settings!
 - Build skin with texturepacker from command palette
 
 
-##### ADB Features ("Remote Actions")
+##### Remote Actions
 
-- Connect to remote
-- Push add-on to remote
-- Pull log from remote
-- Clear temp folder on remote
+- Quick access to common ADB commands:
+  - set remote IP
+  - connect to remote
+  - push add-on to remote
+  - pull log from remote
+  - clear temp folder on remote
+  - pull screenshot from device
+  - reboot device
 
 ___
 
-**Note:** *Sublime Text 2 is not supported.  Also, SublimeKodi takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build. Minimum required version is build 3072.*
+**Note:** *Sublime Text 2 is not supported.  Also, SublimeKodi takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build. Minimum required version is build 3084.*
 
