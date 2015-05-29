@@ -56,6 +56,11 @@ class SublimeKodi(sublime_plugin.EventListener):
         if "text.xml" in scope_name:
             for node in INFOS.fonts[folder]:
                 completions.append([node["name"], node["name"]])
+            colors = []
+            for node in INFOS.color_list:
+                if node["name"] not in colors:
+                    colors.append(node["name"])
+                    completions.append(["%s (%s)" % (node["name"], node["content"]), node["name"]])
             for node in INFOS.include_list[folder]:
                 completions.append([node["name"], node["name"]])
             for node in INFOS.builtins:
