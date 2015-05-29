@@ -45,48 +45,47 @@ def check_tags(check_type):
         log("%s: line %s\n" % (path, str(e["line"])))
 
 
-def get_addons(reponame):
+def get_addons(reponames):
     """
     get available addons from the kodi addon repository
     """
-    repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
-    req = urlopen(repo_list % reponame)
-    data = req.read()
-    req.close()
-    root = ET.fromstring(data)
-    for item in root.iter('addon'):
-        ADDONS[item.get('id')] = item.get('version')
+    for reponame in reponames:
+        repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
+        req = urlopen(repo_list % reponame)
+        data = req.read()
+        req.close()
+        root = ET.fromstring(data)
+        for item in root.iter('addon'):
+            ADDONS[item.get('id')] = item.get('version')
 
 
 def check_dependencies(skinpath):
     """
     validate the addon dependencies
     """
+    RELEASES = [{"version": '5.0.1',
+                 "name": "gotham",
+                 "allowed_addons": ['gotham']},
+                {"version": '5.3.0',
+                 "name": "helix",
+                 "allowed_addons": ['gotham', 'helix']},
+                {"version": '5.9.0',
+                 "name": "isengard",
+                 "allowed_addons": ['gotham', 'helix', 'isengard']}]
     imports = {}
-    gotham   = '5.0.1'
-    helix    = '5.3.0'
-    isengard = '5.9.0'
-    repo = input('Enter Kodi version (gotham / helix / isengard): ')
+    str_releases = " / ".join([item["name"] for item in RELEASES])
+    repo = input('Enter Kodi version (%s): ' % str_releases)
     tree = ET.parse(os.path.join(skinpath, 'addon.xml'))
     root = tree.getroot()
     for item in root.iter('import'):
         imports[item.get('addon')] = item.get('version')
     version = imports['xbmc.gui']
-    if repo == 'gotham':
-        if version > gotham:
-            log('xbmc.gui version incorrect')
-        get_addons('gotham')
-    elif repo == 'helix':
-        if version > helix:
-            log('xbmc.gui version incorrect')
-        get_addons('gotham')
-        get_addons('helix')
-    elif repo == 'isengard':
-        if version > isengard:
-            log('xbmc.gui version incorrect')
-        get_addons('gotham')
-        get_addons('helix')
-        get_addons('isengard')
+    for release in RELEASES:
+        if repo == release["name"]:
+            if version > release["version"]:
+                log('xbmc.gui version incorrect')
+            get_addons(release["allowed_addons"])
+            break
     else:
         log('You entered an invalid Kodi version')
     del imports['xbmc.gui']
