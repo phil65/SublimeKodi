@@ -354,7 +354,7 @@
             <help>Play the selected item with the specified player core.</help>
         </item>
         <item>
-            <code>WakeOnLan(''mac'')</code>
+            <code>WakeOnLan(mac)</code>
             <help>Sends the wake-up packet to the broadcast address for the specified MAC address (Format: FF:FF:FF:FF:FF:FF or FF-FF-FF-FF-FF-FF).</help>
         </item>
         <item>
