@@ -48,7 +48,24 @@ contexts:
             8: punctuation.definition.tag.end.xml
           pop: true
         - include: tagStuff
-    # xml header ?
+
+    # - match: '(</?)(include|variable|constant|color) (name)="([-_a-zA-Z0-9]+)"'
+    #   captures:
+    #     1: punctuation.definition.tag.begin.xml
+    #     2: entity.name.tag.localname.xml
+    #     3: entity.other.attribute-name.localname.xml
+    #     4: entity.name.function
+    #   push:
+    #     - meta_scope: meta.tag.xml
+    #     - match: (/?>)
+    #       captures:
+    #         1: punctuation.definition.tag.end.xml.xxx
+    #       pop: true
+    #     - include: tagStuff
+    # - include: entity
+    # - include: bare-ampersand
+
+    # xml tags
     - match: "(</?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)"
       captures:
         1: punctuation.definition.tag.begin.xml
