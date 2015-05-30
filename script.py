@@ -12,7 +12,6 @@ import codecs
 import chardet
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
-ADDONS = {}
 
 settings = """{
     "kodi_path": "C:/Kodi",
@@ -49,13 +48,15 @@ def get_addons(reponames):
     get available addons from the kodi addon repository
     """
     repo_list = 'http://mirrors.kodi.tv/addons/%s/addons.xml'
+    addons = {}
     for reponame in reponames:
         req = urlopen(repo_list % reponame)
         data = req.read()
         req.close()
         root = ET.fromstring(data)
         for item in root.iter('addon'):
-            ADDONS[item.get('id')] = item.get('version')
+            addons[item.get('id')] = item.get('version')
+    return addons
 
 
 def check_dependencies(skinpath):
@@ -74,23 +75,21 @@ def check_dependencies(skinpath):
     imports = {}
     str_releases = " / ".join([item["name"] for item in RELEASES])
     repo = input('Enter Kodi version (%s): ' % str_releases)
-    tree = ET.parse(os.path.join(skinpath, 'addon.xml'))
-    root = tree.getroot()
+    root = get_root_from_file(os.path.join(skinpath, 'addon.xml'))
     for item in root.iter('import'):
         imports[item.get('addon')] = item.get('version')
-    version = imports['xbmc.gui']
     for release in RELEASES:
         if repo == release["name"]:
-            if version > release["version"]:
+            if imports['xbmc.gui'] > release["version"]:
                 log('xbmc.gui version incorrect')
-            get_addons(release["allowed_addons"])
+            addons = get_addons(release["allowed_addons"])
             break
     else:
         log('You entered an invalid Kodi version')
     del imports['xbmc.gui']
     for dep, ver in imports.items():
-        if dep in ADDONS:
-            if ver > ADDONS[dep]:
+        if dep in addons:
+            if ver > addons[dep]:
                 log('%s version higher than in Kodi repository' % dep)
         else:
             log('%s not available in Kodi repository' % dep)
