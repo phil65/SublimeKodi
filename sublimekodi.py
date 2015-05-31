@@ -768,9 +768,15 @@ class SwitchXmlFolderCommand(QuickPanelCommand):
         for folder in INFOS.xml_folders:
             path = os.path.join(INFOS.project_path, folder, filename)
             node = {"file": path,
-                    "line": line}
+                    "line": line + 1}
             self.nodes.append(node)
         self.window.show_quick_panel(INFOS.xml_folders, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+
+    def on_done(self, index):
+        if index == -1:
+            return None
+        node = self.nodes[index]
+        self.window.open_file("%s:%i" % (node["file"], node["line"]), sublime.ENCODED_POSITION)
 
 
 def plugin_loaded():
