@@ -123,6 +123,7 @@ WINDOW_FILENAMES = [item[4] for item in WINDOW_MAP]
 WINDOW_NAMES = [item[0] for item in WINDOW_MAP]
 WINDOW_IDS = [item[3] for item in WINDOW_MAP]
 
+
 class InfoProvider():
 
     def __init__(self):
@@ -702,7 +703,7 @@ class InfoProvider():
             for e in root.iterchildren():
                 label += "<b>%s:</b> %s<br>" % (e.attrib.get("condition", "else"), e.text)
             return label
-        elif info_type == "INFO":
+        elif info_type in ["INFO", "ESCINFO"]:
             data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
             result = send_json_request(data, self.settings)
             if result:
@@ -1062,18 +1063,9 @@ class InfoProvider():
         tree = ET.ElementTree(root)
         listitems = []
         # find invalid tags
-        for check in tag_checks:
-            for node in root.xpath(check[0]):
-                if node.tag not in check[1]:
-                    if "type" in node.getparent().attrib:
-                        text = '%s type="%s"' % (node.getparent().tag, node.getparent().attrib["type"])
-                    else:
-                        text = node.getparent().tag
-                    item = {"line": node.sourceline,
-                            "type": node.tag,
-                            "filename": xml_file,
-                            "identifier": node.tag,
-                            "message": "invalid tag for <%s>: <%s>" % (text, node.tag),
-                            "file": path}
-                    listitems.append(item)
-        # find invalid attributes
+        for template in self.template_root:
+            for node in root.xpath(".//*[@type='%s']/*" % template.attrib.get("type")):
+                log("hello")
+        return listitems
+
+

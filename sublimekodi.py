@@ -111,7 +111,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 word = view.substr(view.word(region))
                 popup_label = INFOS.return_label(word)
         elif "text.xml" in scope_name:
-            if info_type in ["INFO", "VAR", "LOCALIZE"]:
+            if info_type in ["INFO", "ESCINFO", "VAR", "LOCALIZE"]:
                 popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
             if not popup_label:
                 if "<include" in line_contents and "name=" not in line_contents:
