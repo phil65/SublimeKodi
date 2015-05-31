@@ -701,7 +701,7 @@ class InfoProvider():
                 return None
             label = ""
             for e in root.iterchildren():
-                label += "<b>%s:</b> %s<br>" % (e.attrib.get("condition", "else"), e.text)
+                label += "<b>%s:</b><br>%s<br>" % (e.attrib.get("condition", "fallback"), e.text)
             return label
         elif info_type in ["INFO", "ESCINFO"]:
             data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["%s"] },"id":1}' % info_id
