@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
     <!--depracated: mover, select, multiselect-->
+    <!-- available types:
+    - condition
+    - bool
+    - int
+    - font
+    - color
+    - label
+    - builtin
+    - path
+    - aspect
+    - xpos
+    - ypos
+    -->
     <control type="label" id="1">
         <description></description>
         <include>common</include>
@@ -12,7 +25,7 @@
         <haspath>bool</haspath>
         <shadowcolor>color</shadowcolor>
         <wrapmultiline>bool</wrapmultiline>
-        <scrollspeed>50</scrollspeed>
+        <scrollspeed>int</scrollspeed>
         <scrollsuffix>-</scrollsuffix>
     </control>
 
@@ -20,9 +33,9 @@
         <include>common</include>
         <scrollout>bool</scrollout>
         <pauseatend>int</pauseatend>
-        <label>6</label>
+        <label>label</label>
         <info>label</info>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <textoffsetx>20</textoffsetx>
     </control>
@@ -54,14 +67,14 @@
         <bordertexture border="int">path</bordertexture>
         <bordersize>int</bordersize>
         <texture>path</texture>
-        <aspectratio>keep</aspectratio>
+        <aspectratio>aspect</aspectratio>
     </control>
     <control type="multiimage" id="1">
         <include>common</include>
-        <imagepath>myimagepath</imagepath>
+        <imagepath>path</imagepath>
         <info></info>
         <timeperimage>int</timeperimage>
-        <fadetime>int0</fadetime>
+        <fadetime>int</fadetime>
         <pauseatend>int</pauseatend>
         <randomize>bool</randomize>
         <loop>bool</loop>
@@ -79,7 +92,7 @@
         <selected>condition</selected>
         <onclick>builtin</onclick>
         <label>label</label>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <focusedcolor>color</focusedcolor>
         <disabledcolor>color</disabledcolor>
@@ -105,7 +118,7 @@
         <usealttexture>condition</usealttexture>
         <label>label</label>
         <altlabel>label</altlabel>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <disabledcolor>color</disabledcolor>
         <align>left</align>
@@ -129,7 +142,7 @@
         <texturedown colordiffuse="color">path</texturedown>
         <texturedownfocus colordiffuse="color">path</texturedownfocus>
         <subtype>page</subtype>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <disabledcolor>color</disabledcolor>
         <align>xpos</align>
@@ -157,7 +170,7 @@
         <texturedown>path</texturedown>
         <texturedownfocus>path</texturedownfocus>
         <label>label</label>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <disabledcolor>color</disabledcolor>
         <align>xpos</align>
@@ -198,7 +211,7 @@
     <control type="textbox" id="1">
         <include>common</include>
         <colordiffuse>color</colordiffuse>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <pulseonselect></pulseonselect>
         <pagecontrol>13</pagecontrol>
@@ -208,7 +221,7 @@
     </control>
     <control type="rss" id="1">
         <include>common</include>
-        <font>xxx</font>
+        <font>font</font>
         <textcolor>color</textcolor>
         <headlinecolor>color</headlinecolor>
         <titlecolor>color</titlecolor>
@@ -223,14 +236,14 @@
         <include>common</include>
         <texturefocus>mytexture.png</texturefocus>
         <texturenofocus>mytexture.png</texturenofocus>
-        <pulseonselect>true</pulseonselect>
+        <pulseonselect>bool</pulseonselect>
     </control>
     <control type="edit" id="1">
         <include>common</include>
         <aligny>center</aligny>
-        <label>Search</label>
+        <label>label</label>
         <hinttext>Enter search string</hinttext>
-        <font>font14</font>
+        <font>font</font>
         <textoffsetx>10</textoffsetx>
         <textcolor>FFB2D4F5</textcolor>
         <disabledcolor>FF000000</disabledcolor>
@@ -276,6 +289,9 @@
         <include>common</include>
         <include>list_common</include>
     </control>
+
+
+
     <include name="common">
         <description>xxx</description>
         <posx>int</posx>
