@@ -232,6 +232,10 @@ def log(string):
     print("SublimeKodi: " + str(string))
 
 
+def prettyprint(string):
+    print(json.dumps(string, sort_keys=True, indent=4, separators=(',', ': ')))
+
+
 def message_dialog(label):
     """
     try to show ST message dialog with label *label,
@@ -382,7 +386,7 @@ def send_json_request(data, settings):
     try:
         result = urlopen(request).read()
         result = json.loads(result.decode("utf-8"))
-        log(result)
+        # prettyprint(result)
         return result
     except:
         return None

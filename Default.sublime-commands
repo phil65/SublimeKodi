@@ -10,6 +10,7 @@
     {"caption": "SublimeKodi: Search for Font", "command": "search_for_font"},
     {"caption": "SublimeKodi: Search for Builtins", "command": "search_for_builtin"},
     {"caption": "SublimeKodi: Search for Boolean Conditions", "command": "search_for_visible_condition"},
+    {"caption": "SublimeKodi: Search for JSON Methods / Types / Notifications", "command": "search_for_json"},
     {"caption": "SublimeKodi: Search translated Strings of open File", "command": "search_file_for_labels"},
     {"caption": "SublimeKodi: Check Variables", "command": "check_variables", "args": { "check_type": "variable"}},
     {"caption": "SublimeKodi: Check Includes", "command": "check_variables", "args": { "check_type": "include"}},

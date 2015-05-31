@@ -495,12 +495,37 @@ class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
         view.run_command("insert", {"characters": INFOS.conditions[index][0]})
 
 
+class SearchForJsonCommand(sublime_plugin.WindowCommand):
+
+    @run_async
+    def run(self):
+        settings = sublime.load_settings(SETTINGS_FILE)
+        data = '{"jsonrpc":"2.0","id":1,"method":"JSONRPC.Introspect"}'
+        result = send_json_request(data, settings=settings)
+        self.label_list = []
+        for key, value in result["result"]["types"].items():
+            self.label_list.append(["%s" % (key), str(value)])
+        for key, value in result["result"]["methods"].items():
+            self.label_list.append(["%s" % (key), str(value)])
+        for key, value in result["result"]["notifications"].items():
+            self.label_list.append(["%s" % (key), str(value)])
+        # for item in INFOS.conditions:
+        #
+        self.window.show_quick_panel(self.label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
+
+    def builtin_search_on_done(self, index):
+        if index == -1:
+            return None
+        view = self.window.active_view()
+        view.run_command("insert", {"characters": str(self.label_list[index][0])})
+
+
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         filename = "%s.log" % APP_NAME
         self.log_file = check_paths([os.path.join(INFOS.get_userdata_folder(), filename),
-                                    os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
+                                     os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
         self.window.open_file(self.log_file)
 
 
