@@ -37,6 +37,7 @@ elif sublime.platform() == "windows":
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
+SUBLIME_PATH = get_sublime_path()
 
 
 class SublimeKodi(sublime_plugin.EventListener):
@@ -355,7 +356,7 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
 
     def on_done(self, index):
         path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
-        Popen([get_sublime_path(), "-n", "-a", path])
+        Popen([SUBLIME_PATH, "-n", "-a", path])
 
 
 class ShowFontRefsCommand(QuickPanelCommand):
