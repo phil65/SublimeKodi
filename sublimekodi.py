@@ -112,7 +112,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 word = view.substr(view.word(region))
                 popup_label = INFOS.return_label(word)
         elif "text.xml" in scope_name:
-            if info_type in ["INFO", "ESCINFO", "VAR", "LOCALIZE"]:
+            if info_type in ["INFO", "ESCINFO", "VAR", "ESCVAR", "LOCALIZE"]:
                 popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
             if not popup_label:
                 if "<include" in line_contents and "name=" not in line_contents:
@@ -509,8 +509,6 @@ class SearchForJsonCommand(sublime_plugin.WindowCommand):
             self.label_list.append(["%s" % (key), str(value)])
         for key, value in result["result"]["notifications"].items():
             self.label_list.append(["%s" % (key), str(value)])
-        # for item in INFOS.conditions:
-        #
         self.window.show_quick_panel(self.label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):

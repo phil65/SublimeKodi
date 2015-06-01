@@ -173,7 +173,7 @@ contexts:
         '3': kodi.formatter.end invalid.deprecated
 
   kodivariable:
-    - match: '(\$)(VAR)(\[)'
+    - match: '(\$)((?:ESC)?VAR)(\[)'
       name: variable.parameter text.kodi.variable.xml
       captures:
         1: entity.kodi.variable.dollar
@@ -188,7 +188,7 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '(\()([A-Za-z0-9._]*?)(\))'
+    - match: '(\()([A-Za-z0-9._,]*?)(\))'
       name: constant.numeric
       contentName: invalid.function
       captures:

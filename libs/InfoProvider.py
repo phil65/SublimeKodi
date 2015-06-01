@@ -462,7 +462,7 @@ class InfoProvider():
         return label
 
     def check_variables(self):
-        var_regex = "\$VAR\[(.*?)\]"
+        var_regex = "\$(?:ESC)?VAR\[(.*?)\]"
         listitems = []
         for folder in self.xml_folders:
             var_refs = []
@@ -694,7 +694,7 @@ class InfoProvider():
         return xml_source
 
     def translate_square_bracket(self, info_type, info_id, folder):
-        if info_type == "VAR":
+        if info_type in ["VAR", "ESCVAR"]:
             node_content = self.return_node_content(info_id, folder=folder)
             root = ET.fromstring(node_content)
             if root is None:
