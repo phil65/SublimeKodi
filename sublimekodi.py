@@ -142,6 +142,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             sublime.set_timeout_async(lambda: self.show_tooltip(view, popup_label), self.settings.get("tooltip_delay", 0))
 
     def show_tooltip(self, view, tooltip_label):
+        if self.css:
+            tooltip_label = "<style>%s</style>" % self.css + tooltip_label
         view.show_popup(tooltip_label, sublime.COOPERATE_WITH_AUTO_COMPLETE,
                         location=-1, max_width=self.settings.get("tooltip_width", 1000), max_height=self.settings.get("height", 300), on_navigate=lambda label_id, view=view: jump_to_label_declaration(view, label_id))
 
@@ -185,6 +187,8 @@ class SublimeKodi(sublime_plugin.EventListener):
             self.settings = sublime.load_settings(SETTINGS_FILE)
             INFOS.get_settings(self.settings)
             INFOS.update_builtin_labels()
+            css_file = 'Packages/SublimeKodi/' + self.settings.get('tooltip_css_file')
+            self.css = sublime.load_resource(css_file)
             self.settings_loaded = True
         view = sublime.active_window().active_view()
         filename = view.file_name()

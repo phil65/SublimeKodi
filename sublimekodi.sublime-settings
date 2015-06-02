@@ -77,6 +77,14 @@
      */
     "tooltip_delay": 0,
     /*
+     * Tooltip css file
+     *
+     * Allows customizing the tooltip design
+     *
+     *
+     */
+    "tooltip_css_file": "css/dark.css",
+    /*
      * Auto-Check XML
      *
      * Automatically check the xml for non-valid skin code on saving
