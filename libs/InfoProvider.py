@@ -167,6 +167,9 @@ class InfoProvider():
         #     log(node.tag)
 
     def init_addon(self, path):
+        """
+        scan addon folder and parse skin content etc
+        """
         self.addon_type = ""
         self.addon_name = ""
         self.project_path = path
@@ -198,11 +201,17 @@ class InfoProvider():
             # sublime.status_message("SublimeKodi: successfully loaded addon")
 
     def lang_path(self):
+        """
+        returns the add-on language folder path
+        """
         paths = [os.path.join(self.project_path, "resources", "language"),
                  os.path.join(self.project_path, "language")]
         return check_paths(paths)
 
     def media_path(self):
+        """
+        returns the add-on media folder path
+        """
         paths = [os.path.join(self.project_path, "media"),
                  os.path.join(self.project_path, "resources", "skins", "Default", "media")]
         return check_paths(paths)
@@ -230,6 +239,9 @@ class InfoProvider():
                     log("Skin does not include %s" % item)
 
     def get_colors(self):
+        """
+        create color list by parsing all color files
+        """
         self.color_list = []
         color_path = os.path.join(self.project_path, "colors")
         if not self.addon_xml_file or not os.path.exists(color_path):
@@ -247,6 +259,9 @@ class InfoProvider():
             log("color list: %i colors found" % len(self.color_list))
 
     def get_fonts(self):
+        """
+        create font dict by parsing first fontset
+        """
         if not self.addon_xml_file or not self.xml_folders:
             return False
         self.fonts = {}
@@ -267,6 +282,9 @@ class InfoProvider():
                     self.fonts[folder].append(string_dict)
 
     def get_userdata_folder(self):
+        """
+        return userdata folder based on platform and portable setting
+        """
         if platform.system() == "Linux":
             return os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME)
         elif platform.system() == "Windows":
@@ -276,6 +294,9 @@ class InfoProvider():
                 return os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME)
 
     def reload_skin_after_save(self, path):
+        """
+        update include, color and font infos, depending on open file
+        """
         folder = path.split(os.sep)[-2]
         if folder in self.include_file_list:
             if path in self.include_file_list[folder]:
@@ -286,6 +307,9 @@ class InfoProvider():
             self.get_fonts()
 
     def update_include_list(self):
+        """
+        create include list by parsing all include files starting with includes.xml
+        """
         self.include_list = {}
         for folder in self.xml_folders:
             xml_folder = os.path.join(self.project_path, folder)
@@ -349,6 +373,9 @@ class InfoProvider():
         return False
 
     def return_node_content(self, keyword=None, return_entry="content", folder=False):
+        """
+        get value from include list
+        """
         if keyword and folder:
             if folder in self.fonts:
                 for node in self.fonts[folder]:
@@ -361,6 +388,9 @@ class InfoProvider():
         return ""
 
     def get_settings(self, settings):
+        """
+        load settings file
+        """
         self.settings = settings
         self.kodi_path = settings.get("kodi_path")
         log("kodi path: " + self.kodi_path)
