@@ -387,7 +387,7 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
     def run(self):
         listitems = []
         self.nodes = []
-        regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"(?:label|property|altlabel|label2)>([0-9].*?)<"]
+        regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"\$ADDON\[.*?([0-9].*?)\]", r"(?:label|property|altlabel|label2)>([0-9].*?)<"]
         view = self.window.active_view()
         path = view.file_name()
         labels = [s["string"] for s in INFOS.string_list]
