@@ -30,6 +30,10 @@ contexts:
         - meta_scope: string.quoted.double
         - match: '"'
           pop: true
+        - meta_scope: string.quoted.double
+        - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
+          pop: true
+
 
     exception:
         - meta_scope: variable.parameter
