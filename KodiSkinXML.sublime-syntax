@@ -83,6 +83,7 @@ contexts:
     - include: entity
     - include: bare-ampersand
     - include: koditranslation
+    - include: kodiaddontranslation
     - include: kodinumber
     - include: kodiinfolabel
     - include: kodivariable
@@ -106,6 +107,7 @@ contexts:
         - include: entity
         - include: bare-ampersand
         - include: koditranslation
+        - include: kodiaddontranslation
         - include: kodiinfolabel
         - include: kodivariable
         - include: brackets
@@ -136,6 +138,18 @@ contexts:
         4: variable.parameter entity.kodi.label.id
         5: variable.parameter entity.kodi.label.end
 
+  kodiaddontranslation:
+    - match: '(\$)(ADDON)(\[)(.*?)([0-9]+)(\])'
+      name: variable.parameter text.kodi.translation.xml
+      captures:
+        1: variable.parameter entity.kodi.label.dollar
+        2: variable.parameter entity.kodi.label.localize
+        3: variable.parameter entity.kodi.label.begin
+        4: variable.parameter entity.kodi.label.scriptname
+        5: variable.parameter entity.kodi.label.id
+        6: variable.parameter entity.kodi.label.end
+
+
   kodinumber:
     - match: '(\$)(NUMBER)(\[)([0-9]+)(\])'
       name: variable.parameter text.kodi.number.xml
@@ -161,6 +175,7 @@ contexts:
             1: entity.kodi.infolabel.end
           pop: true
         - include: koditranslation
+        - include: kodiaddontranslation
         - include: formatter
         - include: brackets
 
