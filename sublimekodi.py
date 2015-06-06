@@ -707,10 +707,10 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             return False
         word = self.view.substr(region)
         for label in INFOS.string_list:
-            if label["string"].lower() == word.lower():
-                self.label_ids.append(label)
+            if label["string"].lower() == word.lower() and not label["id"] in self.label_ids:
+                self.label_ids.append(label["id"])
                 self.labels.append(["%s (%s)" % (label["string"], label["id"]), label["comment"]])
-        if self.label_ids:
+        if self.labels:
             self.labels.append("Create new label")
             sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
         else:
@@ -723,7 +723,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         if self.labels[index] == "Create new label":
             label_id = INFOS.create_new_label(self.view.substr(region))
         else:
-            label_id = self.label_ids[index]["id"][1:]
+            label_id = self.label_ids[index][1:]
         self.view.run_command("replace_text", {"label_id": label_id})
 
 
