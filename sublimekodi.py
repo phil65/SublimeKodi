@@ -359,7 +359,7 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
         self.window.show_quick_panel(self.nodes, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
-        if index > 0:
+        if index > -1:
             path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
             Popen([SUBLIME_PATH, "-n", "-a", path])
 
