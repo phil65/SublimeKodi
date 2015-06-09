@@ -571,6 +571,10 @@ class InfoProvider():
             return "$ADDON[%s %i]" % (self.addon_name, label_id)
         elif "text.xml" in scope_name:
             return "$LOCALIZE[%i]" % label_id
+        elif "source.python" in scope_name and 32000 <= label_id <= 33000:
+            return "ADDON.getLocalizedString(%i)" % label_id
+        elif "source.python" in scope_name:
+            return "xbmc.getLocalizedString(%i)" % label_id
         else:
             return str(label_id)
 
