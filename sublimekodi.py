@@ -464,9 +464,8 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
         if index == -1:
             return None
         view = self.window.active_view()
-        scope_name = view.scope_name(view.sel()[0].b)
         label_id = int(INFOS.string_list[index]["id"][1:])
-        info_string = INFOS.build_translate_label(label_id, scope_name)
+        info_string = INFOS.build_translate_label(label_id, view)
         view.run_command("insert", {"characters": info_string})
 
 
@@ -731,9 +730,7 @@ class ReplaceTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, label_id):
         for region in self.view.sel():
-            scope_name = self.view.scope_name(region.b)
-            label_id = int(label_id)
-            new = INFOS.build_translate_label(label_id, scope_name)
+            new = INFOS.build_translate_label(int(label_id), self.view)
             self.view.replace(edit, region, new)
 
 

@@ -56,7 +56,6 @@ def run_async(func):
     """
     Decorator to put a function into a separate thread
     """
-
     @wraps(func)
     def async_func(*args, **kwargs):
         func_hl = Thread(target=func, args=args, kwargs=kwargs)
