@@ -16,7 +16,7 @@ from polib import polib
 import string
 import platform
 import webbrowser
-
+from time import gmtime, strftime
 
 APP_NAME = "kodi"
 # c&p from wiki
@@ -751,6 +751,23 @@ class InfoProvider():
             return self.return_label(info_id)
         return ""
 
+    def create_new_po_file(self):
+        po = polib.POFile()
+        mail = ""
+        actual_date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        po.metadata = {
+            'Project-Id-Version': '1.0',
+            'Report-Msgid-Bugs-To': '%s' % mail,
+            'POT-Creation-Date': actual_date,
+            'PO-Revision-Date': actual_date,
+            'Last-Translator': 'you <%s>' % mail,
+            'Language-Team': 'English <%s>' % mail,
+            'MIME-Version': '1.0',
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Content-Transfer-Encoding': '8bit',
+        }
+        return po
+
     def create_new_label(self, word):
         if self.addon_type == "skin":
             start_id = 31000
@@ -758,9 +775,23 @@ class InfoProvider():
         else:
             start_id = 32000
             index_offset = 2
-        po = polib.pofile(self.addon_lang_folders[0])
+        if not self.addon_lang_folders:
+            po = self.create_new_po_file()
+            lang_folder = self.settings.get("language_folders")[0]
+            if self.addon_type == "skin":
+                lang_path = os.path.join(self.project_path, "resources", "language", lang_folder)
+            else:
+                lang_path = os.path.join(self.project_path, "language", lang_folder)
+            if not os.path.exists(lang_path):
+                os.makedirs(lang_path)
+            lang_path = os.path.join(lang_path, "strings.po")
+            self.addon_lang_folders.append(lang_path)
+            message_dialog("New language file created")
+        else:
+            lang_path = self.addon_lang_folders[0]
+            po = polib.pofile(lang_path)
         string_ids = []
-        for i, entry in enumerate(po):
+        for entry in po:
             try:
                 string_ids.append(int(entry.msgctxt[1:]))
             except:
