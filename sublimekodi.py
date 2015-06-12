@@ -720,13 +720,18 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
     def on_done(self, index, region):
         if index == -1:
             return None
+        region = self.view.sel()[0]
+        rowcol = self.view.rowcol(region.b)
+        line = str(rowcol[0] + 1)
         if self.labels[index] == "Create new label":
-            region = self.view.sel()[0]
-            rowcol = self.view.rowcol(region.b)
-            label_id = INFOS.create_new_label(self.view.substr(region), self.view.file_name(), rowcol[0] + 1)
+            label_id = INFOS.create_new_label(self.view.substr(region), self.view.file_name(), line)
         else:
-
             label_id = self.label_ids[index][1:]
+            if 31000 <= int(label_id) < 33000:
+                entry = INFOS.addon_po_files[0].find(self.label_ids[index], by="msgctxt")
+                rel_path = self.view.file_name().replace(INFOS.project_path, "")
+                entry.occurrences.append((rel_path, line))
+                INFOS.addon_po_files[0].save(INFOS.addon_po_files[0].fpath)
         self.view.run_command("replace_text", {"label_id": label_id})
 
 
