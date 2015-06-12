@@ -800,7 +800,7 @@ class InfoProvider():
                 log("first free: " + str(label_id))
                 break
         msgstr = "#" + str(label_id)
-        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr, occurrences=[(os.path.basename(filepath), str(line))])
+        new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr, occurrences=[(filepath, str(line))])
         po_index = int(label_id) - start_id + index_offset
         po.insert(po_index, new_entry)
         po.save(self.addon_po_files[0].fpath)
