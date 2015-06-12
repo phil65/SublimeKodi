@@ -388,11 +388,14 @@ class SearchFileForLabelsCommand(QuickPanelCommand):
     def run(self):
         listitems = []
         self.nodes = []
+        labels = []
+        label_ids = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"\$ADDON\[.*?([0-9].*?)\]", r"(?:label|property|altlabel|label2)>([0-9].*?)<"]
         view = self.window.active_view()
         path = view.file_name()
-        labels = [s["string"] for s in INFOS.string_list]
-        label_ids = [s["id"] for s in INFOS.string_list]
+        for po_file in INFOS.po_files:
+            labels += [s.msgid for s in po_file]
+            label_ids += [s.msgctxt for s in po_file]
         # view.substr(sublime.Region(0, view.size()))
         with open(path, encoding="utf8") as f:
             for i, line in enumerate(f.readlines()):
@@ -446,25 +449,26 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
-        if INFOS.string_list:
+        if INFOS.po_files:
             return True
         else:
             return False
 
     def run(self):
-        label_list = []
-        id_list = []
-        for item in INFOS.string_list:
-            if item["id"] not in id_list:
-                id_list.append(item["id"])
-                label_list.append(["%s (%s)" % (item["string"], item["id"]), item["comment"]])
-        self.window.show_quick_panel(label_list, lambda s: self.label_search_ondone_action(s), selected_index=0)
+        listitems = []
+        self.id_list = []
+        for po_file in INFOS.po_files:
+            for entry in po_file:
+                if entry.msgctxt not in self.id_list:
+                    self.id_list.append(entry.msgctxt)
+                    listitems.append(["%s (%s)" % (entry.msgid, entry.msgctxt), entry.comment])
+        self.window.show_quick_panel(listitems, lambda s: self.label_search_ondone_action(s), selected_index=0)
 
     def label_search_ondone_action(self, index):
         if index == -1:
             return None
         view = self.window.active_view()
-        label_id = int(INFOS.string_list[index]["id"][1:])
+        label_id = int(self.id_list[index][1:])
         info_string = INFOS.build_translate_label(label_id, view)
         view.run_command("insert", {"characters": info_string})
 
@@ -472,10 +476,10 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
 class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        label_list = []
+        listitems = []
         for item in INFOS.builtins:
-            label_list.append(["%s" % (item[0]), item[1]])
-        self.window.show_quick_panel(label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
+            listitems.append(["%s" % (item[0]), item[1]])
+        self.window.show_quick_panel(listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
         if index == -1:
@@ -487,10 +491,10 @@ class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
 class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        label_list = []
+        listitems = []
         for item in INFOS.conditions:
-            label_list.append(["%s" % (item[0]), item[1]])
-        self.window.show_quick_panel(label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
+            listitems.append(["%s" % (item[0]), item[1]])
+        self.window.show_quick_panel(listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
         if index == -1:
@@ -506,20 +510,20 @@ class SearchForJsonCommand(sublime_plugin.WindowCommand):
         settings = sublime.load_settings(SETTINGS_FILE)
         data = '{"jsonrpc":"2.0","id":1,"method":"JSONRPC.Introspect"}'
         result = send_json_request(data, settings=settings)
-        self.label_list = []
+        self.listitems = []
         for key, value in result["result"]["types"].items():
-            self.label_list.append(["%s" % (key), str(value)])
+            self.listitems.append(["%s" % (key), str(value)])
         for key, value in result["result"]["methods"].items():
-            self.label_list.append(["%s" % (key), str(value)])
+            self.listitems.append(["%s" % (key), str(value)])
         for key, value in result["result"]["notifications"].items():
-            self.label_list.append(["%s" % (key), str(value)])
-        self.window.show_quick_panel(self.label_list, lambda s: self.builtin_search_on_done(s), selected_index=0)
+            self.listitems.append(["%s" % (key), str(value)])
+        self.window.show_quick_panel(self.listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
         if index == -1:
             return None
         view = self.window.active_view()
-        view.run_command("insert", {"characters": str(self.label_list[index][0])})
+        view.run_command("insert", {"characters": str(self.listitems[index][0])})
 
 
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
@@ -691,7 +695,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
 
     def is_visible(self):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
-        if INFOS.project_path and INFOS.addon_lang_folders:
+        if INFOS.project_path and INFOS.addon_po_files:
             if "text.xml" in scope_name or "source.python" in scope_name:
                 if self.view.sel()[0].b != self.view.sel()[0].a:
                     return True
@@ -705,10 +709,11 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             sublime.message_dialog("Please select the complete label")
             return False
         word = self.view.substr(region)
-        for label in INFOS.string_list:
-            if label["string"].lower() == word.lower() and not label["id"] in self.label_ids:
-                self.label_ids.append(label["id"])
-                self.labels.append(["%s (%s)" % (label["string"], label["id"]), label["comment"]])
+        for po_file in INFOS.po_files:
+            for label in po_file:
+                if label.msgid.lower() == word.lower() and label.msgctxt not in self.label_ids:
+                    self.label_ids.append(label.msgctxt)
+                    self.labels.append(["%s (%s)" % (label.msgid, label.msgctxt), label.comment])
         self.labels.append("Create new label")
         sublime.active_window().show_quick_panel(self.labels, lambda s: self.on_done(s, region), selected_index=0)
 
@@ -720,6 +725,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             rowcol = self.view.rowcol(region.b)
             label_id = INFOS.create_new_label(self.view.substr(region), self.view.file_name(), rowcol[0] + 1)
         else:
+
             label_id = self.label_ids[index][1:]
         self.view.run_command("replace_text", {"label_id": label_id})
 

@@ -131,17 +131,17 @@ class InfoProvider():
         self.include_file_list = {}
         self.window_file_list = {}
         self.color_list = []
-        self.addon_lang_folders = []
+        self.po_files = []
         self.addon_xml_file = ""
         self.color_file = ""
         self.project_path = ""
         self.addon_type = ""
         self.addon_name = ""
-        self.kodi_string_list = []
+        self.kodi_po_files = []
         self.fonts = {}
-        self.string_list = []
+        self.po_files = []
         self.xml_folders = []
-        self.addon_string_list = []
+        self.addon_po_files = []
         self.load_data()
 
     def load_data(self):
@@ -352,24 +352,26 @@ class InfoProvider():
         jumps to the definition of ref named keyword
         """
         # TODO: need to add param with ref type
-        if keyword:
-            if keyword.isdigit():
-                for node in self.string_list:
-                    if node["id"] == "#" + keyword:
-                        return "%s:%s" % (node["file"], node["line"])
-            else:
-                # TODO: need to check for include file attribute
-                for node in self.include_list[folder]:
-                    if node["name"] == keyword:
-                        return "%s:%s" % (node["file"], node["line"])
-                for node in self.fonts[folder]:
-                    if node["name"] == keyword:
-                        path = os.path.join(self.project_path, folder, "Font.xml")
-                        return "%s:%s" % (path, node["line"])
-                for node in self.color_list:
-                    if node["name"] == keyword and node["file"].endswith("defaults.xml"):
-                        return "%s:%s" % (node["file"], node["line"])
-                log("no node with name %s found" % keyword)
+        if not keyword:
+            return False
+        if keyword.isdigit():
+            for po_file in self.po_files:
+                for entry in po_file:
+                    if entry.msgctxt == "#" + keyword:
+                        return "%s:%s" % (po_file.fpath, entry.linenum)
+        else:
+            # TODO: need to check for include file attribute
+            for node in self.include_list[folder]:
+                if node["name"] == keyword:
+                    return "%s:%s" % (node["file"], node["line"])
+            for node in self.fonts[folder]:
+                if node["name"] == keyword:
+                    path = os.path.join(self.project_path, folder, "Font.xml")
+                    return "%s:%s" % (path, node["line"])
+            for node in self.color_list:
+                if node["name"] == keyword and node["file"].endswith("defaults.xml"):
+                    return "%s:%s" % (node["file"], node["line"])
+            log("no node with name %s found" % keyword)
         return False
 
     def return_node_content(self, keyword=None, return_entry="content", folder=False):
@@ -404,41 +406,39 @@ class InfoProvider():
 
     def return_label(self, selection):
         tooltips = ""
-        if selection.isdigit():
-            id_string = "#" + selection
-            for item in self.string_list:
-                if id_string == item["id"]:
-                    folder = item["file"].split(os.sep)[-2]
-                    if folder == "resources":
-                        folder = item["file"].split(os.sep)[-3].replace("resource.language.", "")
-                    if item["native_string"]:
-                        tooltips += "<b>%s:</b> %s<br>" % (folder, item["native_string"])
-                    else:
-                        tooltips += "<b>%s:</b> %s<br>" % (folder, item["string"])
+        if not selection.isdigit():
+            return ""
+        for po_file in self.po_files:
+            hit = po_file.find("#" + selection, by="msgctxt")
+            if not hit:
+                continue
+            folder = po_file.fpath.split(os.sep)[-2]
+            if folder == "resources":
+                folder = po_file.fpath.split(os.sep)[-3].replace("resource.language.", "")
+            if hit.msgstr:
+                tooltips += "<b>%s:</b> %s<br>" % (folder, hit.msgstr)
+            else:
+                tooltips += "<b>%s:</b> %s<br>" % (folder, hit.msgid)
         return tooltips
 
     def update_builtin_labels(self):
-        string_list, lang_folders = self.get_string_list(os.path.join(self.kodi_path, "addons"))
-        string_list2, lang_folders2 = self.get_string_list(os.path.join(self.kodi_path, "language"))
-        string_list3, lang_folders3 = self.get_string_list(os.path.join(self.get_userdata_folder(), "addons"))
-        self.kodi_string_list = string_list + string_list2 + string_list3
-        self.kodi_lang_folders = lang_folders + lang_folders2 + lang_folders3
+        po_files = self.get_po_files(os.path.join(self.kodi_path, "addons"))
+        po_files2 = self.get_po_files(os.path.join(self.kodi_path, "language"))
+        po_files3 = self.get_po_files(os.path.join(self.get_userdata_folder(), "addons"))
+        self.kodi_po_files = po_files + po_files2 + po_files3
 
     def update_addon_labels(self):
-        self.addon_string_list, self.addon_lang_folders = self.get_string_list(self.lang_path())
-        self.string_list = self.kodi_string_list + self.addon_string_list
+        self.addon_po_files = self.get_po_files(self.lang_path())
+        self.po_files = self.kodi_po_files + self.addon_po_files
 
-    def get_string_list(self, lang_folder_root):
-        string_list = []
-        lang_folders = []
+    def get_po_files(self, lang_folder_root):
+        po_files = []
         for item in self.settings.get("language_folders"):
             path = check_paths([os.path.join(lang_folder_root, item, "strings.po"),
                                 os.path.join(lang_folder_root, item, "resources", "strings.po")])
             if os.path.exists(path):
-                log("found language: " + path)
-                string_list += get_label_list(path)
-                lang_folders.append(path)
-        return string_list, lang_folders
+                po_files.append(get_po_file(path))
+        return po_files
 
     def get_color_info(self, color_string):
         color_info = ""
@@ -775,21 +775,20 @@ class InfoProvider():
         else:
             start_id = 32000
             index_offset = 2
-        if not self.addon_lang_folders:
+        if not self.addon_po_files:
             po = self.create_new_po_file()
             lang_folder = self.settings.get("language_folders")[0]
             if self.addon_type == "skin":
-                lang_path = os.path.join(self.project_path, "resources", "language", lang_folder)
-            else:
                 lang_path = os.path.join(self.project_path, "language", lang_folder)
+            else:
+                lang_path = os.path.join(self.project_path, "resources", "language", lang_folder)
             if not os.path.exists(lang_path):
                 os.makedirs(lang_path)
             lang_path = os.path.join(lang_path, "strings.po")
-            self.addon_lang_folders.append(lang_path)
+            self.addon_po_files.append(lang_path)
             message_dialog("New language file created")
         else:
-            lang_path = self.addon_lang_folders[0]
-            po = polib.pofile(lang_path)
+            po = self.addon_po_files[0]
         string_ids = []
         for entry in po:
             try:
@@ -804,7 +803,7 @@ class InfoProvider():
         new_entry = polib.POEntry(msgid=word, msgstr="", msgctxt=msgstr, occurrences=[(os.path.basename(filepath), str(line))])
         po_index = int(label_id) - start_id + index_offset
         po.insert(po_index, new_entry)
-        po.save(self.addon_lang_folders[0])
+        po.save(self.addon_po_files[0].fpath)
         self.update_addon_labels()
         return label_id
 
@@ -844,7 +843,7 @@ class InfoProvider():
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
         label_regex = r"[A-Za-z]+"
-        # labels = [s["string"] for s in self.string_list]
+        # labels = [s["string"] for s in self.po_files]
         checks = [[".//viewtype[(@label)]", "label"],
                   [".//fontset[(@idloc)]", "idloc"],
                   [".//label[(@fallback)]", "fallback"]]
@@ -903,7 +902,9 @@ class InfoProvider():
                                     "line": element.sourceline}
                             listitems.append(item)
         # check if refs are defined in po files
-        label_ids = [s["id"] for s in self.string_list]
+        label_ids = []
+        for po_file in self.po_files:
+            label_ids += [entry.msgctxt for entry in po_file]
         for ref in refs:
             if "#" + ref["name"] not in label_ids:
                 ref["message"] = "Label not defined: %s" % ref["name"]

@@ -284,21 +284,10 @@ def get_tags_from_file(path, node_tags):
     return nodes
 
 
-def get_label_list(po_file_path):
-    listitems = []
+def get_po_file(po_file_path):
     try:
-        po_file_content = codecs.open(po_file_path, "r", "utf-8").read()
-        po = polib.pofile(po_file_content)
-        for entry in po:
-            string = {"id": entry.msgctxt,
-                      "line": entry.linenum,
-                      "comment": entry.comment,
-                      "tcomment": entry.tcomment,
-                      "string": entry.msgid,
-                      "file": po_file_path,
-                      "native_string": entry.msgstr}
-            listitems.append(string)
-        return listitems
+        log("Parsing po file %s" % po_file_path)
+        return polib.pofile(po_file_path)
     except Exception as e:
         answer = yesno_dialog("Error in %s:\n %s" % (po_file_path, str(e)), "Open")
         if answer:
