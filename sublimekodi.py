@@ -815,3 +815,23 @@ class SwitchXmlFolderCommand(QuickPanelCommand):
 
 def plugin_loaded():
     REMOTE.setup(sublime.load_settings(SETTINGS_FILE))
+
+
+class ColorPickerCommand(sublime_plugin.WindowCommand):
+
+    def is_visible(self):
+        return self.check_for_colorpicker()
+
+    def check_for_colorpicker(self):
+        settings = sublime.load_settings('KodiColorPicker.sublime-settings')
+        settings.set('color_pick_return', None)
+        self.window.run_command('color_pick_api_is_available', {'settings': 'KodiColorPicker.sublime-settings'})
+        return settings.get('color_pick_return', False)
+
+    def run(self):
+        settings = sublime.load_settings('KodiColorPicker.sublime-settings')
+        settings.set('color_pick_return', None)
+        self.window.run_command('color_pick_api_get_color', {'settings': 'KodiColorPicker.sublime-settings', 'default_color': '#ff0000'})
+        color = settings.get('color_pick_return')
+        if color:
+            self.window.active_view().run_command("insert", {"characters": "FF" + color[1:]})

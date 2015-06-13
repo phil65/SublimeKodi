@@ -3,6 +3,7 @@
     {"caption": "SublimeKodi: Build Skin", "command": "build_addon", "args": { "pack_textures": true}},
     {"caption": "SublimeKodi: Remote Actions", "command": "remote_actions"},
     {"caption": "SublimeKodi: Open Log", "command": "open_kodi_log"},
+    {"caption": "SublimeKodi: Choose color", "command": "color_picker"},
     {"caption": "SublimeKodi: Reload Language Files", "command": "reload_kodi_language_files"},
     {"caption": "SublimeKodi: Switch to Add-on", "command": "open_kodi_addon"},
     {"caption": "SublimeKodi: Search for Label", "command": "search_for_label"},
