@@ -405,6 +405,9 @@ class InfoProvider():
             return []
 
     def return_label(self, selection):
+        """
+        return formatted label for id in *selection
+        """
         tooltips = ""
         if not selection.isdigit():
             return ""
@@ -422,16 +425,25 @@ class InfoProvider():
         return tooltips
 
     def update_builtin_labels(self):
+        """
+        get core po files
+        """
         po_files = self.get_po_files(os.path.join(self.kodi_path, "addons"))
         po_files2 = self.get_po_files(os.path.join(self.kodi_path, "language"))
         po_files3 = self.get_po_files(os.path.join(self.get_userdata_folder(), "addons"))
         self.kodi_po_files = po_files + po_files2 + po_files3
 
     def update_addon_labels(self):
+        """
+        get addon po files and update po files list
+        """
         self.addon_po_files = self.get_po_files(self.lang_path())
         self.po_files = self.kodi_po_files + self.addon_po_files
 
     def get_po_files(self, lang_folder_root):
+        """
+        get list with pofile objects
+        """
         po_files = []
         for item in self.settings.get("language_folders"):
             path = check_paths([os.path.join(lang_folder_root, item, "strings.po"),
@@ -458,6 +470,9 @@ class InfoProvider():
         return color_info
 
     def get_ancestor_info(self, path, line):
+        """
+        iter through ancestors and return info about absolute position
+        """
         element = None
         root = get_root_from_file(path)
         tree = ET.ElementTree(root)
@@ -482,6 +497,9 @@ class InfoProvider():
             return ""
 
     def get_font_info(self, font_name, folder):
+        """
+        return formatted string containing font info
+        """
         node_content = self.return_node_content(font_name, folder=folder)
         if not node_content:
             return ""
@@ -492,6 +510,9 @@ class InfoProvider():
         return label
 
     def check_variables(self):
+        """
+        return message listitems containing non-existing / unused variables
+        """
         var_regex = "\$(?:ESC)?VAR\[(.*?)\]"
         listitems = []
         for folder in self.xml_folders:
@@ -521,6 +542,9 @@ class InfoProvider():
         return listitems
 
     def check_includes(self):
+        """
+        return message listitems for non-existing / unused includes
+        """
         listitems = []
         # include check for each folder separately
         for folder in self.xml_folders:
@@ -564,6 +588,9 @@ class InfoProvider():
         return listitems
 
     def build_translate_label(self, label_id, view):
+        """
+        return correctly formatted translate label based on context
+        """
         scope_name = view.scope_name(view.sel()[0].b)
         if os.path.basename(view.file_name()) == "settings.xml":
             return str(label_id)
@@ -579,6 +606,9 @@ class InfoProvider():
             return str(label_id)
 
     def translate_path(self, path):
+        """
+        return translated path for textures
+        """
         if path.startswith("special://skin/"):
             return os.path.join(self.project_path, path.replace("special://skin/", ""))
         else:
@@ -752,6 +782,9 @@ class InfoProvider():
         return ""
 
     def create_new_po_file(self):
+        """
+        creates a new pofile and returns it (doesnt save yet)
+        """
         po = polib.POFile()
         mail = ""
         actual_date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
@@ -769,6 +802,9 @@ class InfoProvider():
         return po
 
     def create_new_label(self, word, filepath, line=""):
+        """
+        adds a label to the first pofile from settings (or creates new one if non-existing)
+        """
         if self.addon_type == "skin":
             start_id = 31000
             index_offset = 0
@@ -808,6 +844,9 @@ class InfoProvider():
         return label_id
 
     def go_to_help(self, word):
+        """
+        open browser and go to wiki page for control with type *word
+        """
         controls = {"group": "http://kodi.wiki/view/Group_Control",
                     "grouplist": "http://kodi.wiki/view/Group_List_Control",
                     "label": "http://kodi.wiki/view/Label_Control",
@@ -843,7 +882,7 @@ class InfoProvider():
         refs = []
         regexs = [r"\$LOCALIZE\[([0-9].*?)\]", r"^(\d+)$"]
         label_regex = r"[A-Za-z]+"
-        # labels = [s["string"] for s in self.po_files]
+        # labels = [s.msgid for s in self.po_files]
         checks = [[".//viewtype[(@label)]", "label"],
                   [".//fontset[(@idloc)]", "idloc"],
                   [".//label[(@fallback)]", "fallback"]]
