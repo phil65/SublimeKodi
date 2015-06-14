@@ -133,7 +133,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                 if not popup_label:
                     popup_label = INFOS.get_color_info(selected_content)
             if not popup_label and "constant.other.allcaps" in scope_name:
-                if scope_content in WINDOW_NAMES:
+                if scope_content.lower() in WINDOW_NAMES:
                     popup_label = WINDOW_FILENAMES[WINDOW_NAMES.index(scope_content)]
         # node = INFOS.template_root.find(".//control[@type='label']")
         # log(node)
