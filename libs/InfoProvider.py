@@ -592,9 +592,7 @@ class InfoProvider():
         return correctly formatted translate label based on context
         """
         scope_name = view.scope_name(view.sel()[0].b)
-        if os.path.basename(view.file_name()) == "settings.xml":
-            return str(label_id)
-        elif "text.xml" in scope_name and self.addon_type == "python" and 32000 <= label_id <= 33000:
+        if "text.xml" in scope_name and self.addon_type == "python" and 32000 <= label_id <= 33000:
             return "$ADDON[%s %i]" % (self.addon_name, label_id)
         elif "text.xml" in scope_name:
             return "$LOCALIZE[%i]" % label_id
