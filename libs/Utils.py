@@ -137,6 +137,9 @@ def to_hex(r, g, b, a=None):
 
 
 def get_cont_col(col):
+    """
+    gets contrast color for *col (used to ensure readability)
+    """
     (h, l, s) = colorsys.rgb_to_hls(int(col[1:3], 16)/255.0, int(col[3:5], 16)/255.0, int(col[5:7], 16)/255.0)
     l1 = 1 - l
     if abs(l1 - l) < .15:
@@ -228,10 +231,16 @@ def jump_to_label_declaration(view, label_id):
 
 
 def log(string):
+    """
+    prefixes "SublimeKodi:" and prints
+    """
     print("SublimeKodi: " + str(string))
 
 
 def prettyprint(string):
+    """
+    prints properly formatted output for json objects
+    """
     print(json.dumps(string, sort_keys=True, indent=4, separators=(',', ': ')))
 
 
@@ -261,6 +270,9 @@ def yesno_dialog(label, ok_button):
 
 
 def get_tags_from_file(path, node_tags):
+    """
+    returns list of dicts from xml file with path *path containing all nodes with tag name *node_tags
+    """
     nodes = []
     if not os.path.exists(path):
         log("%s does not exist" % path)
@@ -285,6 +297,9 @@ def get_tags_from_file(path, node_tags):
 
 
 def get_po_file(po_file_path):
+    """
+    return pofile object, go-to-failure in case of exception
+    """
     try:
         log("Parsing po file %s" % po_file_path)
         return polib.pofile(po_file_path)
@@ -381,6 +396,9 @@ def send_json_request(data, settings):
 
 
 def get_refs_from_file(path, xpath):
+    """
+    load xml file from *path and return dict list for nodes which match *xpath
+    """
     font_refs = []
     xml_file = os.path.basename(path)
     root = get_root_from_file(path)
