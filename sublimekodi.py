@@ -456,7 +456,6 @@ class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
         result = send_json_request(data, self.settings)
         if result:
             key, value = result["result"].popitem()
-            log(value)
             if os.path.exists(value):
                 self.window.open_file(value)
             for xml_file in INFOS.window_file_list[folder]:
