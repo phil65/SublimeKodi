@@ -196,6 +196,7 @@ class InfoProvider():
         if self.xml_folders:
             log("Kodi project detected: " + path)
             self.update_include_list()
+            self.update_xml_files()
             self.get_colors()
             self.get_fonts()
             # sublime.status_message("SublimeKodi: successfully loaded addon")
@@ -346,6 +347,7 @@ class InfoProvider():
         for path in self.xml_folders:
             xml_folder = os.path.join(self.project_path, path)
             self.window_file_list[path] = get_xml_file_paths(xml_folder)
+            log("found %i XMLs in %s" % (len(self.window_file_list[path]), xml_folder))
 
     def go_to_tag(self, keyword, folder):
         """

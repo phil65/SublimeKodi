@@ -446,6 +446,25 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog(str(value))
 
 
+class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.settings = sublime.load_settings(SETTINGS_FILE)
+        folder = self.window.active_view().file_name().split(os.sep)[-2]
+        data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["Window.Property(xmlfile)"] },"id":1}'
+        result = send_json_request(data, self.settings)
+        if result:
+            key, value = result["result"].popitem()
+            log(value)
+            if os.path.exists(value):
+                self.window.open_file(value)
+            for xml_file in INFOS.window_file_list[folder]:
+                if xml_file == value:
+                    path = os.path.join(INFOS.project_path, folder, xml_file)
+                    self.window.open_file(path)
+                    return None
+
+
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
