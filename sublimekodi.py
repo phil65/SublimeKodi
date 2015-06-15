@@ -448,6 +448,7 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
 
 class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
 
+    @run_async
     def run(self):
         self.settings = sublime.load_settings(SETTINGS_FILE)
         folder = self.window.active_view().file_name().split(os.sep)[-2]
