@@ -6,7 +6,7 @@ scope: text.kodilog
 
 contexts:
     main:
-        - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
+        - match: ^([0-9]{2}):([0-9]{2}):([0-9]{2})
           scope: keyword.date
         - match: \b(WARNING)\b
           scope: constant.character.escape
@@ -31,7 +31,7 @@ contexts:
         - match: '"'
           pop: true
         - meta_scope: string.quoted.double
-        - match: ([0-9]{2}):([0-9]{2}):([0-9]{2})
+        - match: ^([0-9]{2}):([0-9]{2}):([0-9]{2})
           pop: true
 
 
