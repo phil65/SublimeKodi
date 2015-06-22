@@ -286,7 +286,7 @@ class InfoProvider():
         """
         return userdata folder based on platform and portable setting
         """
-        if platform.system() == "Linux":
+        if platform.system() == "Linux" or platform.system() == "Darwin":
             return os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME)
         elif platform.system() == "Windows":
             if self.settings.get("portable_mode"):

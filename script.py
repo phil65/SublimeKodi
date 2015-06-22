@@ -1,10 +1,16 @@
 import os
 import sys
+import platform
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
+libs_platform_path = os.path.join(__path__, 'libs-winlin')
+if platform.system() == "Darwin":
+    libs_platform_path = os.path.join(__path__, "libs-mac")
 if libs_path not in sys.path:
     sys.path.insert(0, libs_path)
+if libs_platform_path not in sys.path:
+    sys.path.insert(0, libs_platform_path)
 from Utils import *
 import json
 from InfoProvider import InfoProvider
