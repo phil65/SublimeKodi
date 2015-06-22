@@ -23,7 +23,9 @@ contexts:
         - match: 'EXCEPTION Thrown \(PythonToCppException\) : -->Python callback/script returned the following error<--'
           push: exception
           scope: invalid.illegal
-
+        - match: 'Exception in thread Thread-[0-9].*?'
+          push: exception
+          scope: invalid.illegal
     string:
         - meta_scope: string.quoted.double
         - match: '"'
