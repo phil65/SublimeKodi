@@ -35,13 +35,14 @@ from Utils import *
 INFOS = InfoProvider()
 REMOTE = RemoteDevice()
 # sublime.log_commands(True)
-APP_NAME = "kodi"
+APP_NAME = "Kodi"
+APP_NAME_LOWER = APP_NAME.lower()
 if sublime.platform() == "linux":
-    KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
+    KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME_LOWER
 elif sublime.platform() == "windows":
-    KODI_PRESET_PATH = "C:/%s/" % APP_NAME
+    KODI_PRESET_PATH = "C:/%s/" % APP_NAME_LOWER
 elif platform.system() == "Darwin":
-    KODI_PRESET_PATH = os.path.join(os.path.expanduser("~"), "Applications", "Kodi.app" % APP_NAME, "Contents", "Resources", "Kodi")
+    KODI_PRESET_PATH = os.path.join(os.path.expanduser("~"), "Applications", "%s.app" % APP_NAME, "Contents", "Resources", "Kodi")
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'
@@ -556,7 +557,7 @@ class SearchForJsonCommand(sublime_plugin.WindowCommand):
 class OpenKodiLogCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        filename = "%s.log" % APP_NAME
+        filename = "%s.log" % APP_NAME_LOWER
         self.log_file = check_paths([os.path.join(INFOS.get_userdata_folder(), filename),
                                      os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
         self.window.open_file(self.log_file)
