@@ -40,6 +40,8 @@ if sublime.platform() == "linux":
     KODI_PRESET_PATH = "/usr/share/%s/" % APP_NAME
 elif sublime.platform() == "windows":
     KODI_PRESET_PATH = "C:/%s/" % APP_NAME
+elif platform.system() == "Darwin":
+    KODI_PRESET_PATH = os.path.join(os.path.expanduser("~"), "Applications", "Kodi.app" % APP_NAME, "Contents", "Resources", "Kodi")
 else:
     KODI_PRESET_PATH = ""
 SETTINGS_FILE = 'sublimekodi.sublime-settings'

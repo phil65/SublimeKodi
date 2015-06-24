@@ -286,13 +286,15 @@ class InfoProvider():
         """
         return userdata folder based on platform and portable setting
         """
-        if platform.system() == "Linux" or platform.system() == "Darwin":
+        if platform.system() == "Linux":
             return os.path.join(os.path.expanduser("~"), ".%s" % APP_NAME)
         elif platform.system() == "Windows":
             if self.settings.get("portable_mode"):
                 return os.path.join(self.settings.get("kodi_path"), "portable_data")
             else:
                 return os.path.join(os.getenv('APPDATA'), "%s" % APP_NAME)
+        elif platform.system() == "Darwin":
+            return os.path.join(os.path.expanduser("~"), "Application Support", "%s" % APP_NAME, "userdata")
 
     def reload_skin_after_save(self, path):
         """
