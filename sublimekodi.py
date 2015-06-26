@@ -60,7 +60,10 @@ class SublimeKodi(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         completions = []
         scope_name = view.scope_name(view.sel()[0].b)
-        folder = view.file_name().split(os.sep)[-2]
+        filename = view.file_name()
+        if not filename:
+            return []
+        folder = filename.split(os.sep)[-2]
         if folder not in INFOS.include_list:
             return []
         if "text.xml" in scope_name:
@@ -848,13 +851,10 @@ def plugin_loaded():
 class ColorPickerCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
-        return self.check_for_colorpicker()
-
-    def check_for_colorpicker(self):
         settings = sublime.load_settings('KodiColorPicker.sublime-settings')
         settings.set('color_pick_return', None)
         self.window.run_command('color_pick_api_is_available', {'settings': 'KodiColorPicker.sublime-settings'})
-        return settings.get('color_pick_return', False)
+        return bool(settings.get('color_pick_return', False))
 
     def run(self):
         settings = sublime.load_settings('KodiColorPicker.sublime-settings')
