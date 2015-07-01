@@ -271,7 +271,7 @@ class InfoProvider():
                      os.path.join(self.project_path, folder, "font.xml")]
             font_file = check_paths(paths)
             if not font_file:
-              return False
+                return False
             self.fonts[folder] = []
             root = get_root_from_file(font_file)
             for node in root.find("fontset").findall("font"):
@@ -1167,8 +1167,8 @@ class InfoProvider():
         return listitems
 
     def check_file2(self, path):
-        xml_file = os.path.basename(path)
         root = get_root_from_file(path)
+        # xml_file = os.path.basename(path)
         # folder = path.split(os.sep)[-2]
         # root = self.resolve_includes(root, folder)
         if root is None:

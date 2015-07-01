@@ -88,9 +88,7 @@ def get_sublime_path():
     """
     get cmd call for different platforms to execute Sublime Text
     """
-    if platform.system() == 'Darwin':
-        return "subl"
-    elif platform.system() == 'Linux':
+    if platform.system() in ['Darwin', 'Linux']:
         return "subl"
     elif os.path.exists(os.path.join(os.getcwd(), "sublime_text.exe")):
         return os.path.join(os.getcwd(), "sublime_text.exe")
@@ -389,7 +387,7 @@ def send_json_request(data, settings):
     try:
         result = urlopen(request).read()
         result = json.loads(result.decode("utf-8"))
-        # prettyprint(result)
+        prettyprint(result)
         return result
     except:
         return None
