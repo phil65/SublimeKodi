@@ -270,17 +270,18 @@ class InfoProvider():
             paths = [os.path.join(self.project_path, folder, "Font.xml"),
                      os.path.join(self.project_path, folder, "font.xml")]
             font_file = check_paths(paths)
-            if font_file:
-                self.fonts[folder] = []
-                root = get_root_from_file(font_file)
-                for node in root.find("fontset").findall("font"):
-                    string_dict = {"name": node.find("name").text,
-                                   "size": node.find("size").text,
-                                   "line": node.sourceline,
-                                   "content": ET.tostring(node, pretty_print=True, encoding="unicode"),
-                                   "file": font_file,
-                                   "filename": node.find("filename").text}
-                    self.fonts[folder].append(string_dict)
+            if not font_file:
+              return False
+            self.fonts[folder] = []
+            root = get_root_from_file(font_file)
+            for node in root.find("fontset").findall("font"):
+                string_dict = {"name": node.find("name").text,
+                               "size": node.find("size").text,
+                               "line": node.sourceline,
+                               "content": ET.tostring(node, pretty_print=True, encoding="unicode"),
+                               "file": font_file,
+                               "filename": node.find("filename").text}
+                self.fonts[folder].append(string_dict)
 
     def get_userdata_folder(self):
         """
@@ -382,15 +383,16 @@ class InfoProvider():
         """
         get value from include list
         """
-        if keyword and folder:
-            if folder in self.fonts:
-                for node in self.fonts[folder]:
-                    if node["name"] == keyword:
-                        return node[return_entry]
-            if folder in self.include_list:
-                for node in self.include_list[folder]:
-                    if node["name"] == keyword:
-                        return node[return_entry]
+        if not keyword or not folder:
+            return ""
+        if folder in self.fonts:
+            for node in self.fonts[folder]:
+                if node["name"] == keyword:
+                    return node[return_entry]
+        if folder in self.include_list:
+            for node in self.include_list[folder]:
+                if node["name"] == keyword:
+                    return node[return_entry]
         return ""
 
     def get_settings(self, settings):
@@ -596,6 +598,7 @@ class InfoProvider():
         return correctly formatted translate label based on context
         """
         scope_name = view.scope_name(view.sel()[0].b)
+        # TODO: blank string for settings.xml
         if "text.xml" in scope_name and self.addon_type == "python" and 32000 <= label_id <= 33000:
             return "$ADDON[%s %i]" % (self.addon_name, label_id)
         elif "text.xml" in scope_name:

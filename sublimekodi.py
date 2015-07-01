@@ -180,17 +180,18 @@ class SublimeKodi(sublime_plugin.EventListener):
         if not INFOS.addon_xml_file or not view.file_name():
             return False
         if view.file_name().endswith(".xml"):
-            if self.is_modified:
-                INFOS.update_xml_files()
-                filename = os.path.basename(view.file_name())
-                folder = view.file_name().split(os.sep)[-2]
-                INFOS.reload_skin_after_save(view.file_name())
-                if folder in INFOS.window_file_list and filename in INFOS.window_file_list[folder]:
-                    if self.settings.get("auto_reload_skin", True):
-                        self.is_modified = False
-                        view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
-                    if self.settings.get("auto_skin_check", True):
-                        view.window().run_command("check_variables", {"check_type": "file"})
+            if not self.is_modified:
+                return False
+            INFOS.update_xml_files()
+            filename = os.path.basename(view.file_name())
+            folder = view.file_name().split(os.sep)[-2]
+            INFOS.reload_skin_after_save(view.file_name())
+            if folder in INFOS.window_file_list and filename in INFOS.window_file_list[folder]:
+                if self.settings.get("auto_reload_skin", True):
+                    self.is_modified = False
+                    view.window().run_command("execute_builtin", {"builtin": "ReloadSkin()"})
+                if self.settings.get("auto_skin_check", True):
+                    view.window().run_command("check_variables", {"check_type": "file"})
         if view.file_name().endswith(".po"):
             INFOS.update_addon_labels()
 
@@ -466,24 +467,22 @@ class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
         folder = self.window.active_view().file_name().split(os.sep)[-2]
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": ["Window.Property(xmlfile)"] },"id":1}'
         result = send_json_request(data, self.settings)
-        if result:
-            key, value = result["result"].popitem()
-            if os.path.exists(value):
-                self.window.open_file(value)
-            for xml_file in INFOS.window_file_list[folder]:
-                if xml_file == value:
-                    path = os.path.join(INFOS.project_path, folder, xml_file)
-                    self.window.open_file(path)
-                    return None
+        if not result:
+            return None
+        key, value = result["result"].popitem()
+        if os.path.exists(value):
+            self.window.open_file(value)
+        for xml_file in INFOS.window_file_list[folder]:
+            if xml_file == value:
+                path = os.path.join(INFOS.project_path, folder, xml_file)
+                self.window.open_file(path)
+                return None
 
 
 class SearchForLabelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
-        if INFOS.po_files:
-            return True
-        else:
-            return False
+        return bool(INFOS.po_files)
 
     def run(self):
         listitems = []
@@ -507,9 +506,7 @@ class SearchForLabelCommand(sublime_plugin.WindowCommand):
 class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        listitems = []
-        for item in INFOS.builtins:
-            listitems.append(["%s" % (item[0]), item[1]])
+        listitems = [["%s" % (item[0]), item[1]] for item in INFOS.builtins]
         self.window.show_quick_panel(listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
@@ -522,9 +519,7 @@ class SearchForBuiltinCommand(sublime_plugin.WindowCommand):
 class SearchForVisibleConditionCommand(sublime_plugin.WindowCommand):
 
     def run(self):
-        listitems = []
-        for item in INFOS.conditions:
-            listitems.append(["%s" % (item[0]), item[1]])
+        listitems = [["%s" % (item[0]), item[1]] for item in INFOS.conditions]
         self.window.show_quick_panel(listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
@@ -604,16 +599,17 @@ class PreviewImageCommand(sublime_plugin.TextCommand):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         path = get_node_content(self.view, flags)
         imagepath = INFOS.translate_path(path)
-        if os.path.exists(imagepath):
-            if os.path.isdir(imagepath):
-                self.files = []
-                for (dirpath, dirnames, filenames) in os.walk(imagepath):
-                    self.files.extend(filenames)
-                    break
-                self.files = [imagepath + s for s in self.files]
-            else:
-                self.files = [imagepath]
-            sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
+        if not os.path.exists(imagepath):
+            return None
+        if os.path.isdir(imagepath):
+            self.files = []
+            for (dirpath, dirnames, filenames) in os.walk(imagepath):
+                self.files.extend(filenames)
+                break
+            self.files = [imagepath + s for s in self.files]
+        else:
+            self.files = [imagepath]
+        sublime.active_window().show_quick_panel(self.files, lambda s: self.on_done(s), selected_index=0, on_highlight=lambda s: self.show_preview(s))
 
     def on_done(self, index):
         sublime.active_window().focus_view(self.view)
@@ -728,8 +724,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
         scope_name = self.view.scope_name(self.view.sel()[0].b)
         if INFOS.project_path and INFOS.addon_po_files:
             if "text.xml" in scope_name or "source.python" in scope_name:
-                if self.view.sel()[0].b != self.view.sel()[0].a:
-                    return True
+                return self.view.sel()[0].b != self.view.sel()[0].a
         return False
 
     def run(self, edit):
