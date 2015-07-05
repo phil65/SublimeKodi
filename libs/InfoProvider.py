@@ -201,6 +201,7 @@ class InfoProvider():
             self.get_fonts()
             # sublime.status_message("SublimeKodi: successfully loaded addon")
 
+    @property
     def lang_path(self):
         """
         returns the add-on language folder path
@@ -209,6 +210,7 @@ class InfoProvider():
                  os.path.join(self.project_path, "language")]
         return check_paths(paths)
 
+    @property
     def media_path(self):
         """
         returns the add-on media folder path
@@ -406,7 +408,7 @@ class InfoProvider():
     def get_kodi_addons(self):
         addon_path = os.path.join(self.get_userdata_folder(), "addons")
         if os.path.exists(addon_path):
-            return [folder for folder in os.listdir(addon_path) if not os.path.isfile(folder)]
+            return [f for f in os.listdir(addon_path) if not os.path.isfile(f)]
         else:
             return []
 
@@ -443,7 +445,7 @@ class InfoProvider():
         """
         get addon po files and update po files list
         """
-        self.addon_po_files = self.get_po_files(self.lang_path())
+        self.addon_po_files = self.get_po_files(self.lang_path)
         self.po_files = self.kodi_po_files + self.addon_po_files
 
     def get_po_files(self, lang_folder_root):
@@ -617,7 +619,7 @@ class InfoProvider():
         if path.startswith("special://skin/"):
             return os.path.join(self.project_path, path.replace("special://skin/", ""))
         else:
-            return os.path.join(self.media_path(), path)
+            return os.path.join(self.media_path, path)
 
     def get_image_info(self, path):
         imagepath = self.translate_path(path)

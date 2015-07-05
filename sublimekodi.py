@@ -18,6 +18,7 @@ import webbrowser
 import platform
 from subprocess import Popen
 from xml.sax.saxutils import escape
+from .libs import networkx as nx
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -588,7 +589,7 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
 class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        if INFOS.media_path():
+        if INFOS.media_path:
             flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
             content = get_node_content(self.view, flags)
             if "/" in content or "\\" in content:
@@ -635,14 +636,14 @@ class GoToTagCommand(sublime_plugin.WindowCommand):
 class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        if INFOS.media_path():
+        if INFOS.media_path:
             return True
         else:
             return False
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
-        self.imagepath = INFOS.media_path()
+        self.imagepath = INFOS.media_path
         if not self.imagepath:
             log("Could not find file " + self.imagepath)
         self.files = []
