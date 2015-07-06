@@ -536,13 +536,9 @@ class SearchForJsonCommand(sublime_plugin.WindowCommand):
         settings = sublime.load_settings(SETTINGS_FILE)
         data = '{"jsonrpc":"2.0","id":1,"method":"JSONRPC.Introspect"}'
         result = send_json_request(data, settings=settings)
-        self.listitems = []
-        for key, value in result["result"]["types"].items():
-            self.listitems.append(["%s" % (key), str(value)])
-        for key, value in result["result"]["methods"].items():
-            self.listitems.append(["%s" % (key), str(value)])
-        for key, value in result["result"]["notifications"].items():
-            self.listitems.append(["%s" % (key), str(value)])
+        self.listitems = [["%s" % (key), str(value)] for item in result["result"]["types"].items()]
+        self.listitems += [["%s" % (key), str(value)] for item in result["result"]["methods"].items()]
+        self.listitems += [["%s" % (key), str(value)] for item in result["result"]["notifications"].items()]
         self.window.show_quick_panel(self.listitems, lambda s: self.builtin_search_on_done(s), selected_index=0)
 
     def builtin_search_on_done(self, index):
@@ -566,20 +562,14 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
     def run(self, edit):
         for region in self.view.sel():
             if region.empty():
-                line = self.view.line(region)
-                line_contents = self.view.substr(line)
+                line_contents = self.view.substr(self.view.line(region))
                 ma = re.search('File "(.*?)", line (\d*), in .*', line_contents)
                 if ma:
-                    target_filename = ma.group(1)
-                    target_line = ma.group(2)
-                    sublime.active_window().open_file("%s:%s" % (target_filename, target_line), sublime.ENCODED_POSITION)
+                    sublime.active_window().open_file("%s:%s" % (ma.group(1), ma.group(2)), sublime.ENCODED_POSITION)
                     return
                 ma = re.search(r"', \('(.*?)', (\d+), (\d+), ", line_contents)
                 if ma:
-                    target_filename = ma.group(1)
-                    target_line = ma.group(2)
-                    target_col = ma.group(3)
-                    sublime.active_window().open_file("%s:%s:%s" % (target_filename, target_line, target_col), sublime.ENCODED_POSITION)
+                    sublime.active_window().open_file("%s:%s:%s" % (ma.group(1), ma.group(2), ma.group(3)), sublime.ENCODED_POSITION)
                     return
             else:
                 self.view.insert(edit, region.begin(), self.view.substr(region))
@@ -588,12 +578,11 @@ class OpenSourceFromLog(sublime_plugin.TextCommand):
 class PreviewImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        if INFOS.media_path:
-            flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
-            content = get_node_content(self.view, flags)
-            if "/" in content or "\\" in content:
-                return True
-        return False
+        if not INFOS.media_path:
+            return False
+        flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
+        content = get_node_content(self.view, flags)
+        return "/" in content or "\\" in content
 
     def run(self, edit):
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
