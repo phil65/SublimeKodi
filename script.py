@@ -117,13 +117,15 @@ if __name__ == "__main__":
         if check_bom(path):
             log("found BOM. File: " + path)
         try:
-            text = codecs.open(path, "rb", encoding='utf-8', errors="strict").read()
+            with open(path, "rb", encoding='utf-8', errors="strict") as f:
+                text = f.read()
         except:
             log("Error when trying to read %s as UTF-8" % path)
             rawdata = codecs.open(path, "rb", errors="ignore").read()
             encoding = chardet.detect(rawdata)
             log("detected encoding: %s" % encoding["encoding"])
-            text = codecs.open(path, "rb", encoding=encoding["encoding"]).read()
+            with open(path, "rb", encoding=encoding["encoding"]) as f:
+                text = f.read()
     result = eol.eol_info_from_path_patterns([project_folder], recursive=True, includes=[], excludes=['.svn', '.git'])
     for item in result:
         if item[1] == '\n' or None:

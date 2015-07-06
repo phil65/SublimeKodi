@@ -16,6 +16,7 @@ import sys
 import cgi
 import webbrowser
 import platform
+from itertools import chain
 from subprocess import Popen
 from xml.sax.saxutils import escape
 # from .libs import networkx as nx
@@ -77,9 +78,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     completions.append(["%s (%s)" % (node["name"], node["content"]), node["name"]])
             for node in INFOS.include_list[folder]:
                 completions.append([node["name"], node["name"]])
-            for node in INFOS.builtins:
-                completions.append([node[0], node[0]])
-            for node in INFOS.conditions:
+            for node in chain(INFOS.builtins, INFOS.conditions):
                 completions.append([node[0], node[0]])
             for item in WINDOW_NAMES:
                 completions.append([item, item])
