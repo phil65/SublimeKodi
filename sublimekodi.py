@@ -18,7 +18,7 @@ import webbrowser
 import platform
 from subprocess import Popen
 from xml.sax.saxutils import escape
-from .libs import networkx as nx
+# from .libs import networkx as nx
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
