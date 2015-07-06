@@ -828,10 +828,10 @@ class EvaluateMathExpressionPromptCommand(sublime_plugin.WindowCommand):
 class EvaluateMathExpressionCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, equation):
-        for region in self.view.sel():
+        for i, region in enumerate(self.view.sel()):
             text = self.view.substr(region)
-            if text.isdigit():
-                new_text = eval(equation.replace("x", text))
+            if text.replace('-', '').isdigit():
+                new_text = eval(equation.replace("x", text).replace("i", str(i)))
                 self.view.replace(edit, region, str(new_text))
 
 
