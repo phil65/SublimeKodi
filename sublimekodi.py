@@ -816,6 +816,25 @@ class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
             break
 
 
+class EvaluateMathExpressionPromptCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.window.show_input_panel("Write Equation (x = selected int)", "x", self.evaluate, None, None)
+
+    def evaluate(self, equation):
+        self.window.run_command("evaluate_math_expression", {'equation': equation})
+
+
+class EvaluateMathExpressionCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit, equation):
+        for region in self.view.sel():
+            text = self.view.substr(region)
+            if text.isdigit():
+                new_text = eval(equation.replace("x", text))
+                self.view.replace(edit, region, str(new_text))
+
+
 class SwitchXmlFolderCommand(QuickPanelCommand):
 
     def is_visible(self):

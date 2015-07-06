@@ -11,6 +11,8 @@
     { "keys": ["ctrl+shift+x"], "command": "create_element_row",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
+    { "keys": ["ctrl+shift+y"], "command": "evaluate_math_expression_prompt",
+    },
     { "keys": ["ctrl+shift+w"], "command": "go_to_online_help",
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
