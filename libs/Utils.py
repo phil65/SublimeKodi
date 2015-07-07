@@ -173,14 +173,15 @@ def texturepacker_generator(skin_path, settings):
     """
     media_path = os.path.join(skin_path, "media")
     tp_path = settings.get("texturechecker_path")
-    if tp_path:
-        if platform.system() == "Linux":
-            args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))]
-        else:
-            args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, "Textures.xbt")]
-        with subprocess.Popen(args, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
-            for line in p.stdout:
-                yield line
+    if not tp_path:
+        return None
+    if platform.system() == "Linux":
+        args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))]
+    else:
+        args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, "Textures.xbt")]
+    with subprocess.Popen(args, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
+        for line in p.stdout:
+            yield line
 
 
 def check_brackets(label):
@@ -193,14 +194,14 @@ def check_brackets(label):
         if c in pushChars:
             stack.append(c)
         elif c in popChars:
-            if not len(stack):
+            if not stack:
                 return False
             else:
                 stackTop = stack.pop()
                 balancingBracket = pushChars[popChars.index(c)]
                 if stackTop != balancingBracket:
                     return False
-    return not len(stack)
+    return not stack
 
 
 def find_word(view):
@@ -350,15 +351,14 @@ def get_xml_file_paths(xml_path):
     return list with absolute file paths from XML files in *xml_path
     """
     xml_files = []
-    if os.path.exists(xml_path):
-            for xml_file in os.listdir(xml_path):
-                filename = os.path.basename(xml_file)
-                if filename.endswith(".xml"):
-                    if filename.lower() not in ["script-skinshortcuts-includes.xml", "font.xml"]:
-                        xml_files.append(xml_file)
-            return xml_files
-    else:
+    if not os.path.exists(xml_path):
         return []
+    for xml_file in os.listdir(xml_path):
+        filename = os.path.basename(xml_file)
+        if filename.endswith(".xml"):
+            if filename.lower() not in ["script-skinshortcuts-includes.xml", "font.xml"]:
+                xml_files.append(xml_file)
+    return xml_files
 
 
 @run_async
@@ -401,13 +401,15 @@ def get_refs_from_file(path, xpath):
     font_refs = []
     xml_file = os.path.basename(path)
     root = get_root_from_file(path)
-    if root is not None:
-        for node in root.xpath(xpath):
-            if not node.getchildren():
-                item = {"line": node.sourceline,
-                        "type": node.tag,
-                        "name": node.text,
-                        "filename": xml_file,
-                        "file": path}
-                font_refs.append(item)
+    if root is None:
+        return None
+    for node in root.xpath(xpath):
+        if node.getchildren():
+            continue
+        item = {"line": node.sourceline,
+                "type": node.tag,
+                "name": node.text,
+                "filename": xml_file,
+                "file": path}
+        font_refs.append(item)
     return font_refs
