@@ -527,7 +527,7 @@ class InfoProvider():
             var_refs = []
             for xml_file in self.window_file_list[folder]:
                 path = os.path.join(self.project_path, folder, xml_file)
-                with codecs.open(path, encoding="utf8", errors="ignore") as f:
+                with open(path, encoding="utf8", errors="ignore") as f:
                     for i, line in enumerate(f.readlines()):
                         for match in re.finditer(var_regex, line):
                             item = {"line": i + 1,

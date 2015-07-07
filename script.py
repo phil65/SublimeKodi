@@ -1,6 +1,7 @@
 import os
 import sys
 import platform
+import json
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
 libs_path = os.path.join(__path__, 'libs')
@@ -12,9 +13,7 @@ if libs_path not in sys.path:
 if libs_platform_path not in sys.path:
     sys.path.insert(0, libs_platform_path)
 from Utils import *
-import json
 from InfoProvider import InfoProvider
-import codecs
 import chardet
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
@@ -30,7 +29,7 @@ def log(text):
     """
     logs text to both file and console
     """
-    with codecs.open(RESULTS_FILE, "a", encoding='utf-8') as myfile:
+    with open(RESULTS_FILE, "a", encoding='utf-8') as myfile:
         myfile.write(str(text) + "\n")
     try:
         print(text)
@@ -121,7 +120,8 @@ if __name__ == "__main__":
                 text = f.read()
         except:
             log("Error when trying to read %s as UTF-8" % path)
-            rawdata = codecs.open(path, "rb", errors="ignore").read()
+            with open(path, "rb", errors="ignore") as f:
+                rawdata = f.read()
             encoding = chardet.detect(rawdata)
             log("detected encoding: %s" % encoding["encoding"])
             with open(path, "rb", encoding=encoding["encoding"]) as f:

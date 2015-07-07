@@ -151,7 +151,8 @@ def check_bom(filepath):
     check file *filepath for BOM, return True / False
     """
     file_bytes = min(32, os.path.getsize(filepath))
-    raw = open(filepath, 'rb').read(file_bytes)
+    with open(filepath, 'rb') as f:
+        raw = f.read(file_bytes)
     return raw.startswith(codecs.BOM_UTF8)
 
 
