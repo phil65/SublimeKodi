@@ -69,14 +69,12 @@ class SublimeKodi(sublime_plugin.EventListener):
         if folder not in INFOS.include_list:
             return []
         if "text.xml" in scope_name:
-            for node in INFOS.fonts[folder]:
-                completions.append([node["name"], node["name"]])
             colors = []
             for node in INFOS.color_list:
                 if node["name"] not in colors:
                     colors.append(node["name"])
                     completions.append(["%s (%s)" % (node["name"], node["content"]), node["name"]])
-            for node in INFOS.include_list[folder]:
+            for node in chain(INFOS.include_list[folder], INFOS.fonts[folder]):
                 completions.append([node["name"], node["name"]])
             for node in chain(INFOS.builtins, INFOS.conditions):
                 completions.append([node[0], node[0]])
@@ -85,8 +83,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             for item in completions:
                 for i, match in enumerate(re.findall(r"\([a-z,\]\[]+\)", item[1])):
                     item[1] = item[1].replace(match, "($%i)" % (i + 1))
-            completions.sort()
-            return completions
+            return completions.sort()
             # return (completions, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
 
     def on_selection_modified_async(self, view):
@@ -310,10 +307,7 @@ class ReloadKodiLanguageFilesCommand(sublime_plugin.WindowCommand):
 class QuickPanelCommand(sublime_plugin.WindowCommand):
 
     def is_visible(self):
-        if INFOS.addon_xml_file:
-            return True
-        else:
-            return False
+        return bool(INFOS.addon_xml_file)
 
     def on_done(self, index):
         if index == -1:
@@ -624,10 +618,7 @@ class GoToTagCommand(sublime_plugin.WindowCommand):
 class SearchForImageCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        if INFOS.media_path:
-            return True
-        else:
-            return False
+        return bool(INFOS.media_path)
 
     def run(self, edit):
         path, filename = os.path.split(self.view.file_name())
@@ -668,10 +659,7 @@ class SearchForImageCommand(sublime_plugin.TextCommand):
 class SearchForFontCommand(sublime_plugin.TextCommand):
 
     def is_visible(self):
-        if INFOS.fonts:
-            return True
-        else:
-            return False
+        return bool(INFOS.fonts)
 
     def run(self, edit):
         self.font_entries = []
@@ -789,8 +777,9 @@ class CreateElementRowCommand(sublime_plugin.WindowCommand):
 class ReplaceXmlElementsCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, num_items):
+        if not num_items.isdigit():
+            return None
         selected_text = self.view.substr(self.view.sel()[0])
-        # new_text = selected_text + "\n"
         new_text = ""
         reg = re.search(r"\[(-?[0-9]+)\]", selected_text)
         offset = 0
