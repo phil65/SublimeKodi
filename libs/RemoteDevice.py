@@ -8,7 +8,7 @@ SublimeKodi is a plugin to assist with Kodi skinning / scripting using Sublime T
 """
 
 
-from Utils import *
+from .Utils import *
 import os
 
 

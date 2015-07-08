@@ -9,12 +9,10 @@ SublimeKodi is a plugin to assist with Kodi skinning / scripting using Sublime T
 
 
 import os
-from lxml import etree as ET
 import base64
 import json
 import colorsys
 import codecs
-from polib import polib
 from urllib.request import Request, urlopen
 import zipfile
 import subprocess
@@ -23,6 +21,9 @@ import platform
 from threading import Thread
 from functools import wraps
 import time
+
+from .polib import polib
+from lxml import etree as ET
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):

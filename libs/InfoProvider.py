@@ -9,14 +9,15 @@ SublimeKodi is a tool to assist with Kodi skinning / scripting using Sublime Tex
 
 
 import os
-from Utils import *
 import re
-from PIL import Image
-from polib import polib
 import string
 import platform
 import webbrowser
 from time import gmtime, strftime
+
+from .Utils import *
+from .polib import polib
+from PIL import Image
 
 APP_NAME = "kodi"
 # c&p from wiki
