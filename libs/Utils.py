@@ -72,6 +72,7 @@ def check_busy(func):
     Only one of the decorated functions may run simultaniously
     """
 
+    @wraps(func)
     def decorator(self, *args, **kwargs):
         if self.is_busy:
             message_dialog("Already busy. Please wait.")
