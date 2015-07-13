@@ -203,7 +203,7 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '(\()([A-Za-z0-9._,-]*?)(\))'
+    - match: '(\()(.*?)(\))'
       name: constant.numeric
       contentName: invalid.function
       captures:
