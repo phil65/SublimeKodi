@@ -116,7 +116,7 @@ WINDOW_MAP = [("home", "WINDOW_HOME", " 10000", "0", "Home.xml"),
               ("weather", "WINDOW_WEATHER", "12600", "2600", "MyWeather.xml"),
               ("videoosd", "WINDOW_OSD", "12901", "2901", "VideoOSD.xml"),
               ("startup", "WINDOW_STARTUP_ANIM", "12999", "2999", "Startup.xml"),
-              ("skinsettings", "-", "-", "-", "SkinSettings.xml"),
+              ("skinsettings", "WINDOW_SKIN_SETTINGS", "10035", "35", "SkinSettings.xml"),
               ("pointer", "-", "-", "105", "Pointer.xml"),
               ("musicoverlay", "WINDOW_MUSIC_OVERLAY", "12903", "2903", "MusicOverlay.xml"),
               ("videooverlay", "WINDOW_VIDEO_OVERLAY", "12904", "2904", "VideoOverlay.xml")]
