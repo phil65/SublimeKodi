@@ -976,7 +976,7 @@ class InfoProvider():
         # tags allowed for all controls
         common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         # tags allowed for containers
-        list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
+        list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         label_common = ["font", "textcolor", "align", "aligny", "label"]
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
