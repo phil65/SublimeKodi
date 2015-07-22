@@ -120,7 +120,9 @@ def make_archive(folderpath, archive):
             continue
         if rel_path.startswith("themes"):
             continue
-        if f.endswith(('.pyc', '.pyo', '.zip', '.gitignore')):
+        if f.endswith(('.pyc', '.pyo', '.zip')):
+            continue
+        if f.startswith(('.')):
             continue
         a.write(f, rel_path)
         yield rel_path
