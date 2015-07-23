@@ -125,7 +125,10 @@ class SublimeKodi(sublime_plugin.EventListener):
             if not popup_label:
                 if "<include" in line_contents and "name=" not in line_contents:
                     node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
-                    popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
+                    if len(node_content) < 1000:
+                        popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
+                    else:
+                        popup_label = "include too big for preview"
                 elif "<font" in line_contents and "</font" in line_contents:
                     popup_label = INFOS.get_font_info(selected_content, folder)
                 elif "label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
@@ -142,7 +145,7 @@ class SublimeKodi(sublime_plugin.EventListener):
                     popup_label = INFOS.get_color_info(selected_content)
             if not popup_label and "constant.other.allcaps" in scope_name:
                 if scope_content.lower() in WINDOW_NAMES:
-                    popup_label = WINDOW_FILENAMES[WINDOW_NAMES.index(scope_content)]
+                    popup_label = WINDOW_FILENAMES[WINDOW_NAMES.index(scope_content.lower())]
         # node = INFOS.template_root.find(".//control[@type='label']")
         # log(node)
         # popup_label = node.find(".//available_tags").text.replace("\\n", "<br>")
