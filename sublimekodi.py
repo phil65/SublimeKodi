@@ -346,12 +346,18 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 class BuildAddonCommand(sublime_plugin.WindowCommand):
 
     def run(self, pack_textures=True):
-        self.build_skin(INFOS.project_path, pack_textures)
+        self.options = [os.path.join(INFOS.project_path, "media")]
+        for folder in os.listdir(os.path.join(INFOS.project_path, "themes")):
+            self.options.append(os.path.join(INFOS.project_path, "themes", folder))
+        self.window.show_quick_panel(self.options, lambda s: self.on_done(s), selected_index=0)
 
     @run_async
-    def build_skin(self, skin_path, pack_textures):
+    def on_done(self, index):
+        if index == -1:
+            return None
+        media_path = self.options[index]
         settings = sublime.load_settings(SETTINGS_FILE)
-        for line in texturepacker_generator(skin_path, settings):
+        for line in texturepacker_generator(media_path, settings):
             self.window.run_command("log", {"label": line.strip()})
         zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
         for filename in make_archive(skin_path, zip_path):
@@ -368,9 +374,10 @@ class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
         self.window.show_quick_panel(self.nodes, lambda s: self.on_done(s), selected_index=0)
 
     def on_done(self, index):
-        if index > -1:
-            path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
-            Popen([SUBLIME_PATH, "-n", "-a", path])
+        if index == -1:
+            return None
+        path = os.path.join(INFOS.get_userdata_folder(), "addons", self.nodes[index])
+        Popen([SUBLIME_PATH, "-n", "-a", path])
 
 
 class ShowFontRefsCommand(QuickPanelCommand):

@@ -170,19 +170,18 @@ def check_paths(paths):
     return ""
 
 
-def texturepacker_generator(skin_path, settings):
+def texturepacker_generator(media_path, settings, xbt_filename="Textures.xbt"):
     """
-    yield command line output from running TexturePacker on *skin_path,
+    yield command line output from running TexturePacker on *media_path,
     also needs *settings for TexturePacker path
     """
-    media_path = os.path.join(skin_path, "media")
     tp_path = settings.get("texturechecker_path")
     if not tp_path:
         return None
     if platform.system() == "Linux":
-        args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, "Textures.xbt"))]
+        args = ['%s -dupecheck -input "%s" -output "%s"' % (tp_path, media_path, os.path.join(media_path, xbt_filename))]
     else:
-        args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, "Textures.xbt")]
+        args = [tp_path, '-dupecheck', '-input "%s"' % media_path, '-output "%s"' % os.path.join(media_path, xbt_filename)]
     with subprocess.Popen(args, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True, shell=True) as p:
         for line in p.stdout:
             yield line

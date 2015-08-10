@@ -203,7 +203,7 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '(\()(.*?)(\))'
+    - match: '(\()(.*?)(?=\))'
       name: constant.numeric
       contentName: invalid.function
       captures:
