@@ -981,10 +981,10 @@ class InfoProvider():
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
                                                                           "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
-                                                                          "focusedcolor", "invalidcolor", "hitrect", "enable"]],
+                                                                          "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
                       [".//*[@type='radiobutton']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "selected", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
                                                                                "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
-                                                                               "focusedcolor", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioondisabled", "textureradiooffdisabled", "textureradioonnofocus",
+                                                                               "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioondisabled", "textureradiooffdisabled", "textureradioonnofocus",
                                                                                "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
                       [".//*[@type='spincontrol']/*", common + label_common + ["colordiffuse", "textureup", "textureupfocus", "textureupdisabled", "texturedown", "texturedownfocus", "texturedowndisabled", "spinwidth", "spinheight", "spinposx", "spinposy",
                                                                                "subtype", "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onfocus", "onunfocus", "onup", "onleft",
@@ -992,7 +992,7 @@ class InfoProvider():
                       [".//*[@type='togglebutton']/*", common + label_common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "altlabel", "usealttexture",
                                                                                 "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft",
                                                                                 "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
-                      [".//*[@type='label']/*", common + label_common + ["scroll", "scrollout", "info", "number", "haspath", "selectedcolor", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline",
+                      [".//*[@type='label']/*", common + label_common + ["scroll", "scrollout", "info", "number", "angle", "haspath", "selectedcolor", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline",
                                                                          "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
                       [".//*[@type='textbox']/*", common + label_common + ["autoscroll", "info", "selectedcolor", "shadowcolor", "pagecontrol"]],
                       [".//*[@type='edit']/*", common + label_common + ["colordiffuse", "hinttext", "textoffsetx", "textoffsety", "pulseonselect", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor",
@@ -1043,7 +1043,7 @@ class InfoProvider():
         # TODO: special cases: label for fadelabel
         double_tags = ["camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height",
                        "colordiffuse", "texturefocus", "texturenofocus", "font", "selected", "textcolor", "disabledcolor", "selectedcolor",
-                       "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "hitrect"]
+                       "shadowcolor", "align", "aligny", "textoffsetx", "textoffsety", "pulseonselect", "textwidth", "focusedcolor", "invalidcolor", "angle", "hitrect"]
         # check that some nodes only contain specific text
         allowed_text = [[["align"], ["left", "center", "right", "justify"]],
                         [["aspectratio"], ["keep", "scale", "stretch", "center"]],
