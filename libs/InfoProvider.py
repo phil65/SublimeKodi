@@ -1148,6 +1148,8 @@ class InfoProvider():
         for check in allowed_text:
             xpath = ".//" + " | .//".join(check[0])
             for node in root.xpath(xpath):
+                if node.text.startswith("$PARAM"):
+                    continue
                 if node.text.lower() not in check[1]:
                     item = {"line": node.sourceline,
                             "type": node.tag,
@@ -1159,6 +1161,8 @@ class InfoProvider():
         # Check attributes which require specific values
         for check in allowed_attr:
             for node in root.xpath(".//*[(@%s)]" % check[0]):
+                if node.attrib[check[0]].startswith("$PARAM"):
+                    continue
                 if node.attrib[check[0]] not in check[1]:
                     item = {"line": node.sourceline,
                             "type": node.tag,
