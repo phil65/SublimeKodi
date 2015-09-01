@@ -818,7 +818,7 @@ class EvaluateMathExpressionCommand(sublime_plugin.TextCommand):
             text = self.view.substr(region)
             if text.replace('-', '').isdigit():
                 new_text = eval(equation.replace("x", text).replace("i", str(i)))
-                self.view.replace(edit, region, str(new_text))
+                self.view.replace(edit, region, str(new_text).replace(".0", ""))
 
 
 class SwitchXmlFolderCommand(QuickPanelCommand):
