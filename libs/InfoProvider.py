@@ -979,7 +979,7 @@ class InfoProvider():
         list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         label_common = ["font", "textcolor", "align", "aligny", "label"]
         # allowed child nodes for different control types (+ some other nodes)
-        tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
+        tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "wrapmultiline", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
                                                                           "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
                                                                           "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
                       [".//*[@type='radiobutton']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "selected", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
