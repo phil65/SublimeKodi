@@ -286,7 +286,7 @@ def get_tags_from_file(path, node_tags):
     xpath = ".//" + " | .//".join(node_tags)
     for node in root.xpath(xpath):
         if "name" in node.attrib:
-            if node.find("./param") is not None:
+            if node.find("./param") is not None and node.find("./definition") is None:
                 continue
             include = {"name": node.attrib["name"],
                        "file": path,
