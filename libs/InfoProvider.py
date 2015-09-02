@@ -586,6 +586,8 @@ class InfoProvider():
                     if node["type"] == "include" and node["name"] == ref["name"]:
                         break
                 else:
+                    if ref["name"].startswith("$"):
+                        break
                     ref["message"] = "Include not defined: %s" % ref["name"]
                     listitems.append(ref)
             # find unused include defs
