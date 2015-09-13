@@ -1099,6 +1099,7 @@ class InfoProvider():
         for node in root.xpath(xpath):
             if not node.text:
                 message = "Empty condition: %s" % (node.tag)
+                condition = ""
             elif not check_brackets(node.text):
                 condition = str(node.text).replace("  ", "").replace("\t", "")
                 message = "Brackets do not match: %s" % (condition)
