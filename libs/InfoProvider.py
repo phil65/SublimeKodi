@@ -989,7 +989,7 @@ class InfoProvider():
                                                                                "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioondisabled", "textureradiooffdisabled", "textureradioonnofocus",
                                                                                "textureradiooffnofocus", "textureradioon", "textureradiooff", "radioposx", "radioposy", "radiowidth", "radioheight"]],
                       [".//*[@type='spincontrol']/*", common + label_common + ["colordiffuse", "textureup", "textureupfocus", "textureupdisabled", "texturedown", "texturedownfocus", "texturedowndisabled", "spinwidth", "spinheight", "spinposx", "spinposy",
-                                                                               "subtype", "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onfocus", "onunfocus", "onup", "onleft",
+                                                                               "subtype", "disabledcolor", "focusedcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onfocus", "onunfocus", "onup", "onleft",
                                                                                "onright", "ondown", "onback", "hitrect", "enable", "showonepage", "reverse"]],
                       [".//*[@type='togglebutton']/*", common + label_common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "altlabel", "usealttexture",
                                                                                 "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft",
