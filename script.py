@@ -11,9 +11,9 @@ if platform.system() == "Darwin":
 if libs_platform_path not in sys.path:
     sys.path.insert(0, libs_platform_path)
 
-from .libs.Utils import *
-from .libs.InfoProvider import InfoProvider
-from .libs import chardet
+from libs.Utils import *
+from libs.InfoProvider import InfoProvider
+from libs import chardet
 
 INFOS = InfoProvider()
 RESULTS_FILE = "results.txt"
@@ -101,7 +101,7 @@ def check_dependencies(skinpath):
 
 
 if __name__ == "__main__":
-    from eol import eol
+    from libs.eol import eol
     open(RESULTS_FILE, 'w').close()
     if len(sys.argv) == 2:
         project_folder = sys.argv[1]
