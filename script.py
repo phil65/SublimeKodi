@@ -2,6 +2,7 @@ import os
 import sys
 import platform
 import json
+import codecs
 
 __file__ = os.path.normpath(os.path.abspath(__file__))
 __path__ = os.path.dirname(__file__)
@@ -114,15 +115,15 @@ if __name__ == "__main__":
         if check_bom(path):
             log("found BOM. File: " + path)
         try:
-            with open(path, "rb", encoding='utf-8', errors="strict") as f:
+            with codecs.open(path, "rb", encoding='utf-8', errors="strict") as f:
                 text = f.read()
         except:
             log("Error when trying to read %s as UTF-8" % path)
-            with open(path, "rb", errors="ignore") as f:
+            with codecs.open(path, "rb", errors="ignore") as f:
                 rawdata = f.read()
             encoding = chardet.detect(rawdata)
             log("detected encoding: %s" % encoding["encoding"])
-            with open(path, "rb", encoding=encoding["encoding"]) as f:
+            with codecs.open(path, "rb", encoding=encoding["encoding"]) as f:
                 text = f.read()
     result = eol.eol_info_from_path_patterns([project_folder], recursive=True, includes=[], excludes=['.svn', '.git'])
     for item in result:
