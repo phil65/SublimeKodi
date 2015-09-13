@@ -983,7 +983,7 @@ class InfoProvider():
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "wrapmultiline", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
                                                                           "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
-                                                                          "focusedcolor", "invalidcolor", "angle", "hitrect", "enable"]],
+                                                                          "focusedcolor", "angle", "hitrect", "enable"]],
                       [".//*[@type='radiobutton']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "selected", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
                                                                                "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "textwidth",
                                                                                "focusedcolor", "angle", "hitrect", "enable", "textureradioonfocus", "textureradioofffocus", "textureradioondisabled", "textureradiooffdisabled", "textureradioonnofocus",
@@ -994,7 +994,7 @@ class InfoProvider():
                       [".//*[@type='togglebutton']/*", common + label_common + ["colordiffuse", "texturefocus", "alttexturefocus", "alttexturenofocus", "altclick", "texturenofocus", "altlabel", "usealttexture",
                                                                                 "disabledcolor", "shadowcolor", "textoffsetx", "textoffsety", "pulseonselect", "onclick", "onfocus", "onunfocus", "onup", "onleft",
                                                                                 "onright", "ondown", "onback", "textwidth", "focusedcolor", "subtype", "hitrect", "enable"]],
-                      [".//*[@type='label']/*", common + label_common + ["scroll", "scrollout", "info", "number", "angle", "haspath", "selectedcolor", "shadowcolor", "disabledcolor", "invalidcolor", "pauseatend", "wrapmultiline",
+                      [".//*[@type='label']/*", common + label_common + ["scroll", "scrollout", "info", "number", "angle", "haspath", "selectedcolor", "shadowcolor", "disabledcolor", "pauseatend", "wrapmultiline",
                                                                          "scrollspeed", "scrollsuffix", "textoffsetx", "textoffsety"]],
                       [".//*[@type='textbox']/*", common + label_common + ["autoscroll", "info", "selectedcolor", "shadowcolor", "pagecontrol"]],
                       [".//*[@type='edit']/*", common + label_common + ["colordiffuse", "hinttext", "textoffsetx", "textoffsety", "pulseonselect", "disabledcolor", "invalidcolor", "focusedcolor", "shadowcolor",
