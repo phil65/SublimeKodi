@@ -556,7 +556,8 @@ class OpenKodiLogCommand(sublime_plugin.WindowCommand):
     def run(self):
         filename = "%s.log" % APP_NAME_LOWER
         self.log_file = check_paths([os.path.join(INFOS.get_userdata_folder(), filename),
-                                     os.path.join(INFOS.get_userdata_folder(), "temp", filename)])
+                                    os.path.join(INFOS.get_userdata_folder(), "temp", filename),
+                                    os.path.join(os.path.expanduser("~"), "Library", "Logs", filename)])
         self.window.open_file(self.log_file)
 
 
