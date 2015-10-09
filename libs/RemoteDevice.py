@@ -28,16 +28,16 @@ class RemoteDevice():
         command = [program]
         for arg in args:
             command.append(arg)
-        self.panel_log(" ".join(command))
+        panel_log(" ".join(command))
         try:
             output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
             # log(output.decode("utf-8"))
             if log:
-                self.panel_log("%s" % (output.decode("utf-8").replace('\r', '').replace('\n', '')))
+                panel_log("%s" % (output.decode("utf-8").replace('\r', '').replace('\n', '')))
         except subprocess.CalledProcessError as e:
-            self.panel_log("%s\nErrorCode: %s" % (e, str(e.returncode)))
+            panel_log("%s\nErrorCode: %s" % (e, str(e.returncode)))
         except Exception as e:
-            self.panel_log(e)
+            panel_log(e)
         # proc = subprocess.Popen(['echo', '"to stdout"'],
         #                     stdout=subprocess.PIPE)
         # stdout_value = proc.communicate()[0]
@@ -45,7 +45,7 @@ class RemoteDevice():
     # @check_busy
     def adb_connect(self, ip):
         self.ip = ip
-        self.panel_log("Connect to remote with ip %s" % ip)
+        panel_log("Connect to remote with ip %s" % ip)
         self.cmd("adb", ["connect", str(ip)])
         self.connected = True
 
@@ -67,7 +67,7 @@ class RemoteDevice():
 
     # @check_busy
     def adb_disconnect(self):
-        self.panel_log("Disconnect from remote")
+        panel_log("Disconnect from remote")
         self.cmd("adb", ["disconnect"])
         self.connected = False
 
@@ -104,7 +104,7 @@ class RemoteDevice():
     @run_async
     @check_busy
     def push_to_box(self, addon, all_file=False):
-        self.panel_log("push %s to remote" % addon)
+        panel_log("push %s to remote" % addon)
         for root, dirs, files in os.walk(addon):
             # ignore git files
             if ".git" in root.split(os.sep):
@@ -118,25 +118,25 @@ class RemoteDevice():
                 if f.endswith(('.pyc', '.pyo')):
                     continue
                 self.cmd("adb", ["push", os.path.join(root, f).replace('\\', '/'), target.replace('\\', '/')])
-        self.panel_log("All files pushed")
+        panel_log("All files pushed")
 
     @run_async
     def get_log(self, open_function, target):
-        self.panel_log("Pull logs from remote")
+        panel_log("Pull logs from remote")
         self.adb_pull("%stemp/xbmc.log" % self.userdata_folder, target)
         # self.adb_pull("%stemp/xbmc.old.log" % self.userdata_folder)
-        self.panel_log("Finished pulling logs")
+        panel_log("Finished pulling logs")
         open_function(os.path.join(target, "xbmc.log"))
 
     @run_async
     @check_busy
     def get_screenshot(self, f_open, target):
-        self.panel_log("Pull screenshot from remote")
+        panel_log("Pull screenshot from remote")
         self.cmd("adb", ["shell", "screencap", "-p", "/sdcard/screen.png"])
         self.cmd("adb", ["pull", "/sdcard/screen.png", target])
         self.cmd("adb", ["shell", "rm", "/sdcard/screen.png"])
         # self.adb_pull("%stemp/xbmc.old.log" % self.userdata_folder)
-        self.panel_log("Finished pulling screenshot")
+        panel_log("Finished pulling screenshot")
         f_open(os.path.join(target, "screen.png"))
 
     @run_async

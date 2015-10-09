@@ -307,14 +307,7 @@ def get_po_file(po_file_path):
         log("Parsing po file %s" % po_file_path)
         return polib.pofile(po_file_path)
     except Exception as e:
-        answer = yesno_dialog("Error in %s:\n %s" % (po_file_path, str(e)), "Open")
-        if answer:
-            import sublime
-            line = re.search(r"\(line ([0-9]+?)\)", str(e))
-            if line:
-                sublime.active_window().open_file("%s:%s" % (po_file_path, int(line.group(1))), sublime.ENCODED_POSITION)
-            else:
-                sublime.active_window().open_file(po_file_path)
+        panel_log("Error in %s:\n %s" % (po_file_path, str(e)))
         return []
 
 
@@ -338,14 +331,7 @@ def get_root_from_file(xml_file):
         #     tree = ET.parse(xml_file, parser)
         #     return tree.getroot()
         # except Exception as e:
-        answer = yesno_dialog("Error in %s:\n %s" % (xml_file, str(e)), "Open")
-        if answer:
-            import sublime
-            line = re.search(r"\(line ([0-9]+?)\)", str(e))
-            if line:
-                sublime.active_window().open_file("%s:%s" % (xml_file, int(line.group(1))), sublime.ENCODED_POSITION)
-            else:
-                sublime.active_window().open_file(xml_file)
+        panel_log("Error in %s:\n %s" % (xml_file, str(e)))
         return None
 
 
@@ -416,3 +402,13 @@ def get_refs_from_file(path, xpath):
                 "file": path}
         font_refs.append(item)
     return font_refs
+
+
+def panel_log(text):
+    try:
+        import sublime
+        wnd = sublime.active_window()
+        wnd.run_command("log", {"label": text.strip()})
+    except Exception as e:
+        log(e)
+        log(text)
