@@ -259,19 +259,6 @@ def message_dialog(label):
         log(label)
 
 
-def yesno_dialog(label, ok_button):
-    """
-    try to show ST yesno dialog with label *label and button text *ok_button,
-    log() in case it fails
-    """
-    try:
-        import sublime
-        return sublime.ok_cancel_dialog(label, ok_button)
-    except:
-        log(label)
-        return False
-
-
 def get_tags_from_file(path, node_tags):
     """
     returns list of dicts from xml file with path *path containing all nodes with tag name *node_tags
