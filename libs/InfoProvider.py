@@ -976,7 +976,7 @@ class InfoProvider():
     def check_file(self, path):
         xml_file = os.path.basename(path)
         # tags allowed for all controls
-        common = ["description", "camera", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
+        common = ["description", "camera", "depth", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         # tags allowed for containers
         list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         label_common = ["font", "textcolor", "align", "aligny", "label"]
