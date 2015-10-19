@@ -86,6 +86,7 @@ contexts:
     - include: kodiaddontranslation
     - include: kodinumber
     - include: kodiinfolabel
+    - include: kodiparam
     - include: kodivariable
     - include: kodiincludeparam
     - include: brackets
@@ -110,6 +111,7 @@ contexts:
         - include: koditranslation
         - include: kodiaddontranslation
         - include: kodiinfolabel
+        - include: kodiparam
         - include: kodivariable
         - include: kodiincludeparam
         - include: brackets
@@ -162,6 +164,16 @@ contexts:
         4: variable.parameter entity.kodi.number.id
         5: variable.parameter entity.kodi.number.end
 
+  kodiparam:
+    - match: '(\$)(PARAM)(\[)(.*?)(\])'
+      name: variable.parameter text.kodi.param.xml
+      captures:
+        1: entity.kodi.param.dollar
+        2: entity.kodi.param.param
+        3: entity.kodi.param.begin
+        4: entity.kodi.param.id
+        5: entity.kodi.param.end
+
 
   kodiinfolabel:
     - match: '(\$)((?:ESC)?INFO)(\[)'
@@ -177,6 +189,7 @@ contexts:
             1: entity.kodi.infolabel.end
           pop: true
         - include: koditranslation
+        - include: kodiparam
         - include: kodiaddontranslation
         - include: formatter
         - include: brackets
