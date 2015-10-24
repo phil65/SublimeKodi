@@ -97,7 +97,6 @@ class SublimeKodi(sublime_plugin.EventListener):
             return None
         flags = sublime.CLASS_WORD_START | sublime.CLASS_WORD_END
         popup_label = ""
-        identifier = ""
         info_type = ""
         info_id = ""
         self.prev_selection = region
@@ -110,8 +109,7 @@ class SublimeKodi(sublime_plugin.EventListener):
         bracket_region = view.expand_by_class(region, flags, '<>')
         selected_content = view.substr(view.expand_by_class(region, flags, '<>"[]'))
         if label_region.begin() > bracket_region.begin() and label_region.end() < bracket_region.end():
-            identifier = view.substr(label_region)
-            info_list = identifier.split("[", 1)
+            info_list = view.substr(label_region).split("[", 1)
             info_type = info_list[0]
             if len(info_list) > 1:
                 info_id = info_list[1]
@@ -345,6 +343,9 @@ class QuickPanelCommand(sublime_plugin.WindowCommand):
 
 class BuildAddonCommand(sublime_plugin.WindowCommand):
 
+    def is_visible(self):
+        return INFOS.addon_type == "skin"
+
     def run(self, pack_textures=True):
         self.options = [os.path.join(INFOS.project_path, "media")]
         for folder in os.listdir(os.path.join(INFOS.project_path, "themes")):
@@ -355,16 +356,16 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
     def on_done(self, index):
         if index == -1:
             return None
-        media_path = self.options[index]
         settings = sublime.load_settings(SETTINGS_FILE)
+        media_path = self.options[index]
         for line in texturepacker_generator(media_path, settings):
             self.window.run_command("log", {"label": line.strip()})
-        zip_path = os.path.join(skin_path, os.path.basename(skin_path) + ".zip")
-        for filename in make_archive(skin_path, zip_path):
+        zip_path = os.path.join(media_path, os.path.basename(media_path) + ".zip")
+        for filename in make_archive(media_path, zip_path):
             self.window.run_command("log", {"label": "zipped " + filename})
         do_open = sublime.ok_cancel_dialog("Zip file created!\nDo you want to open its location a with file browser?", "Open")
         if do_open:
-            webbrowser.open(skin_path)
+            webbrowser.open(media_path)
 
 
 class OpenKodiAddonCommand(sublime_plugin.WindowCommand):
