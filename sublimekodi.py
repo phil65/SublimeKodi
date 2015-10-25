@@ -346,24 +346,38 @@ class BuildAddonCommand(sublime_plugin.WindowCommand):
     def is_visible(self):
         return INFOS.addon_type == "skin"
 
-    def run(self, pack_textures=True):
-        self.options = [os.path.join(INFOS.project_path, "media")]
-        for folder in os.listdir(os.path.join(INFOS.project_path, "themes")):
-            self.options.append(os.path.join(INFOS.project_path, "themes", folder))
-        self.window.show_quick_panel(self.options, lambda s: self.on_done(s), selected_index=0)
-
     @run_async
-    def on_done(self, index):
-        if index == -1:
-            return None
+    def run(self, pack_textures=True):
         settings = sublime.load_settings(SETTINGS_FILE)
-        media_path = self.options[index]
+        media_path = os.path.join(INFOS.project_path, "media")
         for line in texturepacker_generator(media_path, settings):
             self.window.run_command("log", {"label": line.strip()})
         zip_path = os.path.join(media_path, os.path.basename(media_path) + ".zip")
         for filename in make_archive(media_path, zip_path):
             self.window.run_command("log", {"label": "zipped " + filename})
         do_open = sublime.ok_cancel_dialog("Zip file created!\nDo you want to open its location a with file browser?", "Open")
+        if do_open:
+            webbrowser.open(media_path)
+
+
+class BuildThemeCommand(sublime_plugin.WindowCommand):
+
+    def is_visible(self):
+        return os.path.exists(os.path.join(INFOS.project_path, "themes"))
+
+    def run(self, pack_textures=True):
+        self.theme_folders = [folder for folder in os.listdir(os.path.join(INFOS.project_path, "themes"))]
+        self.window.show_quick_panel(self.theme_folders, lambda s: self.on_done(s), selected_index=0)
+
+    @run_async
+    def on_done(self, index):
+        if index == -1:
+            return None
+        settings = sublime.load_settings(SETTINGS_FILE)
+        media_path = os.path.join(INFOS.project_path, "themes", self.theme_folders[index])
+        for line in texturepacker_generator(media_path, settings, self.theme_folders[index] + ".xbt"):
+            self.window.run_command("log", {"label": line.strip()})
+        do_open = sublime.ok_cancel_dialog("Theme file created!\nDo you want to open its location a with file browser?", "Open")
         if do_open:
             webbrowser.open(media_path)
 

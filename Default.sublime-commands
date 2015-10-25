@@ -1,6 +1,7 @@
 [
     {"caption": "SublimeKodi: Set Kodi Folder", "command": "set_kodi_folder"},
     {"caption": "SublimeKodi: Build Skin", "command": "build_addon", "args": { "pack_textures": true}},
+    {"caption": "SublimeKodi: Build Theme", "command": "build_theme", "args": { "pack_textures": true}},
     {"caption": "SublimeKodi: Remote Actions", "command": "remote_actions"},
     {"caption": "SublimeKodi: Open Log", "command": "open_kodi_log"},
     {"caption": "SublimeKodi: Choose color", "command": "color_picker"},
