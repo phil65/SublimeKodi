@@ -17,7 +17,7 @@ from time import gmtime, strftime
 
 from .Utils import *
 from .polib import polib
-from PIL import Image
+from .ImageParser import get_image_size
 
 APP_NAME = "kodi"
 # c&p from wiki
@@ -627,9 +627,9 @@ class InfoProvider():
     def get_image_info(self, path):
         imagepath = self.translate_path(path)
         if os.path.exists(imagepath) and not os.path.isdir(imagepath):
-            im = Image.open(imagepath)
+            width, height = get_image_size(imagepath)
             file_size = os.path.getsize(imagepath) / 1024
-            return "<b>Dimensions:</b> %s <br><b>File size:</b> %.2f kb" % (str(im.size), file_size)
+            return "<b>Dimensions:</b> %sx%s <br><b>File size:</b> %.2f kb" % (width, height, file_size)
         return ""
 
     def get_font_refs(self):
