@@ -477,6 +477,23 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
             sublime.message_dialog(str(value))
 
 
+class GetInfoBooleansPromptCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        self.settings = sublime.load_settings(SETTINGS_FILE)
+        self.window.show_input_panel("Get boolean values (comma-separated)", self.settings.get("prev_boolean", ""), self.show_info_boolean, None, None)
+
+    def show_info_boolean(self, label_string):
+        self.settings.set("prev_boolean", label_string)
+        words = label_string.split(",")
+        labels = ', '.join('"{0}"'.format(w) for w in words)
+        data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoBooleans","params":{"booleans": [%s] },"id":1}' % labels
+        result = send_json_request(data, self.settings)
+        if result:
+            key, value = result["result"].popitem()
+            sublime.message_dialog(str(value))
+
+
 class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
 
     @run_async
