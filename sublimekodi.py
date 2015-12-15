@@ -220,6 +220,17 @@ class SublimeKodi(sublime_plugin.EventListener):
                 log("Could not find folder path in project file")
 
 
+class AutoRefreshLogListener(sublime_plugin.EventListener):
+
+    def on_activated_async(self, view):
+        file_name = view.file_name()
+        if file_name:
+            file_name = file_name[-8:]
+            if file_name.lower() in ['kodi.log', 'xbmc.log']:
+                view.run_command('revert')
+                log("refresh kodi log")
+
+
 class RemoteActionsCommand(sublime_plugin.WindowCommand):
 
     def run(self):
