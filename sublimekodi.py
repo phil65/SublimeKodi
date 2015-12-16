@@ -225,8 +225,7 @@ class AutoRefreshLogListener(sublime_plugin.EventListener):
     def on_activated_async(self, view):
         file_name = view.file_name()
         if file_name:
-            file_name = file_name[-8:]
-            if file_name.lower() in ['kodi.log', 'xbmc.log']:
+            if file_name[-8:].lower() in ['kodi.log', 'xbmc.log']:
                 view.run_command('revert')
                 log("refresh kodi log")
 
