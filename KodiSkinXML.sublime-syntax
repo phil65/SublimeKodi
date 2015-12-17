@@ -234,11 +234,18 @@ contexts:
         - include: formatter
 
   brackets:
-    - match: '(\()(.*?)(?=\))'
-      name: constant.numeric
-      contentName: invalid.function
+    - match: '(\()'
+      name: constant.other.allcaps
       captures:
-        '2': constant.other.allcaps
+        1: constant.other.allcaps
+      push:
+        - meta_scope: constant.other.allcaps
+        - match: '(\))'
+          captures:
+            1: constant.other.allcaps
+          pop: true
+        - include: brackets
+
 
   # brackets:
   #   - match: \(
