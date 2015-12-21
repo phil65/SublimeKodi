@@ -476,15 +476,18 @@ class GetInfoLabelsPromptCommand(sublime_plugin.WindowCommand):
         self.settings = sublime.load_settings(SETTINGS_FILE)
         self.window.show_input_panel("Get InfoLabels (comma-separated)", self.settings.get("prev_infolabel", ""), self.show_info_label, None, None)
 
+    @run_async
     def show_info_label(self, label_string):
         self.settings.set("prev_infolabel", label_string)
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoLabels","params":{"labels": [%s] },"id":1}' % labels
+        self.window.run_command("log", {"label": "send request..."})
         result = send_json_request(data, self.settings)
         if result:
+            self.window.run_command("log", {"label": "Got result:"})
             key, value = result["result"].popitem()
-            sublime.message_dialog(str(value))
+            self.window.run_command("log", {"label": str(value)})
 
 
 class GetInfoBooleansPromptCommand(sublime_plugin.WindowCommand):
@@ -493,15 +496,18 @@ class GetInfoBooleansPromptCommand(sublime_plugin.WindowCommand):
         self.settings = sublime.load_settings(SETTINGS_FILE)
         self.window.show_input_panel("Get boolean values (comma-separated)", self.settings.get("prev_boolean", ""), self.show_info_boolean, None, None)
 
+    @run_async
     def show_info_boolean(self, label_string):
         self.settings.set("prev_boolean", label_string)
         words = label_string.split(",")
         labels = ', '.join('"{0}"'.format(w) for w in words)
         data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoBooleans","params":{"booleans": [%s] },"id":1}' % labels
+        self.window.run_command("log", {"label": "send request..."})
         result = send_json_request(data, self.settings)
         if result:
+            self.window.run_command("log", {"label": "Got result:"})
             key, value = result["result"].popitem()
-            sublime.message_dialog(str(value))
+            self.window.run_command("log", {"label": str(value)})
 
 
 class OpenActiveWindowXmlFromRemoteCommand(sublime_plugin.WindowCommand):
