@@ -784,7 +784,7 @@ class MoveToLanguageFile(sublime_plugin.TextCommand):
             return None
         region = self.view.sel()[0]
         rowcol = self.view.rowcol(region.b)
-        rel_path = self.view.file_name().replace(INFOS.project_path, "")
+        rel_path = self.view.file_name().replace(INFOS.project_path, "").replace("\\", "/")
         line = str(rowcol[0] + 1)
         if self.labels[index] == "Create new label":
             label_id = INFOS.create_new_label(self.view.substr(region), rel_path, line)
