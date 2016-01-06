@@ -127,6 +127,13 @@ class SublimeKodi(sublime_plugin.EventListener):
                         popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
                     else:
                         popup_label = "include too big for preview"
+                elif "<visible" in line_contents or "<enable" in line_contents:
+                    data = '{"jsonrpc":"2.0","method":"XBMC.GetInfoBooleans","params":{"booleans": ["%s"] },"id":1}' % selected_content
+                    result = send_json_request(data, self.settings)
+                    if result:
+                        key, value = result["result"].popitem()
+                        if value is not None:
+                            popup_label = str(value)
                 elif "<font" in line_contents and "</font" in line_contents:
                     popup_label = INFOS.get_font_info(selected_content, folder)
                 elif "label" in line_contents or "<property" in line_contents or "<altlabel" in line_contents or "localize" in line_contents:
