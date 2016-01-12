@@ -87,8 +87,10 @@
         <texturenofocus>path</texturenofocus>
         <textureradioonfocus colordiffuse="color">path</textureradioonfocus>
         <textureradioonnofocus colordiffuse="color">path</textureradioonnofocus>
+        <textureradioondisabled colordiffuse="color">path</textureradioondisabled>
         <textureradioofffocus colordiffuse="color">path</textureradioofffocus>
         <textureradiooffnofocus colordiffuse="color">path</textureradiooffnofocus>
+        <textureradiooffdisabled colordiffuse="color">path</textureradiooffdisabled>
         <selected>condition</selected>
         <onclick>builtin</onclick>
         <label>label</label>
