@@ -981,7 +981,7 @@ class InfoProvider():
         # tags allowed for all controls
         common = ["description", "camera", "depth", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         # tags allowed for containers
-        list_common = ["focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
+        list_common = ["defaultcontrol","focusedlayout", "itemlayout", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         label_common = ["font", "textcolor", "align", "aligny", "label"]
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "wrapmultiline", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
@@ -1007,7 +1007,7 @@ class InfoProvider():
                       [".//*[@type='scrollbar']/*", common + ["texturesliderbackground", "texturesliderbar", "texturesliderbarfocus", "textureslidernib", "textureslidernibfocus", "pulseonselect", "orientation",
                                                               "showonepage", "pagecontrol", "onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]],
                       [".//*[@type='progress']/*", common + ["texturebg", "lefttexture", "colordiffuse", "righttexture", "overlaytexture", "midtexture", "info", "reveal"]],
-                      [".//*[@type='grouplist']/*", common + ["control", "align", "itemgap", "orientation", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "scrolltime", "usecontrolcoords", "pagecontrol"]],
+                      [".//*[@type='grouplist']/*", common + ["control", "align", "itemgap", "orientation", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback", "scrolltime", "usecontrolcoords", "defaultcontrol", "pagecontrol"]],
                       [".//*[@type='videowindow']/*", common],
                       [".//*[@type='visualisation']/*", common],
                       [".//*[@type='list']/*", common + list_common],
@@ -1185,14 +1185,18 @@ class InfoProvider():
         # xml_file = os.path.basename(path)
         # folder = path.split(os.sep)[-2]
         # root = self.resolve_includes(root, folder)
+        log(path)
         if root is None:
             return []
         tree = ET.ElementTree(root)
         listitems = []
+        log(self.template_root.tag)
         # find invalid tags
         for template in self.template_root:
+            log(template.tag)
             for node in root.xpath(".//*[@type='%s']/*" % template.attrib.get("type")):
-                log("hello")
+                # log("hello")
+                pass
         return listitems
 
 
