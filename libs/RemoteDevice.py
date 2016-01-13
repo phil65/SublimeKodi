@@ -12,7 +12,7 @@ from .Utils import *
 import os
 
 
-class RemoteDevice():
+class RemoteDevice(object):
 
     def __init__(self):
         self.is_busy = False

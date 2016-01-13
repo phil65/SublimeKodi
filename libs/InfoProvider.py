@@ -125,7 +125,7 @@ WINDOW_NAMES = [item[0] for item in WINDOW_MAP]
 WINDOW_IDS = [item[3] for item in WINDOW_MAP]
 
 
-class InfoProvider():
+class InfoProvider(object):
 
     def __init__(self):
         self.include_list = {}
