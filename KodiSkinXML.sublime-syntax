@@ -88,6 +88,7 @@ contexts:
     - include: kodiinfolabel
     - include: kodiparam
     - include: kodivariable
+    - include: kodiexpression
     - include: kodiincludeparam
     - include: brackets
     - include: formatter
@@ -232,6 +233,20 @@ contexts:
             1: entity.kodi.variable.end
           pop: true
         - include: formatter
+
+  kodiexpression:
+    - match: '(\$)(EXP)(\[)'
+      name: expression.parameter text.kodi.expression.xml
+      captures:
+        1: entity.kodi.expression.dollar
+        2: entity.kodi.expression.localize
+        3: entity.kodi.expression.begin
+      push:
+        - meta_scope: storage.type
+        - match: '(\])'
+          captures:
+            1: entity.kodi.expression.end
+          pop: true
 
   brackets:
     - match: '(\()'

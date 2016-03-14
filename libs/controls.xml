@@ -291,9 +291,6 @@
         <include>common</include>
         <include>list_common</include>
     </control>
-
-
-
     <include name="common">
         <description>xxx</description>
         <posx>int</posx>

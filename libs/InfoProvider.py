@@ -336,7 +336,7 @@ class InfoProvider(object):
             folder = xml_file.split(os.sep)[-2]
             log("found include file: " + xml_file)
             self.include_file_list[folder].append(xml_file)
-            self.include_list[folder] += get_tags_from_file(xml_file, ["include", "variable", "constant"])
+            self.include_list[folder] += get_tags_from_file(xml_file, ["include", "variable", "constant", "expression"])
             root = get_root_from_file(xml_file)
             for node in root.findall("include"):
                 if "file" in node.attrib and node.attrib["file"] != "script-skinshortcuts-includes.xml":
@@ -771,7 +771,7 @@ class InfoProvider(object):
         return xml_source
 
     def translate_square_bracket(self, info_type, info_id, folder):
-        if info_type in ["VAR", "ESCVAR"]:
+        if info_type in ["VAR", "ESCVAR", "EXP"]:
             node_content = self.return_node_content(info_id, folder=folder)
             root = ET.fromstring(node_content)
             if root is None:
@@ -1016,7 +1016,7 @@ class InfoProvider(object):
                       [".//*[@type='fixedlist']/*", common + list_common + ["movement", "focusposition"]],
                       [".//content/*", ["item", "include"]],
                       [".//itemlayout/* | .//focusedlayout/*", ["control", "include"]],
-                      ["/includes/*", ["include", "default", "constant", "variable"]],
+                      ["/includes/*", ["include", "default", "constant", "variable", "expression"]],
                       ["/window/*", ["include", "defaultcontrol", "depth", "menucontrol", "onload", "onunload", "controls", "allowoverlay", "views", "coordinates", "animation", "visible", "zorder", "fontset", "backgroundcolor"]],
                       ["/fonts/*", ["fontset"]],
                       [".//variable/*", ["value"]]]
@@ -1037,6 +1037,8 @@ class InfoProvider(object):
                       [["item"], ["description", "id"]],
                       [["control"], ["description", "id", "type"]],
                       [["variable"], ["description", "name"]],
+                      [["expression"], ["description", "name"]],
+                      [["constant"], ["description", "name"]],
                       [["include"], ["description", "name", "condition", "file"]],
                       [["animation"], ["description", "start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       [["effect"], ["description", "start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
