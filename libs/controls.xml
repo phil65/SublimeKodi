@@ -310,6 +310,8 @@
         <onleft>builtin</onleft>
         <onright>builtin</onright>
         <onback>builtin</onback>
+        <offsetx>int</offsetx>
+        <offsety>int</offsety>
         <orientation>orientation</orientation>
         <preloaditems>bool</preloaditems>
         <scrolltime>int</scrolltime>
