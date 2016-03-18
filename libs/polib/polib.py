@@ -34,6 +34,8 @@ except ImportError:
 # the default encoding to use when encoding cannot be detected
 default_encoding = 'utf-8'
 
+WRAP_WIDTH = 9999
+
 # python 2/3 compatibility helpers {{{
 
 
@@ -79,7 +81,7 @@ def _pofile_or_mofile(f, type, **kwargs):
         klass=kwargs.get('klass')
     )
     instance = parser.parse()
-    instance.wrapwidth = kwargs.get('wrapwidth', 120)
+    instance.wrapwidth = kwargs.get('wrapwidth', WRAP_WIDTH)
     return instance
 # }}}
 # _is_file {{{
@@ -293,7 +295,7 @@ class _BaseFile(list):
         else:
             self.fpath = kwargs.get('fpath')
         # the width at which lines should be wrapped
-        self.wrapwidth = kwargs.get('wrapwidth', 120)
+        self.wrapwidth = kwargs.get('wrapwidth', WRAP_WIDTH)
         # the file encoding
         self.encoding = kwargs.get('encoding', default_encoding)
         # whether to check for duplicate entries or not
@@ -812,7 +814,7 @@ class _BaseEntry(object):
         self.obsolete = kwargs.get('obsolete', False)
         self.encoding = kwargs.get('encoding', default_encoding)
 
-    def __unicode__(self, wrapwidth=120):
+    def __unicode__(self, wrapwidth=WRAP_WIDTH):
         """
         Returns the unicode representation of the entry.
         """
@@ -863,7 +865,7 @@ class _BaseEntry(object):
         return str(self) == str(other)
 
     def _str_field(self, fieldname, delflag, plural_index, field,
-                   wrapwidth=120):
+                   wrapwidth=WRAP_WIDTH):
         lines = field.splitlines(True)
         if len(lines) > 1:
             lines = [''] + lines  # start with initial empty line
@@ -944,7 +946,7 @@ class POEntry(_BaseEntry):
         self.previous_msgid_plural = kwargs.get('previous_msgid_plural', None)
         self.linenum = kwargs.get('linenum', None)
 
-    def __unicode__(self, wrapwidth=120):
+    def __unicode__(self, wrapwidth=WRAP_WIDTH):
         """
         Returns the unicode representation of the entry.
         """
