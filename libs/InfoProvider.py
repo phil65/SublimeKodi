@@ -981,7 +981,7 @@ class InfoProvider(object):
         # tags allowed for all controls
         common = ["description", "camera", "depth", "posx", "posy", "top", "bottom", "left", "right", "centertop", "centerbottom", "centerleft", "centerright", "width", "height", "visible", "include", "animation"]
         # tags allowed for containers
-        list_common = ["defaultcontrol", "focusedlayout", "itemlayout", "offsetx", "offsety", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "onclick", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
+        list_common = ["defaultcontrol", "focusedlayout", "itemlayout", "offsetx", "offsety", "content", "onup", "ondown", "onleft", "onright", "oninfo", "onback", "onclick", "onfocus", "onunfocus", "orientation", "preloaditems", "scrolltime", "pagecontrol", "viewtype", "autoscroll", "hitrect"]
         label_common = ["font", "textcolor", "align", "aligny", "label"]
         # allowed child nodes for different control types (+ some other nodes)
         tag_checks = [[".//*[@type='button']/*", common + label_common + ["colordiffuse", "texturefocus", "texturenofocus", "label2", "wrapmultiline", "disabledcolor", "selectedcolor", "shadowcolor", "textoffsetx",
@@ -1044,7 +1044,7 @@ class InfoProvider(object):
                       [["effect"], ["description", "start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         # all_tags = [d[0] for d in att_checks]
         # check correct parantheses for some nodes
-        bracket_tags = ["visible", "enable", "usealttexture", "selected"]
+        bracket_tags = ["visible", "enable", "usealttexture", "selected", "expression"]
         # check some nodes to use noop instead of "-" / empty
         noop_tags = ["onclick", "onfocus", "onunfocus", "onup", "onleft", "onright", "ondown", "onback"]
         # check that some nodes only exist once on each level
