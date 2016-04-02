@@ -1039,7 +1039,7 @@ class InfoProvider(object):
                       [["variable"], ["description", "name"]],
                       [["expression"], ["description", "name"]],
                       [["constant"], ["description", "name"]],
-                      [["include"], ["description", "name", "condition", "file"]],
+                      [["include"], ["description", "name", "condition", "file", "content"]],
                       [["animation"], ["description", "start", "end", "effect", "tween", "easing", "time", "condition", "reversible", "type", "center", "delay", "pulse", "loop", "acceleration"]],
                       [["effect"], ["description", "start", "end", "tween", "easing", "time", "condition", "type", "center", "delay", "pulse", "loop", "acceleration"]]]
         # all_tags = [d[0] for d in att_checks]
