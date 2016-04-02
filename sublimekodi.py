@@ -121,7 +121,7 @@ class SublimeKodi(sublime_plugin.EventListener):
             if info_type in ["INFO", "ESCINFO", "VAR", "ESCVAR", "LOCALIZE", "EXP"]:
                 popup_label = INFOS.translate_square_bracket(info_type=info_type, info_id=info_id, folder=folder)
             if not popup_label:
-                if "<include" in line_contents and "name=" not in line_contents:
+                if "<include>" in line_contents or "<include content=" in line_contents:
                     node_content = str(INFOS.return_node_content(get_node_content(view, flags), folder=folder))
                     if len(node_content) < 3000:
                         popup_label = cgi.escape(node_content).replace("\n", "<br>"). replace(" ", "&nbsp;")
