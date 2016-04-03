@@ -74,7 +74,10 @@ def check_dependencies(skinpath):
                  "allowed_addons": ['gotham', 'helix', 'isengard']},
                 {"version": '5.10.0',
                  "name": "jarvis",
-                 "allowed_addons": ['gotham', 'helix', 'isengard', 'jarvis']}]
+                 "allowed_addons": ['gotham', 'helix', 'isengard', 'jarvis']},
+                {"version": '5.11.0',
+                 "name": "krypton",
+                 "allowed_addons": ['gotham', 'helix', 'isengard', 'jarvis', 'krypton']}]
     imports = {}
     str_releases = " / ".join([item["name"] for item in RELEASES])
     repo = input('Enter Kodi version (%s): ' % str_releases)
