@@ -312,12 +312,6 @@ def get_root_from_file(xml_file):
         tree = ET.parse(xml_file, parser)
         return tree.getroot()
     except Exception as e:
-        # log("Error when parsing %s\n%s\nTry again with recover=True..." % (xml_file, e))
-        # try:
-        #     parser = ET.XMLParser(remove_blank_text=True, recover=True, remove_comments=True)
-        #     tree = ET.parse(xml_file, parser)
-        #     return tree.getroot()
-        # except Exception as e:
         panel_log("Error in %s:\n %s" % (xml_file, str(e)))
         return None
 
