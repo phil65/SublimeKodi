@@ -23,5 +23,5 @@
         "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
     },
     { "keys": ["ctrl+shift+o"], "command": "show_overlay",
-    "args": {"overlay": "command_palette", "text": "SublimeKodi"} },
+    "args": {"overlay": "command_palette", "text": "KodiDevToolbox"} },
 ]

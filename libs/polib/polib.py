@@ -4,7 +4,7 @@
 # vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4:
 
 """
-**polib fork for SublimeKodi. Based on polib by David Jean Louis**
+**polib fork for KodiDevToolbox. Based on polib by David Jean Louis**
 """
 
 __author__ = 'David Jean Louis <izimobil@gmail.com>'

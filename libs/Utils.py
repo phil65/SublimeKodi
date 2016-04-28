@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 """
-SublimeKodi is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+KodiDevToolbox is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
 """
 
 
@@ -235,9 +235,9 @@ def jump_to_label_declaration(view, label_id):
 
 def log(string):
     """
-    prefixes "SublimeKodi:" and prints
+    prefixes "KodiDevToolbox:" and prints
     """
-    print("SublimeKodi: " + str(string))
+    print("KodiDevToolbox: " + str(string))
 
 
 def prettyprint(string):

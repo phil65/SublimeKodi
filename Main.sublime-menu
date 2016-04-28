@@ -12,14 +12,14 @@
                 "children":
                 [
                     {
-                        "caption": "SublimeKodi",
+                        "caption": "KodiDevToolbox",
                         "children":
                         [
                             {
                                 "caption": "Settings – Default",
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/SublimeKodi/sublimekodi.sublime-settings"
+                                    "file": "${packages}/KodiDevToolbox/sublimekodi.sublime-settings"
                                 }
                             },
                             {
@@ -36,7 +36,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/SublimeKodi/Default (OSX).sublime-keymap",
+                            //         "file": "${packages}/KodiDevToolbox/Default (OSX).sublime-keymap",
                             //         "platform": "OSX"
                             //     }
                             // },
@@ -52,7 +52,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/SublimeKodi/Default (Linux).sublime-keymap",
+                            //         "file": "${packages}/KodiDevToolbox/Default (Linux).sublime-keymap",
                             //         "platform": "Linux"
                             //     }
                             // },
@@ -68,7 +68,7 @@
                             //     "caption": "Key Bindings – Default",
                             //     "command": "open_file", "args":
                             //     {
-                            //         "file": "${packages}/SublimeKodi/Default (Windows).sublime-keymap",
+                            //         "file": "${packages}/KodiDevToolbox/Default (Windows).sublime-keymap",
                             //         "platform": "Windows"
                             //     }
                             // },
