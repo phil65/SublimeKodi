@@ -12,19 +12,12 @@ import sublime_plugin
 import sublime
 import re
 import os
-import sys
 import cgi
 import webbrowser
 import platform
 from itertools import chain
 from subprocess import Popen
 from xml.sax.saxutils import escape
-
-__file__ = os.path.normpath(os.path.abspath(__file__))
-__path__ = os.path.dirname(__file__)
-libs_path = os.path.join(__path__, "libs-mac" if platform.system() == "Darwin" else 'libs-winlin')
-if libs_path not in sys.path:
-    sys.path.insert(0, libs_path)
 
 from lxml import etree as ET
 from .libs.Utils import *
