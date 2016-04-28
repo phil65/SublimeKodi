@@ -2,17 +2,17 @@
 // { "caption": "-" },
             {
                 "command": "preview_image",
-                "caption": "KodiDevToolbox: Preview image",
+                "caption": "KodiDevKit: Preview image",
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
             },
             {
                 "command": "go_to_online_help",
-                "caption": "KodiDevToolbox: Show info from Kodi Wiki",
+                "caption": "KodiDevKit: Show info from Kodi Wiki",
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
             },
             {
                 "command": "move_to_language_file",
-                "caption": "KodiDevToolbox: Move to language file",
+                "caption": "KodiDevKit: Move to language file",
                 "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml" }]
             }
 

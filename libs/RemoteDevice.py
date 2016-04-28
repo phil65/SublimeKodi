@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 """
-KodiDevToolbox is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+KodiDevKit is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
 """
 
 

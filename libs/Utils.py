@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 """
-KodiDevToolbox is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+KodiDevKit is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
 """
 
 
@@ -235,9 +235,9 @@ def jump_to_label_declaration(view, label_id):
 
 def log(string):
     """
-    prefixes "KodiDevToolbox:" and prints
+    prefixes "KodiDevKit:" and prints
     """
-    print("KodiDevToolbox: " + str(string))
+    print("KodiDevKit: " + str(string))
 
 
 def prettyprint(string):

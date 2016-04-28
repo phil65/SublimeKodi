@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 """
-KodiDevToolbox is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
+KodiDevKit is a plugin to assist with Kodi skinning / scripting using Sublime Text 3
 """
 
 
@@ -41,7 +41,7 @@ SETTINGS_FILE = 'sublimekodi.sublime-settings'
 SUBLIME_PATH = get_sublime_path()
 
 
-class KodiDevToolbox(sublime_plugin.EventListener):
+class KodiDevKit(sublime_plugin.EventListener):
 
     def __init__(self, **kwargs):
         self.actual_project = None
@@ -200,17 +200,17 @@ class KodiDevToolbox(sublime_plugin.EventListener):
             self.settings = sublime.load_settings(SETTINGS_FILE)
             INFOS.get_settings(self.settings)
             INFOS.update_builtin_labels()
-            css_file = 'Packages/KodiDevToolbox/' + self.settings.get('tooltip_css_file')
+            css_file = 'Packages/KodiDevKit/' + self.settings.get('tooltip_css_file')
             self.css = sublime.load_resource(css_file)
             self.settings_loaded = True
         view = sublime.active_window().active_view()
         filename = view.file_name()
         if INFOS.addon_xml_file and filename and filename.endswith(".xml"):
-            view.assign_syntax('Packages/KodiDevToolbox/KodiSkinXML.sublime-syntax')
+            view.assign_syntax('Packages/KodiDevKit/KodiSkinXML.sublime-syntax')
         if filename and filename.endswith(".po"):
-            view.assign_syntax('Packages/KodiDevToolbox/Gettext.tmLanguage')
+            view.assign_syntax('Packages/KodiDevKit/Gettext.tmLanguage')
         if filename and filename.endswith(".log"):
-            view.assign_syntax('Packages/KodiDevToolbox/KodiLog.sublime-syntax')
+            view.assign_syntax('Packages/KodiDevKit/KodiLog.sublime-syntax')
         if view and view.window() is not None:
             variables = view.window().extract_variables()
             if "folder" in variables:
@@ -252,10 +252,10 @@ class RemoteActionsCommand(sublime_plugin.WindowCommand):
         elif index == 2:
             REMOTE.push_to_box(INFOS.project_path)
         elif index == 3:
-            plugin_path = os.path.join(sublime.packages_path(), "KodiDevToolbox")
+            plugin_path = os.path.join(sublime.packages_path(), "KodiDevKit")
             REMOTE.get_log(self.open_file, plugin_path)
         elif index == 4:
-            plugin_path = os.path.join(sublime.packages_path(), "KodiDevToolbox")
+            plugin_path = os.path.join(sublime.packages_path(), "KodiDevKit")
             REMOTE.get_screenshot(self.open_file, plugin_path)
         elif index == 5:
             REMOTE.clear_cache()

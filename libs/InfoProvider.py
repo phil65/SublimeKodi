@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 """
-KodiDevToolbox is a tool to assist with Kodi skinning / scripting using Sublime Text 3
+KodiDevKit is a tool to assist with Kodi skinning / scripting using Sublime Text 3
 """
 
 
@@ -201,7 +201,7 @@ class InfoProvider(object):
             self.update_xml_files()
             self.get_colors()
             self.get_fonts()
-            # sublime.status_message("KodiDevToolbox: successfully loaded addon")
+            # sublime.status_message("KodiDevKit: successfully loaded addon")
 
     @property
     def lang_path(self):

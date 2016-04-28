@@ -1,6 +1,6 @@
-# KodiDevToolbox
+# KodiDevKit
 
-[![License](https://img.shields.io/badge/License-GPL%20v3%2B-blue.svg)](https://raw.githubusercontent.com/phil65/KodiDevToolbox/master/LICENSE)
+[![License](https://img.shields.io/badge/License-GPL%20v3%2B-blue.svg)](https://raw.githubusercontent.com/phil65/KodiDevKit/master/LICENSE)
 
 ST3 plugin to show translated Kodi labels in mouseover popup, quickly open the Kodi log, log syntax highlighting and much more.
 
@@ -9,7 +9,7 @@ ST3 plugin to show translated Kodi labels in mouseover popup, quickly open the K
 
 In order to get everything working you need to manage your Kodi add-ons as a project while havin the add-on root as the only project folder.
 To allow JSON-RPC interaction with Kodi you also need to install script toolbox ( https://github.com/phil65/script.toolbox ) as well as activating JSON control via Kodi settings.
-Also, don´t forget to set up your KodiDevToolbox settings!
+Also, don´t forget to set up your KodiDevKit settings!
 
 ### Feature list:
 
@@ -129,5 +129,5 @@ Also, don´t forget to set up your KodiDevToolbox settings!
 
 ___
 
-**Note:** *Sublime Text 2 is not supported.  Also, KodiDevToolbox takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build. Minimum required version is build 3084.*
+**Note:** *Sublime Text 2 is not supported.  Also, KodiDevKit takes advantage of certain features of ST3 that have bugs in earlier ST3 releases or were implemented during betas.  For the best experience, use the latest ST3 dev build. Minimum required version is build 3084.*
 
